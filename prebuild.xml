@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project frameworkVersion="v4_6" name="Chris.OS.Additions" path="addon-modules/Chris.OS.Additions/addons" type="Library">
+	<Configuration name="Debug">
+		<Options>
+			<OutputPath>../../../bin</OutputPath>
+		</Options>
+	</Configuration>
+	<Configuration name="Release">
+		<Options>
+			<OutputPath>../../../bin</OutputPath>
+		</Options>
+	</Configuration>
+	<ReferencePath>../../../bin</ReferencePath>
+	<Reference name="System" localCopy="false" />
+	<Reference name="System.Xml" localCopy="false" />
+	<Reference name="System.Drawing" localCopy="false" />
+	<Reference name="System.Runtime.Remoting" localCopy="false" />
+	<Reference name="OpenMetaverse.dll" path="../../../bin" localCopy="false" />
+	<Reference name="OpenMetaverseTypes.dll" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Data" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Framework" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Framework.Console" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Framework.Servers" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Framework.Servers.HttpServer" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Region.Framework" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Region.CoreModules" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Region.ScriptEngine.Shared" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Region.ScriptEngine.Shared.Api" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Services.Interfaces" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Services.Connectors" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Server.Base" path="../../../bin" localCopy="false" />
+	<Reference name="OpenSim.Server.Handlers" path="../../../bin" localCopy="false" />
+	<Reference name="HttpServer_OpenSim.dll" path="../../../bin" localCopy="false" />
+	<Reference name="XMLRPC.dll" path="../../../bin" localCopy="false" />
+	<Reference name="log4net.dll" path="../../../bin" localCopy="false" />
+	<Reference name="Nini.dll" path="../../../bin" localCopy="false" />
+	<Reference name="Mono.Addins.dll" path="../../../bin" localCopy="false" />
+	<Files>
+		<Match pattern="*.cs" recurse="true" />
+	</Files>
+</Project>
