@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace OpenSim.TimerThread
+namespace Chris.OS.Additions.Script.Functions.OsTimer
 {
     class Timer : System.Timers.Timer
     {
@@ -22,7 +22,7 @@ namespace OpenSim.TimerThread
 
         public void run(object sender, ElapsedEventArgs e)
         {
-            osTimerEvent.ScriptEngine.PostScriptEvent(scriptID, "timer", new String[0]);
+            OsTimer.ScriptEngine.PostScriptEvent(scriptID, "timer", new String[0]);
         }
     }
 }

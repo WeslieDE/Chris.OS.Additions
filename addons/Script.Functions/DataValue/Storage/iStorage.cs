@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chris.Os.Additions.ScriptDataStorage.Storage
+namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 {
     interface iStorage
     {

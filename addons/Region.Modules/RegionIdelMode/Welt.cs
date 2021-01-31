@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 
-namespace Chris.Os.Additions.RegionIdelMode
+namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
 {
     class Welt
     {

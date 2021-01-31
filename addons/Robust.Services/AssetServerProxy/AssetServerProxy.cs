@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace OpenSim.Robust.AssetServerClient
+namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 {
     class AssetServerProxy : ServiceBase, IAssetService
     {

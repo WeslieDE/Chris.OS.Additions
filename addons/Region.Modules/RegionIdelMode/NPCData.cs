@@ -2,7 +2,7 @@
 using OpenSim.Framework;
 using System;
 
-namespace Chris.Os.Additions.RegionIdelMode
+namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
 {
     class NPCData
     {

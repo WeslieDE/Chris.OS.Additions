@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Chris.Os.Additions.ScriptDataStorage.Storage
+namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 {
     class FileSystem : iStorage
     {

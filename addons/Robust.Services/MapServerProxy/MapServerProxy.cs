@@ -1,41 +1,21 @@
 ﻿using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework.Servers.HttpServer;
-using OpenSim.Server.Handlers.Base;
 using OpenSim.Services.Connectors;
 using System;
 using System.IO;
 using System.Net;
 using System.Threading;
 
-namespace OpenSim.Robust.MapImageClient
+namespace Chris.OS.Additions.Robust.Services.MapServerProxy
 {
-    class NEWMapGetServerConnector : ServiceConnector
-    {
-        private string m_ConfigName = "MapImageService";
-
-        public NEWMapGetServerConnector(IConfigSource config, IHttpServer server, string configName) : base(config, server, configName)
-        {
-            IConfig serverConfig = config.Configs[m_ConfigName];
-            if (serverConfig == null)
-                throw new Exception(String.Format("No section {0} in config file", m_ConfigName));
-
-            string remoteServer = serverConfig.GetString("RemoteMapServer", String.Empty);
-
-            if (remoteServer == String.Empty)
-                throw new Exception("No RemoteServer in config file");
-
-            server.AddStreamHandler(new NEWMapServerGetHandler(remoteServer));
-        }
-    }
-
-    class NEWMapServerGetHandler : BaseStreamHandler
+    class MapServerProxy : BaseStreamHandler
     {
         public static ManualResetEvent ev = new ManualResetEvent(true);
 
         private String m_remoteServer = null;
 
-        public NEWMapServerGetHandler(String remoteServer) : base("GET", "/map")
+        public MapServerProxy(String remoteServer) : base("GET", "/map")
         {
             m_remoteServer = remoteServer;
         }
@@ -72,8 +52,7 @@ namespace OpenSim.Robust.MapImageClient
 
             httpResponse.StatusCode = (int)HttpStatusCode.NotFound;
             httpResponse.ContentType = "text/plain";
-            return new byte[0];            
+            return new byte[0];
         }
     }
 }
-

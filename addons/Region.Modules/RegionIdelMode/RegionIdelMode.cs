@@ -10,7 +10,7 @@ using Mono.Addins;
 using OpenSim.Framework;
 using System.Threading;
 
-namespace Chris.Os.Additions.RegionIdelMode
+namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionIdelMode")]
     class RegionIdelMode : ISharedRegionModule

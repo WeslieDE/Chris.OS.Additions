@@ -5,16 +5,12 @@ using OpenMetaverse;
 using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
-using OpenSim.Region.ScriptEngine.Interfaces;
-using OpenSim.Region.ScriptEngine.Shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Timers;
 
-namespace OpenSim.TimerThread
+namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "GetInventoryList")]
 

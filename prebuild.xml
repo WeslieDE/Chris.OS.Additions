@@ -18,6 +18,7 @@
 	<Reference name="System.Runtime.Remoting" localCopy="false" />
 	<Reference name="OpenMetaverse.dll" localCopy="false" />
 	<Reference name="OpenMetaverseTypes.dll" localCopy="false" />
+	<Reference name="OpenMetaverse.StructuredData.dll" localCopy="false" />
 	<Reference name="OpenSim.Data" localCopy="false" />
 	<Reference name="OpenSim.Framework" localCopy="false" />
 	<Reference name="OpenSim.Framework.Console" localCopy="false" />
@@ -27,6 +28,7 @@
 	<Reference name="OpenSim.Region.CoreModules" localCopy="false" />
 	<Reference name="OpenSim.Region.ScriptEngine.Shared" localCopy="false" />
 	<Reference name="OpenSim.Region.ScriptEngine.Shared.Api" localCopy="false" />
+	<Reference name="OpenSim.Region.PhysicsModules.SharedBase" localCopy="false" />
 	<Reference name="OpenSim.Services.Base" path="../../../bin"/>
 	<Reference name="OpenSim.Services.Interfaces" localCopy="false" />
 	<Reference name="OpenSim.Services.Connectors" localCopy="false" />
@@ -37,6 +39,8 @@
 	<Reference name="Nini.dll" localCopy="false" />
 	<Reference name="Mono.Addins.dll" localCopy="false" />
 	<Reference name="MySql.Data" localCopy="false" />
+	<Reference name="Warp3D.dll" localCopy="false" />
+	<Reference name="CSJ2K.dll" localCopy="false" />
 	<Files>
 		<Match pattern="*.cs" recurse="true" />
 	</Files>

@@ -1,7 +1,7 @@
-﻿using Chris.Os.Additions.ScriptDataStorage.Storage;
+﻿using Chris.OS.Additions.Script.Functions.DataValue.Storage;
 using System;
 
-namespace Chris.Os.Additions.ScriptDataStorage
+namespace Chris.OS.Additions.Script.Functions.DataValue
 {
     class StorageElement
     {

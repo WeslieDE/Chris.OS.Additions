@@ -5,13 +5,13 @@ using OpenSim.Framework.ServiceAuth;
 using OpenSim.Services.Interfaces;
 using OpenSim.Framework.Servers.HttpServer;
 using OpenSim.Server.Handlers.Base;
-using OpenSim.Robust.AssetServerClient;
 using log4net;
 using System.Reflection;
+using OpenSim.Server.Handlers.Asset;
 
-namespace OpenSim.Server.Handlers.Asset
+namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 {
-    public class NEWAssetServerConnector : ServiceConnector
+    public class AssetProxyHandler : ServiceConnector
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -19,13 +19,13 @@ namespace OpenSim.Server.Handlers.Asset
         private string m_ConfigName = "AssetService";
 
         // Called from Robust
-        public NEWAssetServerConnector(IConfigSource config, IHttpServer server, string configName) : this(config, server, configName, null)
+        public AssetProxyHandler(IConfigSource config, IHttpServer server, string configName) : this(config, server, configName, null)
         {
-            m_log.Info("Loaded NEWAssetServerConnector (GRID)");
+            m_log.Info("Loaded AssetProxyHandler (GRID)");
         }
 
         // Called from standalone configurations
-        public NEWAssetServerConnector(IConfigSource config, IHttpServer server, string configName, IFriendsSimConnector localConn) : base(config, server, configName)
+        public AssetProxyHandler(IConfigSource config, IHttpServer server, string configName, IFriendsSimConnector localConn) : base(config, server, configName)
         {
             if (configName != String.Empty)
                 m_ConfigName = configName;

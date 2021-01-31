@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using static OpenMetaverse.Primitive;
 
-namespace Chris.Os.Additions.TextureFetcher
+namespace Chris.OS.Additions.Region.Modules.TextureFetcher
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "TextureFetcher")]
     class TextureFetcher : INonSharedRegionModule

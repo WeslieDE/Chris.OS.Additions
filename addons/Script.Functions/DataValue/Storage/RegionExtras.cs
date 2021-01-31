@@ -4,7 +4,7 @@ using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Reflection;
 
-namespace Chris.Os.Additions.ScriptDataStorage.Storage
+namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 {
     class RegionExtras : iStorage
     {

@@ -4,20 +4,15 @@ using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
-using OpenSim.Region.ScriptEngine.Interfaces;
-using OpenSim.Region.ScriptEngine.Shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Timers;
 
-namespace OpenSim.TimerThread
+namespace Chris.OS.Additions.Script.Functions.OsTimer
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osTimerEvent")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OsTimer")]
 
-    class osTimerEvent : INonSharedRegionModule
+    class OsTimer : INonSharedRegionModule
     {
         private Dictionary<UUID, Timer> m_timers = new Dictionary<UUID, Timer>();
 
@@ -30,7 +25,7 @@ namespace OpenSim.TimerThread
 
         public string Name
         {
-            get { return "osTimerEvent"; }
+            get { return "OsTimer"; }
         }
 
         public Type ReplaceableInterface
@@ -61,8 +56,6 @@ namespace OpenSim.TimerThread
             {
                 IScriptModuleComms m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
 
-                m_scriptModule.RegisterScriptInvocation(this, "os_startTimer");
-                m_scriptModule.RegisterScriptInvocation(this, "os_stopTimer");
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStart");
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStop");
 
@@ -92,41 +85,28 @@ namespace OpenSim.TimerThread
 
         private void onScriptRemove(uint localID, UUID itemID)
         {
-            os_stopTimer(UUID.Zero, itemID);
+            osTimerStop(UUID.Zero, itemID);
         }
 
         private void onScriptStop(uint localID, UUID itemID)
         {
-            os_stopTimer(UUID.Zero, itemID);
+            osTimerStop(UUID.Zero, itemID);
         }
 
         private void onScriptReset(uint localID, UUID itemID)
         {
-            os_stopTimer(UUID.Zero, itemID);
+            osTimerStop(UUID.Zero, itemID);
         }
 
         #endregion
 
         #region Script functions
-
         [ScriptInvocation]
         public void osTimerStart(UUID hostID, UUID scriptID, float time)
         {
-            os_startTimer(hostID, scriptID, time);
-        }
-
-        [ScriptInvocation]
-        public void osTimerStop(UUID hostID, UUID scriptID)
-        {
-            os_stopTimer(hostID, scriptID);
-        }
-
-        [ScriptInvocation]
-        public void os_startTimer(UUID hostID, UUID scriptID, float time)
-        {
             if (time == 0)
             {
-                os_stopTimer(hostID, scriptID);
+                osTimerStop(hostID, scriptID);
                 return;
             }
 
@@ -152,7 +132,7 @@ namespace OpenSim.TimerThread
         }
 
         [ScriptInvocation]
-        public void os_stopTimer(UUID hostID, UUID scriptID)
+        public void osTimerStop(UUID hostID, UUID scriptID)
         {
             Timer timer = null;
             if (m_timers.TryGetValue(scriptID, out timer))

@@ -11,7 +11,7 @@ using OpenMetaverse;
 using log4net;
 using System.Reflection;
 
-namespace Chris.Os.Additions.FullPerm
+namespace Chris.OS.Additions.Region.Modules.FullPerm
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "FullPerm")]
     class FullPerm : INonSharedRegionModule

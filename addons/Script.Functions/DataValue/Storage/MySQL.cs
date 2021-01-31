@@ -7,7 +7,7 @@ using System.Data;
 using System.Reflection;
 using System.Timers;
 
-namespace Chris.Os.Additions.ScriptDataStorage.Storage
+namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 {
     class MySQL : iStorage
     {

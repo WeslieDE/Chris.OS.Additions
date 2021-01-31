@@ -1,4 +1,4 @@
-﻿using Chris.Os.Additions.ScriptDataStorage.Storage;
+﻿using Chris.OS.Additions.Script.Functions.DataValue.Storage;
 using log4net;
 using Mono.Addins;
 using Nini.Config;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Timers;
 
-namespace Chris.Os.Additions.ScriptDataStorage
+namespace Chris.OS.Additions.Script.Functions.DataValue
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptDataStorage")]
 
@@ -33,7 +33,7 @@ namespace Chris.Os.Additions.ScriptDataStorage
 
         public string Name
         {
-            get { return "DataValueModule"; }
+            get { return "ScriptDataStorage"; }
         }
 
         public Type ReplaceableInterface
@@ -55,7 +55,7 @@ namespace Chris.Os.Additions.ScriptDataStorage
         {
             try
             {
-                m_config = source.Configs["XEngine"];
+                m_config = source.Configs["ScriptDataStorage"];
 
                 m_storageTyp = m_config.GetString("DataStorageTyp", "Memory").ToUpper().Trim();
             }

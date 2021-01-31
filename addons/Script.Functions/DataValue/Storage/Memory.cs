@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Chris.Os.Additions.ScriptDataStorage.Storage
+namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 {
     class Memory : iStorage
     {
