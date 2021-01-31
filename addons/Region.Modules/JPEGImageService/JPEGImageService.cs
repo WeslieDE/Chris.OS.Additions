@@ -29,8 +29,6 @@ namespace Chris.OS.Additions.Region.Modules.JPEGImageService
 
         protected override byte[] ProcessRequest(string path, Stream requestData, IOSHttpRequest httpRequest, IOSHttpResponse httpResponse)
         {
-            m_log.Info("[JPEGImageService] DEBUG: Get request");
-
             if (m_scenes.Count == 0)
             {
                 m_log.Error("[JPEGImageService] ERROR: This service are only aviable at a running region!");
