@@ -12,11 +12,8 @@ using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Chris.OS.Additions.Script.Functions.MailKitMail

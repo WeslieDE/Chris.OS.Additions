@@ -2,8 +2,6 @@
 using OpenSim.Region.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nini.Config;
 using OpenSim.Region.Framework.Scenes;
 using log4net;
@@ -14,7 +12,7 @@ using OpenSim.Framework.Servers;
 namespace Chris.OS.Additions.Region.Modules.DataPublisher
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionsDataModule")]
-    class RegionsDataModule : ISharedRegionModule
+    public class RegionsDataModule : ISharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IConfigSource m_config = null;
