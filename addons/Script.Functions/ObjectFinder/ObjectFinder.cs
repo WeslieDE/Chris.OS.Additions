@@ -20,6 +20,28 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
         private IScriptModuleComms m_scriptModule;
 
         #region INonSharedRegionModule
+        public void RegionLoaded(Scene scene)
+        {
+            m_scene = scene;
+
+            if(m_scene != null)
+            {
+                try
+                {
+                    m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
+
+                    m_scriptModule.RegisterScriptInvocation(this, "osGetSearchableObjectList");
+                }
+                catch (Exception e)
+                {
+                    m_log.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
+                }
+            }else
+            {
+                m_log.Warn("[" + Name + "]: scene == null");
+            }
+        }
+
         public string Name
         {
             get { return "ObjectFinder"; }
@@ -45,21 +67,7 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
 
         }
 
-        public void RegionLoaded(Scene scene)
-        {
-            m_scene = scene;
 
-            try
-            {
-                m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
-
-                m_scriptModule.RegisterScriptInvocation(this, "osGetSearchableObjectList");
-            }
-            catch (Exception e)
-            {
-                m_log.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
-            }
-        }
 
         public void RemoveRegion(Scene scene)
         {
