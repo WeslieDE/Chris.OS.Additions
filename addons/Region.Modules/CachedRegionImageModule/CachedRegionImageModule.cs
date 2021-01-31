@@ -106,7 +106,7 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
         {
             m_config = source;
 
-            string[] configSections = new string[] { "Map", "Startup" };
+            string[] configSections = new string[] { "Map", "Startup", "CachedRegionImageModule" };
 
             if (Util.GetConfigVarFromSections<string>(
                 m_config, "MapImageModule", configSections, "MapImageModule") != "CachedRegionImageModule")
