@@ -15,7 +15,7 @@ using static OpenMetaverse.Primitive;
 namespace Chris.OS.Additions.Region.Modules.TextureFetcher
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "TextureFetcher")]
-    class TextureFetcher : INonSharedRegionModule
+    public class TextureFetcher : INonSharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         Scene m_scene = null;

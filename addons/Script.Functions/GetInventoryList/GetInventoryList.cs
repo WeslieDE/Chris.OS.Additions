@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "GetInventoryList")]
 
-    class GetInventoryList : INonSharedRegionModule
+    public class GetInventoryList : INonSharedRegionModule
     {
         private Dictionary<UUID, Timer> m_timers = new Dictionary<UUID, Timer>();
 

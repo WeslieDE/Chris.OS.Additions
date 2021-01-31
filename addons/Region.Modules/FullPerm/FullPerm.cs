@@ -14,7 +14,7 @@ using System.Reflection;
 namespace Chris.OS.Additions.Region.Modules.FullPerm
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "FullPerm")]
-    class FullPerm : INonSharedRegionModule
+    public class FullPerm : INonSharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -12,7 +12,7 @@ namespace Chris.OS.Additions.Script.Functions.OsTimer
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OsTimer")]
 
-    class OsTimer : INonSharedRegionModule
+    public class OsTimer : INonSharedRegionModule
     {
         private Dictionary<UUID, Timer> m_timers = new Dictionary<UUID, Timer>();
 
