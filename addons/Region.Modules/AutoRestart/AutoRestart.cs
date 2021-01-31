@@ -36,6 +36,9 @@ namespace Chris.OS.Additions.Region.Modules.AutoRestart
 
         public void AddRegion(Scene scene)
         {
+            if (!m_enable)
+                return;
+
             if (m_disable.Contains(scene.RegionInfo.RegionName))
                 return;
 
