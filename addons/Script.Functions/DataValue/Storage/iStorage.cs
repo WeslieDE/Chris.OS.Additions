@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenSim.Modules.DataValue.Storage
+namespace Chris.Os.Additions.ScriptDataStorage.Storage
 {
     interface iStorage
     {

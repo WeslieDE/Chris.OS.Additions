@@ -9,8 +9,6 @@ using System.Text;
 using OpenSim.Framework;
 using OpenMetaverse;
 
-[assembly: Addin("RegionFullPerm", "0.2")]
-[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
 namespace OpenSim.Modules.FullPerm
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionFullPerm")]

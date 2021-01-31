@@ -1,12 +1,8 @@
 ﻿using OpenMetaverse;
 using OpenSim.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenSim.Modules.DisableAwayPhysic
+namespace Chris.Os.Additions.RegionIdelMode
 {
     class NPCData
     {

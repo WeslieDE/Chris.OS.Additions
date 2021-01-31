@@ -26,8 +26,6 @@ using LSL_Rotation = OpenSim.Region.ScriptEngine.Shared.LSL_Types.Quaternion;
 using LSL_String = OpenSim.Region.ScriptEngine.Shared.LSL_Types.LSLString;
 using LSL_Vector = OpenSim.Region.ScriptEngine.Shared.LSL_Types.Vector3;
 
-[assembly: Addin("BasicPathFindingModule", "0.1")]
-[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
 namespace OpenSim.Modules.PathFinding
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "BasicPathFindingModule")]

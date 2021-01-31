@@ -13,8 +13,6 @@ using System.Reflection;
 using System.Text;
 using System.Timers;
 
-[assembly: Addin("osTimerEvent", "0.1")]
-[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
 namespace OpenSim.TimerThread
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osTimerEvent")]

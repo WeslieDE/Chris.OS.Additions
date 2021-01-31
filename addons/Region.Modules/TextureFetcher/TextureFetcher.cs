@@ -12,8 +12,6 @@ using System.Reflection;
 using System.Text;
 using static OpenMetaverse.Primitive;
 
-[assembly: Addin("TextureFetcher", "0.1")]
-[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
 namespace OpenSim.Modules.TextureFetcher
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionFullPerm")]

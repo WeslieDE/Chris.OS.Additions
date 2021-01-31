@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace OpenSim.Modules.AutoRestart
+namespace Chris.Os.Additions.RegionIdelMode
 {
     class Welt
     {
@@ -53,6 +53,19 @@ namespace OpenSim.Modules.AutoRestart
             }
 
             m_npcs = new List<NPCData>();
+        }
+
+        public bool ScriptsRunning
+        {
+            get
+            {
+                return m_scene.ScriptsEnabled;
+            }
+
+            set
+            {
+                m_scene.ScriptsEnabled = value;
+            }
         }
 
         private void deleteAllNPC()

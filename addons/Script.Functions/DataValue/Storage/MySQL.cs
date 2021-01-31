@@ -3,15 +3,11 @@ using MySql.Data.MySqlClient;
 using Nini.Config;
 using OpenSim.Region.Framework.Scenes;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
-namespace OpenSim.Modules.DataValue.Storage
+namespace Chris.Os.Additions.ScriptDataStorage.Storage
 {
     class MySQL : iStorage
     {

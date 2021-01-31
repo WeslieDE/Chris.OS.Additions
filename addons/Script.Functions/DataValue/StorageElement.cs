@@ -1,11 +1,7 @@
-﻿using OpenSim.Modules.DataValue.Storage;
+﻿using Chris.Os.Additions.ScriptDataStorage.Storage;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenSim.Modules.DataValue
+namespace Chris.Os.Additions.ScriptDataStorage
 {
     class StorageElement
     {

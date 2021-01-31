@@ -1,17 +1,13 @@
 ﻿using log4net;
 using Nini.Config;
-using OpenMetaverse;
 using OpenSim.Region.Framework.Scenes;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace OpenSim.Modules.DataValue.Storage
+namespace Chris.Os.Additions.ScriptDataStorage.Storage
 {
     class FileSystem : iStorage
     {

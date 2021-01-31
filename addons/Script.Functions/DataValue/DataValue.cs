@@ -1,26 +1,20 @@
-﻿using log4net;
+﻿using Chris.Os.Additions.ScriptDataStorage.Storage;
+using log4net;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
-using OpenSim.Modules.DataValue.Storage;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Timers;
 
-[assembly: Addin("DataValueModule", "0.1")]
-[assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
-namespace OpenSim.Modules.DataValue
+namespace Chris.Os.Additions.ScriptDataStorage
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "DataValueModule")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptDataStorage")]
 
-    public class DataValue : INonSharedRegionModule
+    public class ScriptDataStorage : INonSharedRegionModule
     {
         #region Region Module
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
