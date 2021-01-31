@@ -13,7 +13,7 @@ using OpenSim.Framework.Servers;
 
 namespace Chris.OS.Additions.Region.Modules.DataPublisher
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionsDataPublisherModule")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionsDataModule")]
     class RegionsDataModule : ISharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -25,7 +25,7 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
         {
             get
             {
-                return "RegionsDataPublisher";
+                return "RegionsDataModule";
             }
         }
 

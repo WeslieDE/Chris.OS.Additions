@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Chris.OS.Additions.Region.Modules.DataPublisher.Data;
+using log4net;
 using Newtonsoft.Json;
 using Nini.Config;
 using OpenMetaverse;
@@ -6,12 +7,9 @@ using OpenSim.Framework;
 using OpenSim.Framework.Servers.HttpServer;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
-using OpenSim.Region.OptionalModules.RegionsDataPublisher.Data;
-using OpenSim.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
