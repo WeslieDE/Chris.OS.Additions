@@ -5,11 +5,11 @@ using System;
 
 namespace Chris.OS.Additions.Robust.Services.MapServerProxy
 {
-    class MapImageProxyHandler : ServiceConnector
+    class MapServerConnector : ServiceConnector
     {
         private string m_ConfigName = "MapImageService";
 
-        public MapImageProxyHandler(IConfigSource config, IHttpServer server, string configName) : base(config, server, configName)
+        public MapServerConnector(IConfigSource config, IHttpServer server, string configName) : base(config, server, configName)
         {
             IConfig serverConfig = config.Configs[m_ConfigName];
             if (serverConfig == null)

@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Chris.OS.Additions.Robust.Services.FriendServerProxy
 {
-    public class FriendServerHandler : ServiceConnector
+    public class FriendServerConnector : ServiceConnector
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IUserAgentService m_UserAgentService;
@@ -17,13 +17,13 @@ namespace Chris.OS.Additions.Robust.Services.FriendServerProxy
         private string m_ConfigName = "HGFriendsService";
 
         // Called from Robust
-        public FriendServerHandler(IConfigSource config, IHttpServer server, string configName) : this(config, server, configName, null)
+        public FriendServerConnector(IConfigSource config, IHttpServer server, string configName) : this(config, server, configName, null)
         {
             m_log.Info("Loaded FriendServerProxy (GRID)");
         }
 
         // Called from standalone configurations
-        public FriendServerHandler(IConfigSource config, IHttpServer server, string configName, IFriendsSimConnector localConn) : base(config, server, configName)
+        public FriendServerConnector(IConfigSource config, IHttpServer server, string configName, IFriendsSimConnector localConn) : base(config, server, configName)
         {
             if (configName != string.Empty)
                 m_ConfigName = configName;
