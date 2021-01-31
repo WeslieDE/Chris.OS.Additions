@@ -12,9 +12,9 @@ using System.Reflection;
 using System.Text;
 using static OpenMetaverse.Primitive;
 
-namespace OpenSim.Modules.TextureFetcher
+namespace Chris.Os.Additions.TextureFetcher
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionFullPerm")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "TextureFetcher")]
     class TextureFetcher : INonSharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -28,31 +28,20 @@ namespace OpenSim.Modules.TextureFetcher
         List<String> m_defaultTexturs = new List<String>(new string[] { "89556747-24cb-43ed-920b-47caed15465f", "5748decc-f629-461c-9a36-a35a221fe21f", "8dcd4a48-2d37-4909-9f78-f7a9eb4ef903", "8b5fec65-8d8d-9dc5-cda8-8fdf2716e361", "38b86f85-2575-52a9-a531-23108d8da837", "e97cf410-8e61-7005-ec06-629eba4cd1fb", "5a9f4a74-30f2-821c-b88d-70499d3e7183	", "ae2de45c-d252-50b8-5c6e-19f39ce79317	", "24daea5f-0539-cfcf-047f-fbc40b2786ba", "52cc6bb6-2ee5-e632-d3ad-50197b1dcb8a", "43529ce8-7faa-ad92-165a-bc4078371687", "09aac1fb-6bce-0bee-7d44-caac6dbb6c63", "ff62763f-d60a-9855-890b-0c96f8f8cd98", "8e915e25-31d1-cc95-ae08-d58a47488251", "9742065b-19b5-297c-858a-29711d539043", "03642e83-2bd1-4eb9-34b4-4c47ed586d2d", "edd51b77-fc10-ce7a-4b3d-011dfc349e4f"});
         private bool m_enable = false;
 
+        #region INonSharedRegionModule
         public string Name
         {
             get { return "TextureFetcher"; }
-        }
-
-        public void AddRegion(Scene scene)
-        {
-        }
-
-        public void RemoveRegion(Scene scene)
-        {
-        }
-
-        public void Close()
-        {
         }
 
         public void Initialise(IConfigSource source)
         {
             m_config = source;
 
-            if (m_config.Configs["Startup"] != null)
+            if (m_config.Configs["TextureFetcher"] != null)
             {
-                m_checkTexture = m_config.Configs["Startup"].GetBoolean("TextureFetcherCheckAssets", m_checkTexture);
-                m_enable = m_config.Configs["Startup"].GetBoolean("TextureFetcherEnable", m_enable);
+                m_enable = m_config.Configs["TextureFetcher"].GetBoolean("Enable", m_enable);
+                m_checkTexture = m_config.Configs["TextureFetcher"].GetBoolean("TextureFetcherCheckAssets", m_checkTexture);
             }
         }
 
@@ -77,17 +66,28 @@ namespace OpenSim.Modules.TextureFetcher
 
                 return;
             }
-                
 
             scene.EventManager.OnObjectAddedToScene += AddObject;
             scene.EventManager.OnSceneObjectLoaded += AddObject;
             scene.EventManager.OnIncomingSceneObject += AddObject;
             scene.EventManager.OnSceneObjectPartUpdated += UpdateObject;
             scene.EventManager.OnSceneObjectPartCopy += CopyObject;
-
-            
         }
 
+        public void AddRegion(Scene scene)
+        {
+        }
+
+        public void RemoveRegion(Scene scene)
+        {
+        }
+
+        public void Close()
+        {
+        }
+        #endregion
+
+        #region Events
         private void ClearObjekt(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
         {
             removeTexturesToInventory(copy);
@@ -119,7 +119,9 @@ namespace OpenSim.Modules.TextureFetcher
             foreach (SceneObjectPart _part in obj.Parts)
                 copyTexturesToInventory(_part);
         }
+        #endregion
 
+        #region Functions
         private bool inventoryContainsScripts(SceneObjectPart part)
         {
             foreach (TaskInventoryItem item in part.ParentGroup.RootPart.Inventory.GetInventoryItems())
@@ -127,7 +129,7 @@ namespace OpenSim.Modules.TextureFetcher
                 {
                     AssetBase assetData = m_scene.AssetService.Get(item.AssetID.ToString());
 
-                    if(assetData != null)
+                    if (assetData != null)
                     {
                         String script = new ASCIIEncoding().GetString(assetData.Data).ToUpper();
 
@@ -140,7 +142,7 @@ namespace OpenSim.Modules.TextureFetcher
                     else
                     {
                         return true;
-                    }              
+                    }
                 }
 
             return false;
@@ -157,7 +159,6 @@ namespace OpenSim.Modules.TextureFetcher
             return false;
         }
 
-
         private void removeTexturesToInventory(SceneObjectPart part)
         {
             if (m_enable == true)
@@ -171,12 +172,12 @@ namespace OpenSim.Modules.TextureFetcher
 
             try
             {
-                
+
                 foreach (TaskInventoryItem item in part.ParentGroup.RootPart.Inventory.GetInventoryItems())
                 {
-                    if(item.Type == (int)InventoryType.Texture)
+                    if (item.Type == (int)InventoryType.Texture)
                     {
-                        if(item.Description == "This item was automatically generated by the texture fetcher module.")
+                        if (item.Description == "This item was automatically generated by the texture fetcher module.")
                             part.ParentGroup.RootPart.Inventory.RemoveInventoryItem(item.ItemID);
                     }
                 }
@@ -202,7 +203,7 @@ namespace OpenSim.Modules.TextureFetcher
                 return;
 
             //if ((setPermissionMask & (uint)PermissionMask.Copy) != 0)
-                //return;
+            //return;
 
             if (inventoryContainsScripts(part.ParentGroup.RootPart))
                 return;
@@ -216,11 +217,11 @@ namespace OpenSim.Modules.TextureFetcher
                 Primitive.TextureEntry textures = part.Shape.Textures;
                 int allSides = part.GetNumberOfSides();
 
-                for(uint i = 0; i < allSides; i++)
+                for (uint i = 0; i < allSides; i++)
                 {
                     TextureEntryFace face = textures.GetFace(i);
 
-                    if(!m_textureBlackList.Contains(face.TextureID) && !m_defaultTexturs.Contains(face.TextureID.ToString()))
+                    if (!m_textureBlackList.Contains(face.TextureID) && !m_defaultTexturs.Contains(face.TextureID.ToString()))
                         allTextures.Add(face.TextureID);
 
                     if (m_textureBlackList.Contains(face.TextureID))
@@ -228,7 +229,7 @@ namespace OpenSim.Modules.TextureFetcher
                 }
 
                 //Remove not existing textures
-                if(m_checkTexture == true)
+                if (m_checkTexture == true)
                 {
                     String[] _assetIDs = new string[allTextures.Count];
                     for (int i = 0; i < allTextures.Count; i++)
@@ -284,10 +285,11 @@ namespace OpenSim.Modules.TextureFetcher
                     //part.SendFullUpdateToAllClients();
                 }
             }
-            catch(Exception _error)
+            catch (Exception _error)
             {
                 m_log.Error("[" + Name + "] ERROR: " + _error.Message);
-            }                
+            }
         }
+        #endregion
     }
 }

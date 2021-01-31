@@ -8,17 +8,24 @@ using System.Linq;
 using System.Text;
 using OpenSim.Framework;
 using OpenMetaverse;
+using log4net;
+using System.Reflection;
 
-namespace OpenSim.Modules.FullPerm
+namespace Chris.Os.Additions.FullPerm
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionFullPerm")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "FullPerm")]
     class FullPerm : INonSharedRegionModule
     {
-        List<Scene> m_scenes = new List<Scene>();
+        private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        private IConfigSource m_config;
+
+        private bool m_enable = false;
+
+        #region ISharedRegionModule
         public string Name
         {
-            get { return "RegionFullPerm"; }
+            get { return "FullPerm"; }
         }
 
         public void AddRegion(Scene scene)
@@ -33,9 +40,20 @@ namespace OpenSim.Modules.FullPerm
         {
         }
 
-        public void Initialise(IConfigSource source)
+        public void Initialise(IConfigSource config)
         {
+            m_config = config;
 
+            if (m_config.Configs["FullPerm"] != null)
+            {
+                m_enable = m_config.Configs["FullPerm"].GetBoolean("Enabled", m_enable);
+            }
+
+            if (m_enable == true)
+                m_log.Info("[" + Name + "] FullPerm is enabled");
+
+            if (m_enable == false)
+                m_log.Info("[" + Name + "] FullPerm is disabled");
         }
 
         public Type ReplaceableInterface
@@ -45,6 +63,9 @@ namespace OpenSim.Modules.FullPerm
 
         public void RegionLoaded(Scene scene)
         {
+            if (m_enable == false)
+                return;
+
             scene.EventManager.OnObjectAddedToScene += addObject;
             scene.EventManager.OnSceneObjectLoaded += addObject;
             scene.EventManager.OnIncomingSceneObject += addObject;
@@ -53,7 +74,9 @@ namespace OpenSim.Modules.FullPerm
             scene.EventManager.OnSceneObjectPartCopy += copyObject;
             scene.EventManager.OnNewClient += taskInventoryUpdate;
         }
+        #endregion
 
+        #region Events
         private void taskInventoryUpdate(IClientAPI client)
         {
             client.OnUpdateTaskInventory += updateTaskInventory;
@@ -132,10 +155,10 @@ namespace OpenSim.Modules.FullPerm
                 _part.OwnerMask = 581639;
                 _part.NextOwnerMask = 581639;
 
-                if(_part.ObjectSaleType != (byte)SaleType.Not)
-                    _part.SalePrice = 0;               
+                if (_part.ObjectSaleType != (byte)SaleType.Not)
+                    _part.SalePrice = 0;
 
-                foreach(TaskInventoryItem _item in _part.Inventory.GetInventoryItems())
+                foreach (TaskInventoryItem _item in _part.Inventory.GetInventoryItems())
                 {
                     _item.BasePermissions = 581639;
                     _item.NextPermissions = 581639;
@@ -143,5 +166,6 @@ namespace OpenSim.Modules.FullPerm
                 }
             }
         }
+        #endregion
     }
 }

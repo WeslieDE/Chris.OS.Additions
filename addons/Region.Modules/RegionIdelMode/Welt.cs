@@ -1,17 +1,11 @@
 ﻿using log4net;
 using OpenMetaverse;
 using OpenSim.Framework;
-using OpenSim.Modules.DisableAwayPhysic;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chris.Os.Additions.RegionIdelMode
