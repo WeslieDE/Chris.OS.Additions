@@ -97,12 +97,12 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
                 }
                 else
                 {
-                    m_log.Error("WARNING: NOT FOUND AN NPC MODULE!");
+                    m_log.Error("WARNING: CANT FOUND A NPC MODULE!");
                 }
             }
             catch (Exception _error)
             {
-                m_log.Error("FATA ERROR: " + _error.Message);
+                m_log.Error("FATAL ERROR: " + _error.Message);
             }
         }
 
