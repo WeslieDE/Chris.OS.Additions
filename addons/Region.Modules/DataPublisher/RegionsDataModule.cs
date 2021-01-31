@@ -12,12 +12,13 @@ using OpenSim.Framework.Servers;
 namespace Chris.OS.Additions.Region.Modules.DataPublisher
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionsDataModule")]
-    public class RegionsDataModule : ISharedRegionModule
+    public class RegionsDataModule : INonSharedRegionModule
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IConfigSource m_config = null;
+        private int m_httpport = 0;
 
-        List<Scene> m_scenes = new List<Scene>();
+        private List<Scene> m_scenes = new List<Scene>();
 
         public string Name
         {
@@ -50,7 +51,23 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
         public void Initialise(IConfigSource source)
         {
             if (m_config == null)
+            {
                 m_config = source;
+
+                if(m_config.Configs["Network"] != null)
+                {
+                    m_httpport = m_config.Configs["Network"].GetInt("http_listener_port", m_httpport);
+                    m_log.Info("[" + Name + "] Start on Port " + m_httpport);
+                }
+                else
+                {
+                    m_log.Info("[" + Name + "] Cant find [Network].");
+                }
+            }
+            else
+            {
+                m_log.Info("[" + Name + "] Cant read config.");
+            }
         }
 
         public void PostInitialise()
@@ -60,12 +77,15 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
 
         public void RegionLoaded(Scene scene)
         {
-            if(scene != null)
+            m_log.Info("[" + Name + "] Load Region " + scene.Name);
+
+            if (scene != null)
             {
                 m_scenes.Add(scene);
 
-                IHttpServer server = MainServer.GetHttpServer(0);
+                IHttpServer server = MainServer.GetHttpServer((uint)m_httpport);
                 server.AddStreamHandler(new RegionsDataHandler(m_config, ref m_scenes));
+                m_log.Info("["+ Name + "] Add RegionsDataHandler");
             }
         }
 

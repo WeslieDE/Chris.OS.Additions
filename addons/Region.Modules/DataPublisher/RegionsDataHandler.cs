@@ -7,6 +7,7 @@ using OpenSim.Framework;
 using OpenSim.Framework.Servers.HttpServer;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
+using OpenSim.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,8 +23,10 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
         private List<Scene> m_scenes = new List<Scene>();
         private IUserManagement m_userManager = null;
 
-        public RegionsDataHandler(IConfigSource config, ref List<Scene> scenes) : base("GET", "/RegionData/")
+        public RegionsDataHandler(IConfigSource config, ref List<Scene> scenes) : base("GET", "/RegionData")
         {
+            m_log.Info("[RegionsDataModule] RegionsDataHandler loaded.");
+
             if (config != null)
                 m_config = config;
 
@@ -35,6 +38,8 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
 
         protected override byte[] ProcessRequest(string path, Stream requestData, IOSHttpRequest httpRequest, IOSHttpResponse httpResponse)
         {
+            m_log.Info("[RegionsDataModule] Get request.");
+
             Dictionary<string, object> request = new Dictionary<string, object>();
             foreach (string name in httpRequest.QueryString)
                 request[name] = httpRequest.QueryString[name];

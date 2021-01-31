@@ -46,7 +46,8 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
                 server.AddStreamHandler(new AssetsExistHandler(m_AssetService));
             }catch(Exception error)
             {
-
+                m_log.Error(error.Message);
+                m_log.Error(error.StackTrace);
             }
         }
     }

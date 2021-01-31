@@ -44,9 +44,6 @@
 	<Reference name="CSJ2K.dll" localCopy="false" />
 	<Reference name="Newtonsoft.Json.dll" localCopy="false" />
 
-	<Reference name="BouncyCastle.Crypto.dll" path="../libs/" localCopy="true"/>
-	<Reference name="MailKit.dll" path="../libs/" localCopy="true"/>
-	<Reference name="MimeKit.dll" path="../libs/" localCopy="true"/>
 	<Files>
 		<Match pattern="*.cs" recurse="true" />
 	</Files>

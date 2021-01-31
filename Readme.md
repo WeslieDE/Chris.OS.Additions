@@ -24,3 +24,6 @@
     
     [AutoRestart]
         Enable = false
+
+    [ScriptDataStorage]
+        DataStorageTyp = Memory

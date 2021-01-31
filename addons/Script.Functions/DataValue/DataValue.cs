@@ -55,9 +55,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             try
             {
-                m_config = source.Configs["ScriptDataStorage"];
-
-                m_storageTyp = m_config.GetString("DataStorageTyp", "Memory").ToUpper().Trim();
+                if(source.Configs["ScriptDataStorage"] != null)
+                {
+                    m_config = source.Configs["ScriptDataStorage"];
+                    m_storageTyp = m_config.GetString("DataStorageTyp", "Memory").ToUpper().Trim();
+                }
             }
             catch (Exception e)
             {
