@@ -1,11 +1,11 @@
     [RegionIdelMode]
-        Enabled = true
+        Enabled = false
         Scripts = true
         Physics = true
         SoftMode = true
     
     [FullPerm]
-        Enabled = true
+        Enabled = false
     
     [CachedRegionImageModule]
         MapImageModule = CachedRegionImageModule
