@@ -62,7 +62,7 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
             }
         }
 
-        private void deleteAllNPC()
+        public void deleteAllNPC()
         {
             m_npcs = new List<NPCData>();
 

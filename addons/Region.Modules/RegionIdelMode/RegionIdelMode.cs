@@ -143,6 +143,7 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
                                 }
                                 else
                                 {
+                                    _thisScene.deleteAllNPC();
                                     _thisScene.ScriptsRunning = false;
                                 }
                             }
