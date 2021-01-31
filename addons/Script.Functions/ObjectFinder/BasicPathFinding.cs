@@ -47,6 +47,8 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
 
         public void RegionLoaded(Scene scene)
         {
+            m_scene = scene;
+
             try
             {
                 m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
