@@ -38,7 +38,13 @@ Some new services are also offered by Robust. There is an AssetProxyClient and a
 
 ## Robust.ini
 
-    HGFriendsServerConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:FriendServerConnector"
+    [ServiceList]
+        HGFriendsServerConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:FriendServerConnector"
 
-    AssetServiceConnector = "${Const|PrivatePort}/Chris.OS.Additions.dll:AssetProxyConnector"
-    HGAssetServiceConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:AssetProxyConnector"
+        AssetServiceConnector = "${Const|PrivatePort}/Chris.OS.Additions.dll:AssetProxyConnector"
+        HGAssetServiceConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:AssetProxyConnector"
+
+    [AssetService]
+        AssetServerURI = http://127.0.0.1:8002
+        ExtraAssetServer = http://assets.osgrid.org|http://assets.metro.land|http://nextlife-world.de:8002|http://grid.sacrarium.su:8888|http://anettes-welt.de:8002|http://german-world.de:8002|http://thepublicw$
+        AuthType = None
