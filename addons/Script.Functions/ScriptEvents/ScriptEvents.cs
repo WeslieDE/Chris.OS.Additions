@@ -152,10 +152,10 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         }
 
         [ScriptInvocation]
-        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, LSL_List event_data)
+        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, object[] event_data)
         {
 
-            fireEvent(EventType.EVENT_CUSTOM, event_data.Data);
+            fireEvent(EventType.EVENT_CUSTOM, event_data);
         }
         #endregion
 
