@@ -172,7 +172,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 {
                     try
                     {
-                        ScriptEngine.PostScriptEvent(itemID, "link_message", new Object[] { type.GetHashCode(), EventType.EVENT_GENERIC.GetHashCode(), data, UUID.Zero });
+                        ScriptEngine.PostScriptEvent(itemID, "link_message", new Object[] { type.GetHashCode(), EventType.EVENT_GENERIC.GetHashCode(), data, UUID.Zero.ToString() });
                     }
                     catch
                     {
