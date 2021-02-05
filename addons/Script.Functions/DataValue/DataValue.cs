@@ -92,7 +92,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 m_storage = new Memory();
 
             if (m_storage == null)
-                m_storage = new RegionExtras(m_scene, m_config);
+                m_storage = new Memory();
 
             m_log.Info("[" + Name + "] Using '" + m_storageTyp + "' as Storage.");
 
