@@ -147,8 +147,7 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
                                     _parcelSet.ParentUUID = _scene.RegionInfo.RegionID.ToString();
                                     _parcelSet.ParcelUUID = _parcel.LandData.GlobalID.ToString();
 
-                                    if ((request.ContainsKey("onlyVisibleInSearch") && _parcelSet.ParcelIsVisibleInSearch == true) || !request.ContainsKey("onlyVisibleInSearch"))
-                                        _dataSet.ParcelData.Add(_parcelSet);
+                                    _dataSet.ParcelData.Add(_parcelSet);
                                 }
                             }
                             catch
@@ -231,9 +230,7 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
                                         _objectData.ObjectImageUUID = GuessImage(_cog);
                                         _objectData.ObjectIsVisibleInSearch = getStatusForSearch(_cog);
 
-
-                                        if ((request.ContainsKey("onlyVisibleInSearch") && _objectData.ObjectIsVisibleInSearch == true) || !request.ContainsKey("onlyVisibleInSearch") || (request.ContainsKey("showFreeToCopy") && _objectData.ObjectIsForCopy == true))
-                                            _dataSet.ObjectData.Add(_objectData);
+                                        _dataSet.ObjectData.Add(_objectData);
                                     }
                                 }
                             }
