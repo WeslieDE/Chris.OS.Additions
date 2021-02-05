@@ -10,7 +10,9 @@ namespace Chris.OS.Additions.Utils
     public class EmptyModule : INonSharedRegionModule
     {
         protected readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         protected Scene World = null;
+
         protected Boolean Enabled = false;
 
         public virtual string Name

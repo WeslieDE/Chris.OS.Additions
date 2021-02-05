@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chris.OS.Additions.Script.Functions.ScriptEvents
+namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
 {
-    enum EventType
+    enum ScriptEventTypes
     {
         EVENT_CUSTOM = 0,
         EVENT_NEWPRESENCE = 1,

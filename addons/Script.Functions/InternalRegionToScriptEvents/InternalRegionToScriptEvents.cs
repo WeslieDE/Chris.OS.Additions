@@ -8,20 +8,20 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Chris.OS.Additions.Script.Functions.ScriptEvents
+namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptEvents")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "InternalRegionToScriptEvents")]
 
-    public class ScriptEvents : EmptyModule
+    public class InternalRegionToScriptEvents : EmptyModule
     {
         private List<UUID> m_listener = new List<UUID>();
-        public static IScriptModule ScriptEngine;
+        private IScriptModule ScriptEngine = null;
 
         #region EmptyModule
 
         public override string Name
         {
-            get { return "ScriptEvents"; }
+            get { return "InternalRegionToScriptEvents"; }
         }
 
         public override void RegionLoaded(Scene scene)
@@ -45,8 +45,6 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGEREMOVE", 1002);
 
                 m_scriptModule.RegisterConstant("EVENT_GENERIC", 42001337);
-
-                base.Logger.Info("[" + Name + "]: Successfully registerd all script methods.");
             }
             catch (Exception e)
             {
@@ -100,33 +98,33 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
         private void scriptevent_OnAvatarEnteringNewParcel(ScenePresence avatar, int localLandID, UUID regionID)
         {
-            fireEvent(EventType.EVENT_AVATARENTERPARCEL, avatar.UUID.ToString());
+            fireEvent(ScriptEventTypes.EVENT_AVATARENTERPARCEL, avatar.UUID.ToString());
         }
 
         private void scriptevent_OnRemovePresence(UUID agentId)
         {
-            fireEvent(EventType.EVENT_REMOVEPRESENCE, agentId.ToString());
+            fireEvent(ScriptEventTypes.EVENT_REMOVEPRESENCE, agentId.ToString());
         }
 
         private void scriptevent_OnNewPresence(ScenePresence presence)
         {
-            fireEvent(EventType.EVENT_NEWPRESENCE, presence.UUID.ToString());
+            fireEvent(ScriptEventTypes.EVENT_NEWPRESENCE, presence.UUID.ToString());
         }
 
         //Data Storage Events
         private void scriptevent_onDeleteDataValue(string key)
         {
-            fireEvent(EventType.EVENT_DATASTORAGEREMOVE, key);
+            fireEvent(ScriptEventTypes.EVENT_DATASTORAGEREMOVE, key);
         }
 
         private void scriptevent_onSetDataValue(string key, string data)
         {
-            fireEvent(EventType.EVENT_DATASTORAGESET, key);
+            fireEvent(ScriptEventTypes.EVENT_DATASTORAGESET, key);
         }
 
         private void scriptevent_onRateLimit()
         {
-            fireEvent(EventType.EVENT_DATASTORAGERATELIMIT, "");
+            fireEvent(ScriptEventTypes.EVENT_DATASTORAGERATELIMIT, "");
         }
         #endregion
 
@@ -148,14 +146,12 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         [ScriptInvocation]
         public void osTriggerCustomEvent(UUID hostID, UUID scriptID, string event_data)
         {
-
-            fireEvent(EventType.EVENT_CUSTOM, event_data);
+            fireEvent(ScriptEventTypes.EVENT_CUSTOM, event_data);
         }
         #endregion
 
         #region Functions
-
-        private void fireEvent(EventType type, string data)
+        private void fireEvent(ScriptEventTypes type, string data)
         {
             List<UUID> removeScripts = new List<UUID>();
 
@@ -165,7 +161,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 {
                     try
                     {
-                        ScriptEngine.PostScriptEvent(itemID, "link_message", new Object[] { type.GetHashCode(), EventType.EVENT_GENERIC.GetHashCode(), data, UUID.Zero.ToString() });
+                        ScriptEngine.PostScriptEvent(itemID, "link_message", new Object[] { type.GetHashCode(), ScriptEventTypes.EVENT_GENERIC.GetHashCode(), data, UUID.Zero.ToString() });
                     }
                     catch
                     {
