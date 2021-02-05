@@ -115,23 +115,23 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
         private bool scriptevent_OnSceneGroupMove(UUID groupID, Vector3 delta)
         {
-            fireEvent(EventType.EVENT_LINKSETMOVE, new String[] { groupID.ToString(), delta.ToString() });
+            fireEvent(EventType.EVENT_LINKSETMOVE, new Object[] { groupID.ToString(), delta.ToString() });
             return true;
         }
 
         private void scriptevent_OnAvatarEnteringNewParcel(ScenePresence avatar, int localLandID, UUID regionID)
         {
-            fireEvent(EventType.EVENT_AVATARENTERPARCEL, new String[] { avatar.UUID.ToString() });
+            fireEvent(EventType.EVENT_AVATARENTERPARCEL, new Object[] { avatar.UUID.ToString() });
         }
 
         private void scriptevent_OnRemovePresence(UUID agentId)
         {
-            fireEvent(EventType.EVENT_REMOVEPRESENCE, new String[] { agentId.ToString() });
+            fireEvent(EventType.EVENT_REMOVEPRESENCE, new Object[] { agentId.ToString() });
         }
 
         private void scriptevent_OnNewPresence(ScenePresence presence)
         {
-            fireEvent(EventType.EVENT_NEWPRESENCE, new String[] { presence.UUID.ToString() });
+            fireEvent(EventType.EVENT_NEWPRESENCE, new Object[] { presence.UUID.ToString() });
         }
 
         #endregion
@@ -149,12 +149,6 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         {
             m_listener.Remove(scriptID);
             saveRegionListenerToStorage();
-        }
-
-        [ScriptInvocation]
-        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, string event_data)
-        {
-            fireEvent(EventType.EVENT_CUSTOM, new String[] { event_data });
         }
 
         [ScriptInvocation]
