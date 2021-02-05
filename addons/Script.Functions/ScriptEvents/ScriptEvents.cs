@@ -78,9 +78,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
             ScriptEngine = m_scene.RequestModuleInterface<IScriptModule>();
 
-            m_scene.EventManager.OnScriptReset += onScriptStart;
             m_scene.EventManager.OnScriptReset += onScriptReset;
-            m_scene.EventManager.OnStopScript += onScriptStop;
             m_scene.EventManager.OnRemoveScript += onScriptRemove;
 
             //Events for Scripts
@@ -93,7 +91,6 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         public void RemoveRegion(Scene scene)
         {
             m_scene.EventManager.OnScriptReset -= onScriptReset;
-            m_scene.EventManager.OnStopScript -= onScriptStop;
             m_scene.EventManager.OnRemoveScript -= onScriptRemove;
 
             //Events for Scripts
@@ -106,17 +103,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
         #region OpenSimulatorEvents
 
-
-        private void onScriptStart(uint localID, UUID itemID)
-        {
-            osStopScriptEvents(UUID.Zero, itemID);
-        }
         private void onScriptRemove(uint localID, UUID itemID)
-        {
-            osStopScriptEvents(UUID.Zero, itemID);
-        }
-
-        private void onScriptStop(uint localID, UUID itemID)
         {
             osStopScriptEvents(UUID.Zero, itemID);
         }
