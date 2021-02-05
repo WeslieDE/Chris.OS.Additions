@@ -8,6 +8,6 @@ namespace Chris.OS.Additions.Utils
 {
     class Version
     {
-        public static int PLUGIN_VERSION = 0;
+        public static int MODULE_VERSION = 0;
     }
 }

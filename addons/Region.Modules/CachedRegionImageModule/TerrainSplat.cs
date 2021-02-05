@@ -417,13 +417,13 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
             if (float.IsNaN(startHeight))
                 return 0;
 
-            startHeight = Utils.Clamp(startHeight, 0f, 255f);
+            startHeight = OpenMetaverse.Utils.Clamp(startHeight, 0f, 255f);
 
             float heightRange = ImageUtils.Bilinear(
                 heightRanges[0], heightRanges[2],
                 heightRanges[1], heightRanges[3],
                 pctX, pctY);
-            heightRange = Utils.Clamp(heightRange, 0f, 255f);
+            heightRange = OpenMetaverse.Utils.Clamp(heightRange, 0f, 255f);
             if(heightRange == 0f || float.IsNaN(heightRange))
                 return 0;
 
@@ -437,7 +437,7 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
 
             // Combine the current height, generated noise, start height, and height range parameters, then scale all of it
             float layer = ((height + noise - startHeight) / heightRange) * 4f;
-            return Utils.Clamp(layer, 0f, 3f);
+            return OpenMetaverse.Utils.Clamp(layer, 0f, 3f);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
             u = rx0 * g1[p[bx0]];
             v = rx1 * g1[p[bx1]];
 
-            return Utils.Lerp(u, v, sx);
+            return OpenMetaverse.Utils.Lerp(u, v, sx);
         }
 
         public static float noise2(float x, float y)
@@ -101,15 +101,15 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
             u = rx0 * g2[b00, 0] + ry0 * g2[b00, 1];
             rx1 = rx0 - 1f;
             v = rx1 * g2[b10, 0] + ry0 * g2[b10, 1];
-            a = Utils.Lerp(u, v, sx);
+            a = OpenMetaverse.Utils.Lerp(u, v, sx);
 
             ry1 = ry0 - 1f;
             u = rx0 * g2[b01, 0] + ry1 * g2[b01, 1];
             v = rx1 * g2[b11, 0] + ry1 * g2[b11, 1];
-            b = Utils.Lerp(u, v, sx);
+            b = OpenMetaverse.Utils.Lerp(u, v, sx);
 
             sy = s_curve(ry0);
-            return Utils.Lerp(a, b, sy);
+            return OpenMetaverse.Utils.Lerp(a, b, sy);
         }
 
         public static float noise3(float x, float y, float z)
@@ -150,24 +150,24 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
 
             u = rx0 * g3[b00 + bz0, 0] + ry0 * g3[b00 + bz0, 1] + rz0 * g3[b00 + bz0, 2];
             v = rx1 * g3[b10 + bz0, 0] + ry0 * g3[b10 + bz0, 1] + rz0 * g3[b10 + bz0, 2];
-            a = Utils.Lerp(u, v, t);
+            a = OpenMetaverse.Utils.Lerp(u, v, t);
 
             u = rx0 * g3[b01 + bz0, 0] + ry1 * g3[b01 + bz0, 1] + rz0 * g3[b01 + bz0, 2];
             v = rx1 * g3[b11 + bz0, 0] + ry1 * g3[b11 + bz0, 1] + rz0 * g3[b11 + bz0, 2];
-            b = Utils.Lerp(u, v, t);
+            b = OpenMetaverse.Utils.Lerp(u, v, t);
 
-            c = Utils.Lerp(a, b, sy);
+            c = OpenMetaverse.Utils.Lerp(a, b, sy);
 
             u = rx0 * g3[b00 + bz1, 0] + ry0 * g3[b00 + bz1, 1] + rz1 * g3[b00 + bz1, 2];
             v = rx1 * g3[b10 + bz1, 0] + ry0 * g3[b10 + bz1, 1] + rz1 * g3[b10 + bz1, 2];
-            a = Utils.Lerp(u, v, t);
+            a = OpenMetaverse.Utils.Lerp(u, v, t);
 
             u = rx0 * g3[b01 + bz1, 0] + ry1 * g3[b01 + bz1, 1] + rz1 * g3[b01 + bz1, 2];
             v = rx1 * g3[b11 + bz1, 0] + ry1 * g3[b11 + bz1, 1] + rz1 * g3[b11 + bz1, 2];
-            b = Utils.Lerp(u, v, t);
+            b = OpenMetaverse.Utils.Lerp(u, v, t);
 
-            d = Utils.Lerp(a, b, sy);
-            return Utils.Lerp(c, d, sz);
+            d = OpenMetaverse.Utils.Lerp(a, b, sy);
+            return OpenMetaverse.Utils.Lerp(c, d, sz);
         }
 
         public static float turbulence1(float x, float freq)

@@ -1063,7 +1063,7 @@ namespace Chris.OS.Additions.Region.Modules.CachedRegionImageModule
         /// <returns>The bilinearly interpolated result</returns>
         public static float Bilinear(float v00, float v01, float v10, float v11, float xPercent, float yPercent)
         {
-            return Utils.Lerp(Utils.Lerp(v00, v01, xPercent), Utils.Lerp(v10, v11, xPercent), yPercent);
+            return OpenMetaverse.Utils.Lerp(OpenMetaverse.Utils.Lerp(v00, v01, xPercent), OpenMetaverse.Utils.Lerp(v10, v11, xPercent), yPercent);
         }
     }
 }

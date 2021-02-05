@@ -68,7 +68,6 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_NEWPRESENCE", 1);
                 m_scriptModule.RegisterConstant("EVENT_REMOVEPRESENCE", 2);
                 m_scriptModule.RegisterConstant("EVENT_AVATARENTERPARCEL", 3);
-                m_scriptModule.RegisterConstant("EVENT_LINKSETMOVE", 4);
 
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGESET", 1001);
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGEREMOVE", 1002);
@@ -90,12 +89,12 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             //DataStorage Events
             DataStorageEvents.onDeleteDataValue += scriptevent_onDeleteDataValue;
             DataStorageEvents.onSetDataValue += scriptevent_onSetDataValue;
+            DataStorageEvents.onRateLimit += scriptevent_onRateLimit;
 
             //Events for Scripts
             m_scene.EventManager.OnNewPresence += scriptevent_OnNewPresence;
             m_scene.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
             m_scene.EventManager.OnAvatarEnteringNewParcel += scriptevent_OnAvatarEnteringNewParcel;
-            m_scene.EventManager.OnSceneGroupMove += scriptevent_OnSceneGroupMove;
         }
 
         public void RemoveRegion(Scene scene)
@@ -103,11 +102,15 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             m_scene.EventManager.OnScriptReset -= onScriptReset;
             m_scene.EventManager.OnRemoveScript -= onScriptRemove;
 
+            //DataStorage Events
+            DataStorageEvents.onDeleteDataValue -= scriptevent_onDeleteDataValue;
+            DataStorageEvents.onSetDataValue -= scriptevent_onSetDataValue;
+            DataStorageEvents.onRateLimit -= scriptevent_onRateLimit;
+
             //Events for Scripts
             m_scene.EventManager.OnNewPresence -= scriptevent_OnNewPresence;
             m_scene.EventManager.OnRemovePresence -= scriptevent_OnRemovePresence;
             m_scene.EventManager.OnAvatarEnteringNewParcel -= scriptevent_OnAvatarEnteringNewParcel;
-            m_scene.EventManager.OnSceneGroupMove -= scriptevent_OnSceneGroupMove;
         }
         #endregion
 
@@ -121,12 +124,6 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         private void onScriptReset(uint localID, UUID itemID)
         {
             osStopScriptEvents(UUID.Zero, itemID);
-        }
-
-        private bool scriptevent_OnSceneGroupMove(UUID groupID, Vector3 delta)
-        {
-            fireEvent(EventType.EVENT_LINKSETMOVE, groupID.ToString());
-            return true;
         }
 
         private void scriptevent_OnAvatarEnteringNewParcel(ScenePresence avatar, int localLandID, UUID regionID)
@@ -144,7 +141,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             fireEvent(EventType.EVENT_NEWPRESENCE, presence.UUID.ToString());
         }
 
-
+        //Data Storage Events
         private void scriptevent_onDeleteDataValue(string key)
         {
             fireEvent(EventType.EVENT_DATASTORAGEREMOVE, key);
@@ -155,6 +152,10 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             fireEvent(EventType.EVENT_DATASTORAGESET, key);
         }
 
+        private void scriptevent_onRateLimit()
+        {
+            fireEvent(EventType.EVENT_DATASTORAGERATELIMIT, "");
+        }
         #endregion
 
         #region Script functions

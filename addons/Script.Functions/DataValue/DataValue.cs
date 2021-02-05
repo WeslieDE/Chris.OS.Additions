@@ -159,6 +159,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 if (_element != null)
                 {
                     _element.save(value);
+                    DataStorageEvents.onSetDataValue(key, value);
                     return;
                 }
 
@@ -201,7 +202,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 {
                     m_log.Error("[" + Name + "] osDeleteDataValue: " + _error.Message);
                 }
-
             }
 
             throw new Exception("No data Storage aviable.");
@@ -253,7 +253,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             m_rateLimit++;
 
             if (m_rateLimit >= 1000)
+            {
+                DataStorageEvents.onRateLimit();
                 throw new Exception("Data storage rate limit reached!");
+            }
+                
         }
 
         #endregion
