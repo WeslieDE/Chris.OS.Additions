@@ -8,8 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using LSL_List = OpenSim.Region.ScriptEngine.Shared.LSL_Types.list;
+
 
 namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 {
@@ -152,15 +152,22 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         }
 
         [ScriptInvocation]
-        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, int event_type, string event_data)
+        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, string event_data)
         {
             fireEvent(EventType.EVENT_CUSTOM, new String[] { event_data });
+        }
+
+        [ScriptInvocation]
+        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, LSL_List event_data)
+        {
+
+            fireEvent(EventType.EVENT_CUSTOM, event_data.Data);
         }
         #endregion
 
         #region Functions
 
-        private void fireEvent(EventType type, String[] data)
+        private void fireEvent(EventType type, object[] data)
         {
             List<UUID> removeScripts = new List<UUID>();
 
