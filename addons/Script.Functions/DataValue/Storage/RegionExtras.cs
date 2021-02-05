@@ -27,7 +27,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         public string get(String storageID, string key)
         {
-            return m_scene.GetExtraSetting("V:" + storageID + "." + key);
+            return m_scene.GetExtraSetting("V:" + key);
         }
 
         public void remove(string storageID, string key)
