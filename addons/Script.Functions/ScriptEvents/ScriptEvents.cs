@@ -68,6 +68,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_REMOVEPRESENCE", 2);
                 m_scriptModule.RegisterConstant("EVENT_AVATARENTERPARCEL", 3);
                 m_scriptModule.RegisterConstant("EVENT_LINKSETMOVE", 4);
+                m_scriptModule.RegisterConstant("EVENT_GENERIC", 42001337);
 
                 m_log.Info("[" + Name + "]: Successfully registerd all script methods.");
             }
@@ -115,23 +116,23 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
         private bool scriptevent_OnSceneGroupMove(UUID groupID, Vector3 delta)
         {
-            fireEvent(EventType.EVENT_LINKSETMOVE, new Object[] { groupID.ToString(), delta.ToString() });
+            fireEvent(EventType.EVENT_LINKSETMOVE, groupID.ToString());
             return true;
         }
 
         private void scriptevent_OnAvatarEnteringNewParcel(ScenePresence avatar, int localLandID, UUID regionID)
         {
-            fireEvent(EventType.EVENT_AVATARENTERPARCEL, new Object[] { avatar.UUID.ToString() });
+            fireEvent(EventType.EVENT_AVATARENTERPARCEL, avatar.UUID.ToString());
         }
 
         private void scriptevent_OnRemovePresence(UUID agentId)
         {
-            fireEvent(EventType.EVENT_REMOVEPRESENCE, new Object[] { agentId.ToString() });
+            fireEvent(EventType.EVENT_REMOVEPRESENCE, agentId.ToString());
         }
 
         private void scriptevent_OnNewPresence(ScenePresence presence)
         {
-            fireEvent(EventType.EVENT_NEWPRESENCE, new Object[] { presence.UUID.ToString() });
+            fireEvent(EventType.EVENT_NEWPRESENCE, presence.UUID.ToString());
         }
 
         #endregion
@@ -152,7 +153,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         }
 
         [ScriptInvocation]
-        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, object[] event_data)
+        public void osTriggerCustomEvent(UUID hostID, UUID scriptID, string event_data)
         {
 
             fireEvent(EventType.EVENT_CUSTOM, event_data);
@@ -161,7 +162,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
         #region Functions
 
-        private void fireEvent(EventType type, object[] data)
+        private void fireEvent(EventType type, string data)
         {
             List<UUID> removeScripts = new List<UUID>();
 
@@ -171,7 +172,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 {
                     try
                     {
-                        ScriptEngine.PostScriptEvent(itemID, "region_event", new Object[] { type, data });
+                        ScriptEngine.PostScriptEvent(itemID, "link_message", new Object[] { type, EventType.EVENT_GENERIC, data, UUID.Zero });
                     }
                     catch
                     {
