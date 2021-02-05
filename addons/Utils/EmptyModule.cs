@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Chris.OS.Additions.Utils
 {
-    class EmptyModule : INonSharedRegionModule
+    public class EmptyModule : INonSharedRegionModule
     {
         protected readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected Scene World = null;

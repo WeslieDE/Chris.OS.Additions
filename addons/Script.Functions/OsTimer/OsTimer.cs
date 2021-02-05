@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Chris.OS.Additions.Utils;
+using log4net;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -12,49 +13,24 @@ namespace Chris.OS.Additions.Script.Functions.OsTimer
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OsTimer")]
 
-    public class OsTimer : INonSharedRegionModule
+    public class OsTimer : EmptyModule
     {
         private Dictionary<UUID, Timer> m_timers = new Dictionary<UUID, Timer>();
-
-        private Scene m_scene = null;
-
         public static IScriptModule ScriptEngine;
 
-        #region INonSharedRegionModule
-        private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        public string Name
+        #region EmptyModule
+        public override string Name
         {
             get { return "OsTimer"; }
         }
 
-        public Type ReplaceableInterface
+        public override void RegionLoaded(Scene scene)
         {
-            get { return null; }
-        }
-
-        public void AddRegion(Scene scene)
-        {
-
-        }
-
-        public void Close()
-        {
-
-        }
-
-        public void Initialise(IConfigSource source)
-        {
-
-        }
-
-        public void RegionLoaded(Scene scene)
-        {
-            m_scene = scene;
+            base.World = scene;
 
             try
             {
-                IScriptModuleComms m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
+                IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
 
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStart");
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStop");
@@ -62,17 +38,17 @@ namespace Chris.OS.Additions.Script.Functions.OsTimer
             }
             catch (Exception e)
             {
-                m_log.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
+                base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
             }
 
-            ScriptEngine = m_scene.RequestModuleInterface<IScriptModule>();
+            ScriptEngine = base.World.RequestModuleInterface<IScriptModule>();
 
-            m_scene.EventManager.OnScriptReset += onScriptReset;
-            m_scene.EventManager.OnStopScript += onScriptStop;
-            m_scene.EventManager.OnRemoveScript += onScriptRemove;
+            base.World.EventManager.OnScriptReset += onScriptReset;
+            base.World.EventManager.OnStopScript += onScriptStop;
+            base.World.EventManager.OnRemoveScript += onScriptRemove;
         }
 
-        public void RemoveRegion(Scene scene)
+        public override void RemoveRegion(Scene scene)
         {
             foreach (Timer timer in m_timers.Values)
             {

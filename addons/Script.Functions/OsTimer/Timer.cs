@@ -1,12 +1,5 @@
-﻿using log4net;
-using OpenMetaverse;
-using OpenSim.Region.ScriptEngine.Shared;
+﻿using OpenMetaverse;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Chris.OS.Additions.Script.Functions.OsTimer

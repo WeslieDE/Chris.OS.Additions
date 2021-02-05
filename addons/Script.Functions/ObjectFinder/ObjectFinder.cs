@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Chris.OS.Additions.Utils;
+using log4net;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -12,68 +13,37 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ObjectFinder")]
 
-    public class ObjectFinder : INonSharedRegionModule
+    public class ObjectFinder : EmptyModule
     {
-        private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private Scene m_scene = null;
         private IScriptModuleComms m_scriptModule;
 
-        #region INonSharedRegionModule
-        public void RegionLoaded(Scene scene)
+        #region EmptyModule
+        public override string Name
         {
-            m_scene = scene;
+            get { return "ObjectFinder"; }
+        }
 
-            if(m_scene != null)
+        public override void RegionLoaded(Scene scene)
+        {
+            base.World = scene;
+
+            if(base.World != null)
             {
                 try
                 {
-                    m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
+                    m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
 
                     m_scriptModule.RegisterScriptInvocation(this, "osGetSearchableObjectList");
                 }
                 catch (Exception e)
                 {
-                    m_log.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
+                    base.Logger.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
                 }
             }else
             {
-                m_log.Warn("[" + Name + "]: scene == null");
+                base.Logger.Warn("[" + Name + "]: scene == null");
             }
         }
-
-        public string Name
-        {
-            get { return "ObjectFinder"; }
-        }
-
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
-
-        public void AddRegion(Scene scene)
-        {
-
-        }
-
-        public void Close()
-        {
-
-        }
-
-        public void Initialise(IConfigSource source)
-        {
-
-        }
-
-
-
-        public void RemoveRegion(Scene scene)
-        {
-
-        }
-
         #endregion
 
         #region Script Funktions
@@ -82,7 +52,7 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
         {
             List<object> returnList = new List<object>();
 
-            foreach (SceneObjectGroup thisGroup in m_scene.GetSceneObjectGroups())
+            foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
             {
                 if(thisGroup.Name == searchString)
                     returnList.Add(thisGroup.UUID);

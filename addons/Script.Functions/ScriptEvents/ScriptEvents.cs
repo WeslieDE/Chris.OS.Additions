@@ -1,64 +1,36 @@
 ﻿using Chris.OS.Additions.Script.Functions.DataValue;
-using log4net;
+using Chris.OS.Additions.Utils;
 using Mono.Addins;
-using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LSL_List = OpenSim.Region.ScriptEngine.Shared.LSL_Types.list;
 
 
 namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptEvents")]
 
-    class ScriptEvents : INonSharedRegionModule
+    public class ScriptEvents : EmptyModule
     {
         private List<UUID> m_listener = new List<UUID>();
-
-        private Scene m_scene = null;
-
         public static IScriptModule ScriptEngine;
 
-        #region INonSharedRegionModule
-        private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        #region EmptyModule
 
-        public string Name
+        public override string Name
         {
             get { return "ScriptEvents"; }
         }
 
-        public Type ReplaceableInterface
+        public override void RegionLoaded(Scene scene)
         {
-            get { return null; }
-        }
-
-        public void AddRegion(Scene scene)
-        {
-
-        }
-
-        public void Close()
-        {
-
-        }
-
-        public void Initialise(IConfigSource source)
-        {
-
-        }
-
-        public void RegionLoaded(Scene scene)
-        {
-            m_scene = scene;
+            base.World = scene;
 
             try
             {
-                IScriptModuleComms m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
+                IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
 
                 m_scriptModule.RegisterScriptInvocation(this, "osStartScriptEvents");
                 m_scriptModule.RegisterScriptInvocation(this, "osStopScriptEvents");
@@ -74,17 +46,17 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
                 m_scriptModule.RegisterConstant("EVENT_GENERIC", 42001337);
 
-                m_log.Info("[" + Name + "]: Successfully registerd all script methods.");
+                base.Logger.Info("[" + Name + "]: Successfully registerd all script methods.");
             }
             catch (Exception e)
             {
-                m_log.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
+                base.Logger.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
             }
 
-            ScriptEngine = m_scene.RequestModuleInterface<IScriptModule>();
+            ScriptEngine = base.World.RequestModuleInterface<IScriptModule>();
 
-            m_scene.EventManager.OnScriptReset += onScriptReset;
-            m_scene.EventManager.OnRemoveScript += onScriptRemove;
+            base.World.EventManager.OnScriptReset += onScriptReset;
+            base.World.EventManager.OnRemoveScript += onScriptRemove;
 
             //DataStorage Events
             DataStorageEvents.onDeleteDataValue += scriptevent_onDeleteDataValue;
@@ -92,15 +64,15 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             DataStorageEvents.onRateLimit += scriptevent_onRateLimit;
 
             //Events for Scripts
-            m_scene.EventManager.OnNewPresence += scriptevent_OnNewPresence;
-            m_scene.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
-            m_scene.EventManager.OnAvatarEnteringNewParcel += scriptevent_OnAvatarEnteringNewParcel;
+            base.World.EventManager.OnNewPresence += scriptevent_OnNewPresence;
+            base.World.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
+            base.World.EventManager.OnAvatarEnteringNewParcel += scriptevent_OnAvatarEnteringNewParcel;
         }
 
-        public void RemoveRegion(Scene scene)
+        public override void RemoveRegion(Scene scene)
         {
-            m_scene.EventManager.OnScriptReset -= onScriptReset;
-            m_scene.EventManager.OnRemoveScript -= onScriptRemove;
+            base.World.EventManager.OnScriptReset -= onScriptReset;
+            base.World.EventManager.OnRemoveScript -= onScriptRemove;
 
             //DataStorage Events
             DataStorageEvents.onDeleteDataValue -= scriptevent_onDeleteDataValue;
@@ -108,9 +80,9 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
             DataStorageEvents.onRateLimit -= scriptevent_onRateLimit;
 
             //Events for Scripts
-            m_scene.EventManager.OnNewPresence -= scriptevent_OnNewPresence;
-            m_scene.EventManager.OnRemovePresence -= scriptevent_OnRemovePresence;
-            m_scene.EventManager.OnAvatarEnteringNewParcel -= scriptevent_OnAvatarEnteringNewParcel;
+            base.World.EventManager.OnNewPresence -= scriptevent_OnNewPresence;
+            base.World.EventManager.OnRemovePresence -= scriptevent_OnRemovePresence;
+            base.World.EventManager.OnAvatarEnteringNewParcel -= scriptevent_OnAvatarEnteringNewParcel;
         }
         #endregion
 
@@ -197,7 +169,7 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                     }
                     catch
                     {
-                        m_log.Error("[ScriptEvent] Faild to trigger event '" + type.ToString() + "' for script " + itemID);
+                        base.Logger.Error("[ScriptEvent] Faild to trigger event '" + type.ToString() + "' for script " + itemID);
                         removeScripts.Add(itemID);
                     }
                 }
@@ -221,15 +193,15 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
             int i = 0;
             foreach (UUID itemID in m_listener)
-                m_scene.StoreExtraSetting("regioneventlisten_" + i++, itemID.ToString());
+                base.World.StoreExtraSetting("regioneventlisten_" + i++, itemID.ToString());
         }
 
         private void cleanRegionListenerStorage()
         {
             int i = 0;
 
-            while(m_scene.GetExtraSetting("regioneventlisten_" + i) != String.Empty)
-                m_scene.RemoveExtraSetting("regioneventlisten_" + i++);
+            while(base.World.GetExtraSetting("regioneventlisten_" + i) != String.Empty)
+                base.World.RemoveExtraSetting("regioneventlisten_" + i++);
         }
         #endregion
     }

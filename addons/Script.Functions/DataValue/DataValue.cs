@@ -1,5 +1,5 @@
 ﻿using Chris.OS.Additions.Script.Functions.DataValue.Storage;
-using log4net;
+using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -7,19 +7,16 @@ using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Timers;
 
 namespace Chris.OS.Additions.Script.Functions.DataValue
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptDataStorage")]
 
-    public class ScriptDataStorage : INonSharedRegionModule
+    public class ScriptDataStorage : EmptyModule
     {
-        #region Region Module
-        private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        #region EmptyModule
 
-        private Scene m_scene = null;
         private IConfig m_config = null;
         private IScriptModuleComms m_scriptModule;
 
@@ -31,27 +28,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         private Timer m_timer = null;
         private int m_rateLimit = 0;
 
-        public string Name
+        public override string Name
         {
             get { return "ScriptDataStorage"; }
         }
 
-        public Type ReplaceableInterface
-        {
-            get { return null; }
-        }
-
-        public void AddRegion(Scene scene)
-        {
-
-        }
-
-        public void Close()
-        {
-
-        }
-
-        public void Initialise(IConfigSource source)
+        public override void Initialise(IConfigSource source)
         {
             try
             {
@@ -60,10 +42,14 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     m_config = source.Configs["ScriptDataStorage"];
                     m_storageTyp = m_config.GetString("DataStorageTyp", "Memory").ToUpper().Trim();
                 }
+                else
+                {
+                    m_storageTyp = "Memory";
+                }
             }
             catch (Exception e)
             {
-                m_log.ErrorFormat("[" + Name + "]: initialization error: {0}", e.Message);
+                base.Logger.ErrorFormat("[" + Name + "]: initialization error: {0}", e.Message);
                 return;
             }
 
@@ -73,20 +59,20 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             m_timer.Start();
         }
 
-        public void RegionLoaded(Scene scene)
+        public override void RegionLoaded(Scene scene)
         {
-            m_log.Info("[" + Name + "]: Load region " + scene.Name);
+            base.Logger.Info("[" + Name + "]: Load region " + scene.Name);
 
-            m_scene = scene;
+            base.World = scene;
 
             if (m_storageTyp == "REGIONEXTRAS")
-                m_storage = new RegionExtras(m_scene, m_config);
+                m_storage = new RegionExtras(base.World, m_config);
 
             if (m_storageTyp == "FILESYSTEM")
-                m_storage = new FileSystem(m_scene, m_config);
+                m_storage = new FileSystem(base.World, m_config);
 
             if (m_storageTyp == "MYSQL")
-                m_storage = new MySQL(m_scene, m_config);
+                m_storage = new MySQL(base.World, m_config);
 
             if (m_storageTyp == "MEMORY")
                 m_storage = new Memory();
@@ -94,9 +80,9 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             if (m_storage == null)
                 m_storage = new Memory();
 
-            m_log.Info("[" + Name + "] Using '" + m_storageTyp + "' as Storage.");
+            base.Logger.Info("[" + Name + "] Using '" + m_storageTyp + "' as Storage.");
 
-            m_scriptModule = m_scene.RequestModuleInterface<IScriptModuleComms>();
+            m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
             if (m_scriptModule != null)
             {
                 m_scriptModule.RegisterScriptInvocation(this, "osGetDataValue");
@@ -105,12 +91,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 m_scriptModule.RegisterScriptInvocation(this, "osCheckDataValue");
             }
         }
-
-        public void RemoveRegion(Scene scene)
-        {
-            
-        }
-
         #endregion
 
         #region Script Funktions
@@ -120,7 +100,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if(m_storage != null)
             {
-                SceneObjectPart _host = m_scene.GetSceneObjectPart(hostID);
+                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
                 StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
 
                 if (_element != null)
@@ -140,7 +120,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     return _data;
                 }catch(Exception _error)
                 {
-                    m_log.Error("[" + Name + "] osGetDataValue: " + _error.Message);
+                    base.Logger.Error("[" + Name + "] osGetDataValue: " + _error.Message);
                     return "";
                 }
             }
@@ -153,7 +133,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if (m_storage != null)
             {
-                SceneObjectPart _host = m_scene.GetSceneObjectPart(hostID);
+                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
                 StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
 
                 if (_element != null)
@@ -174,7 +154,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 }
                 catch (Exception _error)
                 {
-                    m_log.Error("[" + Name + "] osSetDataValue: " + _error.Message);
+                    base.Logger.Error("[" + Name + "] osSetDataValue: " + _error.Message);
                 }
             }
 
@@ -183,7 +163,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, string value)
         {
-            SceneObjectPart _host = m_scene.GetSceneObjectPart(hostID);
+            SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
             StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
 
             checkRateLimit();
@@ -200,7 +180,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 }
                 catch (Exception _error)
                 {
-                    m_log.Error("[" + Name + "] osDeleteDataValue: " + _error.Message);
+                    base.Logger.Error("[" + Name + "] osDeleteDataValue: " + _error.Message);
                 }
             }
 
@@ -212,7 +192,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if (m_storage != null)
             {
-                SceneObjectPart _host = m_scene.GetSceneObjectPart(hostID);
+                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
                 StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
 
                 if (_element != null)
@@ -229,7 +209,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 }
                 catch (Exception _error)
                 {
-                    m_log.Error("[" + Name + "] osCheckDataValue: " + _error.Message);
+                    base.Logger.Error("[" + Name + "] osCheckDataValue: " + _error.Message);
                     return 0;
                 }
             }
@@ -261,6 +241,5 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         #endregion
-
     }
 }
