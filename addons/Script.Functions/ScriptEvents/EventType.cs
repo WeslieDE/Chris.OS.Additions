@@ -13,6 +13,8 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         EVENT_REMOVEPRESENCE = 2,
         EVENT_AVATARENTERPARCEL = 3,
         EVENT_LINKSETMOVE = 4,
+        EVENT_DATASTORAGESET = 1001,
+        EVENT_DATASTORAGEREMOVE = 1002,
         EVENT_GENERIC = 42001337
     }
 }

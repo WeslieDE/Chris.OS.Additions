@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Chris.OS.Additions.Script.Functions.DataValue;
+using log4net;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -68,6 +69,10 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_REMOVEPRESENCE", 2);
                 m_scriptModule.RegisterConstant("EVENT_AVATARENTERPARCEL", 3);
                 m_scriptModule.RegisterConstant("EVENT_LINKSETMOVE", 4);
+
+                m_scriptModule.RegisterConstant("EVENT_DATASTORAGESET", 1001);
+                m_scriptModule.RegisterConstant("EVENT_DATASTORAGEREMOVE", 1002);
+
                 m_scriptModule.RegisterConstant("EVENT_GENERIC", 42001337);
 
                 m_log.Info("[" + Name + "]: Successfully registerd all script methods.");
@@ -81,6 +86,10 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
 
             m_scene.EventManager.OnScriptReset += onScriptReset;
             m_scene.EventManager.OnRemoveScript += onScriptRemove;
+
+            //DataStorage Events
+            DataStorageEvents.onDeleteDataValue += scriptevent_onDeleteDataValue;
+            DataStorageEvents.onSetDataValue += scriptevent_onSetDataValue;
 
             //Events for Scripts
             m_scene.EventManager.OnNewPresence += scriptevent_OnNewPresence;
@@ -133,6 +142,17 @@ namespace Chris.OS.Additions.Script.Functions.ScriptEvents
         private void scriptevent_OnNewPresence(ScenePresence presence)
         {
             fireEvent(EventType.EVENT_NEWPRESENCE, presence.UUID.ToString());
+        }
+
+
+        private void scriptevent_onDeleteDataValue(string key)
+        {
+            fireEvent(EventType.EVENT_DATASTORAGEREMOVE, key);
+        }
+
+        private void scriptevent_onSetDataValue(string key, string data)
+        {
+            fireEvent(EventType.EVENT_DATASTORAGESET, key);
         }
 
         #endregion
