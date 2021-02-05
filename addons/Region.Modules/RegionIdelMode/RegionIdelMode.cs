@@ -135,7 +135,6 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
 
                                 if (m_ScriptSoftMode == true)
                                 {
-
                                     if (_thisScene.ScriptsEnabled == true)
                                     {
                                         _thisScene.ScriptsEnabled = false;
