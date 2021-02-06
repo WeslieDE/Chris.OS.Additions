@@ -34,7 +34,6 @@ namespace Chris.OS.Additions.Script.Functions.OsTimer
 
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStart");
                 m_scriptModule.RegisterScriptInvocation(this, "osTimerStop");
-
             }
             catch (Exception e)
             {
