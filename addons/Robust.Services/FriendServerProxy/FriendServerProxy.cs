@@ -25,7 +25,6 @@ namespace Chris.OS.Additions.Robust.Services.FriendServerProxy
 
         public FriendServerProxy(IHGFriendsService service, IUserAgentService uas, IFriendsSimConnector friendsConn) : base("POST", "/hgfriends")
         {
-            Console.WriteLine("----------- LOADING FriendServerProxy -----------");
             m_TheService = service;
             m_UserAgentService = uas;
             m_FriendsLocalSimConnector = friendsConn;

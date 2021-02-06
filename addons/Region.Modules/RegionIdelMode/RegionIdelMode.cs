@@ -131,19 +131,24 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
 
                             if (m_enableScripts == true)
                             {
-                                m_log.Info("[" + Name + "] Set region scripts in idle state");
-
                                 if (m_ScriptSoftMode == true)
                                 {
                                     if (_thisScene.ScriptsEnabled == true)
                                     {
+                                        m_log.Info("[" + Name + "] Set region scripts in idle state");
+
                                         _thisScene.ScriptsEnabled = false;
                                     }
                                 }
                                 else
                                 {
-                                    _thisScene.deleteAllNPC();
-                                    _thisScene.ScriptsRunning = false;
+                                    if (_thisScene.ScriptsRunning == true)
+                                    {
+                                        m_log.Info("[" + Name + "] Set region scripts in idle state");
+
+                                        _thisScene.deleteAllNPC();
+                                        _thisScene.ScriptsRunning = false;
+                                    }
                                 }
                             }
 
@@ -170,18 +175,23 @@ namespace Chris.OS.Additions.Region.Modules.RegionIdelMode
                             {
                                 if (m_enableScripts == true)
                                 {
-                                    m_log.Info("[" + Name + "] Wake up region scripts from idle state");
 
                                     if (m_ScriptSoftMode == true)
                                     {
                                         if (_thisScene.ScriptsEnabled == false)
                                         {
+                                            m_log.Info("[" + Name + "] Wake up region scripts from idle state");
+
                                             _thisScene.ScriptsEnabled = true;
                                         }
                                     }
                                     else
                                     {
-                                        _thisScene.ScriptsRunning = true;
+                                        if (_thisScene.ScriptsRunning == false)
+                                        {
+                                            m_log.Info("[" + Name + "] Wake up region scripts from idle state");
+                                            _thisScene.ScriptsRunning = true;
+                                        }
                                     }
                                 }
 
