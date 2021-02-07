@@ -141,7 +141,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
 
             labels.AddRange(Buttons.GetRange((9 * page), element));
 
-            while (labels.Count == 9)
+            while (labels.Count < 9)
                 labels.Add(" ");
 
             return labels.ToArray();
