@@ -141,7 +141,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
 
             labels.AddRange(Buttons.GetRange((9 * page), element));
 
-            while (labels.Count < 9)
+            while (labels.Count < 12)
                 labels.Add(" ");
 
             return labels.ToArray();
@@ -150,7 +150,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
         public String getMessage()
         {
             String message = m_message;
-            message += "\n \nPage " + m_currentPage+1 + "/" + (Buttons.Count / 9)+1;
+            message += "\n \nPage: " + (m_currentPage+1) + " / " + ((Buttons.Count / 9)+1);
             return message;
         }
     }
