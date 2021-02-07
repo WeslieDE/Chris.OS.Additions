@@ -15,6 +15,7 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         EVENT_DATASTORAGESET = 1001,
         EVENT_DATASTORAGEREMOVE = 1002,
         EVENT_DATASTORAGERATELIMIT = 1003,
+        EVENT_EASYDIALOGTIMEOUT = 2001,
         EVENT_GENERIC = 42001337
     }
 }

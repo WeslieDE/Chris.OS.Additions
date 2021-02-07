@@ -138,9 +138,9 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
                 return result;
 
             List<Boolean[]> results = new List<Boolean[]>();
-
             foreach (AssetServerProxy service in m_extraAssetServers)
-                results.Add(service.AssetsExist(ids));
+                if(service != null)
+                    results.Add(service.AssetsExist(ids));
 
             for (int i = 0; i < ids.Length; i++)
             {

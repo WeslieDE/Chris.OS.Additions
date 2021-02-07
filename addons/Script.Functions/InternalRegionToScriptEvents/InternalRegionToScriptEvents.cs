@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Script.Functions.DataValue;
+using Chris.OS.Additions.Script.Functions.EasyDialog;
 using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using OpenMetaverse;
@@ -44,6 +45,8 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGESET", 1001);
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGEREMOVE", 1002);
 
+                m_scriptModule.RegisterConstant("EVENT_EASYDIALOGTIMEOUT", 2001);
+
                 m_scriptModule.RegisterConstant("EVENT_GENERIC", 42001337);
             }
             catch (Exception e)
@@ -61,6 +64,9 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
             DataStorageEvents.onSetDataValue += scriptevent_onSetDataValue;
             DataStorageEvents.onRateLimit += scriptevent_onRateLimit;
 
+            //EasyDialog Events
+            EasyDialogEvents.onDialogTimeout += scriptevent_onDialogTimeout;
+
             //Events for Scripts
             base.World.EventManager.OnNewPresence += scriptevent_OnNewPresence;
             base.World.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
@@ -76,6 +82,9 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
             DataStorageEvents.onDeleteDataValue -= scriptevent_onDeleteDataValue;
             DataStorageEvents.onSetDataValue -= scriptevent_onSetDataValue;
             DataStorageEvents.onRateLimit -= scriptevent_onRateLimit;
+
+            //EasyDialog Events
+            EasyDialogEvents.onDialogTimeout -= scriptevent_onDialogTimeout;
 
             //Events for Scripts
             base.World.EventManager.OnNewPresence -= scriptevent_OnNewPresence;
@@ -126,6 +135,12 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         {
             fireEvent(ScriptEventTypes.EVENT_DATASTORAGERATELIMIT, "");
         }
+
+        private void scriptevent_onDialogTimeout(int listenerID, UUID userID)
+        {
+            fireEvent(ScriptEventTypes.EVENT_EASYDIALOGTIMEOUT, listenerID + "," + userID.ToString());
+        }
+
         #endregion
 
         #region Script functions
