@@ -26,7 +26,7 @@ Einzelnen Dokumentationen findet ihr hier:
 
 ##### Installation
 
-Es gibt keinen Fertigen Download für dieses Module.
+Es gibt keinen fertigen Download für dieses Module.
 Ihr müsst es euch selber Compilen.
 
 Dies geht mit 3 einfachen Befehlen.
