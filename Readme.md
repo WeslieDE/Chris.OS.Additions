@@ -26,9 +26,10 @@ Einzelnen Dokumentationen findet ihr hier:
 
 ##### Installation
 
-Es gibt keinen fertigen Download für dieses Module.
-Ihr müsst es euch selber Compilen.
+Eine fertige und immer aktuelle DEV Version von OpenSimulator mit diesem Module könnt ihr [hier](https://files.clatza.dev/OpenSim/OpenSimulator.zip "hier") Downloaden.
 
+
+Ihr könnt es euch aber auch selber compilen.
 Dies geht mit 3 einfachen Befehlen.
 
     git clone git://opensimulator.org/git/opensim OpenSimulator
