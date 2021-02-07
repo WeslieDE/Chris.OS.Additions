@@ -1,50 +1,49 @@
-This module for OpenSimulator offers some extra functions for OpenSimulator. Some new script functions are provided and more modules for the region. So it is possible to access a K/V database from scripts, region wide object search without sensor and osGetInventoryList() to read the whole inventory of an object.
+# Chris OS Additions
+#### Zusatzfunktionen für OpenSimulator
 
-Then there are some more functions for the region. Region Auto Restart, Warp3D Image Cache, JPEG Image Converter, Region Idel Module and TexturFetcher.
+Dieses Module bietet einige zusatzfunktionen für OpenSimulator.
+Es fasst mehrere einzelnen funktionen zusammen und wird laufend ergänzt.
 
-Some new services are also offered by Robust. There is an AssetProxyClient and a new HG friends service.
+Der Hauptzweck dient der Vereinfachung von Scripten. Es gibt aber auch einige weitere funktionen die dazu da sind Serverleistung einzusparen oder funktionen bereit zu stellen, die es in dieser Form noch nicht gibt.
 
-## OpenSim.ini
+----
 
-    [RegionIdelMode]
-        Enabled = false
-        Scripts = true
-        Physics = true
-        SoftMode = true
-    
-    [FullPerm]
-        Enabled = false
-    
-    [CachedRegionImageModule]
-        MapImageModule = CachedRegionImageModule
-        CacheDirectory = ./../MapImageCache
-        GenerateMaptiles = true
-        enableDate = false
-        enableName = false
-        enablePosition = false
-        RefreshEveryMonth = true
-        enableHostedBy = false
-        HosterText = ""
-    
-    [TextureFetcher]
-        Enable = false
-        TextureFetcherCheckAssets = false
-    
-    [AutoRestart]
-        Enable = false
+##### Fragen zu einzelnen funktionen
 
-    [ScriptDataStorage]
-        DataStorageTyp = Memory
+Wenn ihr fragen oder Wünsche zu einzelnen Funktionen habt, kommt mich doch im Discord besuchen. https://discord.com/invite/9jPSWRahgU
 
-## Robust.ini
+----
 
-    [ServiceList]
-        HGFriendsServerConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:FriendServerConnector"
+##### Dokumentationen
 
-        AssetServiceConnector = "${Const|PrivatePort}/Chris.OS.Additions.dll:AssetProxyConnector"
-        HGAssetServiceConnector = "${Const|PublicPort}/Chris.OS.Additions.dll:AssetProxyConnector"
+Einzelnen Dokumentationen findet ihr hier:
 
-    [AssetService]
-        AssetServerURI = http://127.0.0.1:8002
-        ExtraAssetServer = http://assets.osgrid.org|http://assets.metro.land|http://nextlife-world.de:8002|http://grid.sacrarium.su:8888|http://anettes-welt.de:8002|http://german-world.de:8002|http://thepublicw$
-        AuthType = None
+- Scriptfunktionen ( Readme )
+- Robust Services ( Readme )
+- Region Module ( Readme )
+
+----
+
+##### Installation
+
+Es gibt keinen Fertigen Download für dieses Module.
+Ihr müsst es euch selber Compilen.
+
+Dies geht mit 3 einfachen Befehlen.
+
+    git clone git://opensimulator.org/git/opensim OpenSimulator
+    got clone git clone https://github.com/Sahrea/Chris.OS.Additions.git ./OpenSimulator/addon-modules/Chris.OS.Additions
+    cd OpenSimulator
+
+Und dann unter Windows
+
+    runprebuild.bat
+    compile.bat
+
+oder unter Linux
+
+    ./runprebuild.sh
+    msbuild /p:Configuration=Release
+
+----
+Ich wünsche euch viel spaß!
