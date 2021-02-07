@@ -92,9 +92,9 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
             {
                 if (value < 0)
                 {
-                    m_currentPage = Buttons.Count / 9;
+                    m_currentPage = (Buttons.Count-1) / 9;
                 }
-                else if (value > (Buttons.Count / 9))
+                else if (value > ((Buttons.Count - 1) / 9))
                 {
                     m_currentPage = 0;
                 }
@@ -150,7 +150,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
         public String getMessage()
         {
             String message = m_message;
-            message += "\n \nPage: " + (m_currentPage+1) + " / " + ((Buttons.Count / 9)+1);
+            message += "\n \nPage: " + (m_currentPage+1) + " / " + (((Buttons.Count - 1) / 9)+1);
             return message;
         }
     }
