@@ -4,7 +4,7 @@
 Dieses Module bietet einige zusatzfunktionen für OpenSimulator.
 Es fasst mehrere einzelnen funktionen zusammen und wird laufend ergänzt.
 
-Der Hauptzweck dient der Vereinfachung von Scripten. Es gibt aber auch einige weitere funktionen die dazu da sind Serverleistung einzusparen oder funktionen bereit zu stellen, die es in dieser Form noch nicht gibt.
+Der Hauptzweck dient der Vereinfachung von Scripten. Es gibt aber auch einige weitere Funktionen, die dazu da sind, Serverleistung einzusparen oder Funktionalitäten bereit zu stellen, die es in dieser Form noch nicht gibt.
 
 ----
 
