@@ -46,12 +46,24 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
             m_scriptEngine = base.World.RequestModuleInterface<IScriptModule>();
 
             base.World.EventManager.OnChatFromClient += onChat;
+            base.World.EventManager.OnScriptReset += onScriptReset;
+            base.World.EventManager.OnRemoveScript += onScriptRemove;
 
             m_timer = new Timer();
             m_timer.Interval = 60000;
             m_timer.AutoReset = true;
             m_timer.Elapsed += cleanup;
             m_timer.Start();
+        }
+
+        public virtual void Close()
+        {
+            m_timer.Stop();
+            m_timer.Dispose();
+
+            base.World.EventManager.OnChatFromClient -= onChat;
+            base.World.EventManager.OnScriptReset -= onScriptReset;
+            base.World.EventManager.OnRemoveScript -= onScriptRemove;
         }
 
         #endregion
@@ -89,6 +101,16 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
                     m_dialogModule.SendDialogToUser(data.UserID, data.ObjectName, data.HostID, data.OwnerID, data.getMessage(), new UUID("00000000-0000-2222-3333-100000001000"), data.ListenerID, data.getPageButtons(data.CurrentPage));
                 }
             }
+        }
+
+        private void onScriptRemove(uint localID, UUID itemID)
+        {
+            removeItemDialogs(itemID);
+        }
+
+        private void onScriptReset(uint localID, UUID itemID)
+        {
+            removeItemDialogs(itemID);
         }
         #endregion
 
@@ -148,6 +170,17 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
                     EasyDialogEvents.onDialogTimeout(dialog.ListenerID, dialog.UserID);
                     m_dialogs.Remove(dialog);
                 }
+            }
+        }
+
+        private void removeItemDialogs(UUID itemID)
+        {
+            lock (m_dialogs)
+            {
+                List<DialogData> dialogs = m_dialogs.FindAll(x => x.ScriptID == itemID);
+
+                foreach (DialogData dialog in m_dialogs)
+                    m_dialogs.Remove(dialog);
             }
         }
         #endregion
