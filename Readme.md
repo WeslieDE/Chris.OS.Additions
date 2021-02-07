@@ -32,7 +32,7 @@ Ihr müsst es euch selber Compilen.
 Dies geht mit 3 einfachen Befehlen.
 
     git clone git://opensimulator.org/git/opensim OpenSimulator
-    got clone git clone https://github.com/Sahrea/Chris.OS.Additions.git ./OpenSimulator/addon-modules/Chris.OS.Additions
+    git clone git clone https://github.com/Sahrea/Chris.OS.Additions.git ./OpenSimulator/addon-modules/Chris.OS.Additions
     cd OpenSimulator
 
 Und dann unter Windows
