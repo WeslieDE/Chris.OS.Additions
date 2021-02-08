@@ -56,7 +56,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
             m_timer.Start();
         }
 
-        public virtual void Close()
+        public override void Close()
         {
             m_timer.Stop();
             m_timer.Dispose();
