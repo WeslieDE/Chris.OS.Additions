@@ -47,88 +47,106 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         private void mysqlping(object sender, ElapsedEventArgs e)
         {
-            if (!m_mySQLClient.Ping())
-                m_mySQLClient.Open();
+            lock(m_mySQLClient)
+            {
+                if (!m_mySQLClient.Ping())
+                    m_mySQLClient.Open();
+            }
         }
 
         public bool check(String storageID, string key)
         {
-            bool returnValue = false;
-
-            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            lock(m_mySQLClient)
             {
-                _mysqlCommand.CommandText = "Select StorageID, StorageKey FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+                bool returnValue = false;
 
-                using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
+                using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
                 {
-                    if (!_mysqlReader.Read())
+                    _mysqlCommand.CommandText = "Select StorageID, StorageKey FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+
+                    using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
+                    {
+                        if (!_mysqlReader.Read())
+                            _mysqlReader.Close();
+
+                        if (_mysqlReader["StorageKey"] != null)
+                            returnValue = true;
+
                         _mysqlReader.Close();
-
-                    if (_mysqlReader["StorageKey"] != null)
-                        returnValue = true;
-
-                    _mysqlReader.Close();
-                    return returnValue;
+                        return returnValue;
+                    }
                 }
             }
+
         }
 
         public string get(String storageID, string key)
         {
-            String returnValue = null;
-
-            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            lock(m_mySQLClient)
             {
-                _mysqlCommand.CommandText = "Select StorageID, StorageKey, StorageData FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+                String returnValue = null;
 
-                using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
+                using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
                 {
-                    if (!_mysqlReader.Read())
+                    _mysqlCommand.CommandText = "Select StorageID, StorageKey, StorageData FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+
+                    using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
+                    {
+                        if (!_mysqlReader.Read())
+                            _mysqlReader.Close();
+
+                        if (_mysqlReader["StorageData"] != null)
+                            returnValue = _mysqlReader["StorageData"].ToString();
+
                         _mysqlReader.Close();
-
-
-                    if (_mysqlReader["StorageData"] != null)
-                        returnValue = _mysqlReader["StorageData"].ToString();
-
-                    _mysqlReader.Close();
-                    return returnValue;
+                        return returnValue;
+                    }
                 }
             }
         }
 
         public void remove(string storageID, string key)
         {
-            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            lock(m_mySQLClient)
             {
-                _mysqlCommand.CommandText = "DELETE FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
-                _mysqlCommand.ExecuteNonQuery();
+                using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+                {
+                    _mysqlCommand.CommandText = "DELETE FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+                    _mysqlCommand.ExecuteNonQuery();
+                }
             }
         }
 
         public void save(String storageID, string key, string data)
         {
-            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            lock(m_mySQLClient)
             {
-                _mysqlCommand.CommandText = "REPLACE INTO StorageData (StorageID, StorageKey, StorageData) VALUES (?mysqlStorage, ?mysqlStorageKey, ?mysqlStorageData)";
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
-                _mysqlCommand.Parameters.AddWithValue("?mysqlStorageData", data);
-                _mysqlCommand.ExecuteNonQuery();
+                using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+                {
+                    _mysqlCommand.CommandText = "REPLACE INTO StorageData (StorageID, StorageKey, StorageData) VALUES (?mysqlStorage, ?mysqlStorageKey, ?mysqlStorageData)";
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorageKey", key);
+                    _mysqlCommand.Parameters.AddWithValue("?mysqlStorageData", data);
+                    _mysqlCommand.ExecuteNonQuery();
+                }
             }
         }
 
         private void createEmptyTable()
         {
-            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            lock(m_mySQLClient)
             {
-                _mysqlCommand.CommandText = "CREATE TABLE IF NOT EXISTS `StorageData` (`StorageID` VARCHAR(36) NOT NULL, `StorageKey` VARCHAR(512) NOT NULL, `StorageData` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`StorageID`, `StorageKey`)) COLLATE = 'utf8_general_ci'; ";
-                _mysqlCommand.ExecuteNonQuery();
+                using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+                {
+                    _mysqlCommand.CommandText = "CREATE TABLE IF NOT EXISTS `StorageData` (`StorageID` VARCHAR(36) NOT NULL, `StorageKey` VARCHAR(512) NOT NULL, `StorageData` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`StorageID`, `StorageKey`)) COLLATE = 'utf8_general_ci'; ";
+                    _mysqlCommand.ExecuteNonQuery();
+                }
             }
         }
     }
