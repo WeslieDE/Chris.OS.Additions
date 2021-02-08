@@ -121,12 +121,12 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         }
 
         //Data Storage Events
-        private void scriptevent_onDeleteDataValue(string key)
+        private void scriptevent_onDeleteDataValue(string group, string key)
         {
             fireEvent(ScriptEventTypes.EVENT_DATASTORAGEREMOVE, key);
         }
 
-        private void scriptevent_onSetDataValue(string key, string data)
+        private void scriptevent_onSetDataValue(string group, string key, string data)
         {
             fireEvent(ScriptEventTypes.EVENT_DATASTORAGESET, key);
         }

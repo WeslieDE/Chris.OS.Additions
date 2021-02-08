@@ -139,7 +139,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 if (_element != null)
                 {
                     _element.save(value);
-                    DataStorageEvents.onSetDataValue(key, value);
+                    DataStorageEvents.onSetDataValue(_host.GroupID.ToString(), key, value);
                     return;
                 }
 
@@ -149,7 +149,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 {
                     m_cache.Add(new StorageElement(_host.GroupID.ToString(), key, value, m_storage));
                     m_storage.save(_host.GroupID.ToString(), key, value);
-                    DataStorageEvents.onSetDataValue(key, value);
+                    DataStorageEvents.onSetDataValue(_host.GroupID.ToString(), key, value);
                     return;
                 }
                 catch (Exception _error)
@@ -176,7 +176,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                         m_cache.Remove(_element);
 
                     m_storage.remove(_host.GroupID.ToString(), key);
-                    DataStorageEvents.onDeleteDataValue(key);
+                    DataStorageEvents.onDeleteDataValue(_host.GroupID.ToString(), key);
                 }
                 catch (Exception _error)
                 {

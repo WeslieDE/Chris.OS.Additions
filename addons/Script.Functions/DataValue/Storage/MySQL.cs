@@ -53,6 +53,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         public bool check(String storageID, string key)
         {
+            bool returnValue = false;
+
             using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
             {
                 _mysqlCommand.CommandText = "Select StorageID, StorageKey FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
@@ -62,18 +64,21 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
                 {
                     if (!_mysqlReader.Read())
-                        return false;
+                        _mysqlReader.Close();
 
                     if (_mysqlReader["StorageKey"] != null)
-                        return true;
+                        returnValue = true;
 
-                    return false;
+                    _mysqlReader.Close();
+                    return returnValue;
                 }
             }
         }
 
         public string get(String storageID, string key)
         {
+            String returnValue = null;
+
             using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
             {
                 _mysqlCommand.CommandText = "Select StorageID, StorageKey, StorageData FROM StorageData WHERE StorageID = ?mysqlStorage AND StorageKey = ?mysqlStorageKey";
@@ -83,12 +88,14 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
                 {
                     if (!_mysqlReader.Read())
-                        return null;
+                        _mysqlReader.Close();
+
 
                     if (_mysqlReader["StorageData"] != null)
-                        return _mysqlReader["StorageData"].ToString();
+                        returnValue = _mysqlReader["StorageData"].ToString();
 
-                    return null;
+                    _mysqlReader.Close();
+                    return returnValue;
                 }
             }
         }
