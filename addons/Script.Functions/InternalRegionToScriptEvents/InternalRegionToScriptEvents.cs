@@ -3,6 +3,7 @@ using Chris.OS.Additions.Script.Functions.EasyDialog;
 using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using OpenMetaverse;
+using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
@@ -41,6 +42,7 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
                 m_scriptModule.RegisterConstant("EVENT_NEWPRESENCE", 1);
                 m_scriptModule.RegisterConstant("EVENT_REMOVEPRESENCE", 2);
                 m_scriptModule.RegisterConstant("EVENT_AVATARENTERPARCEL", 3);
+                m_scriptModule.RegisterConstant("EVENT_AVATARTELEPORT", 4);
 
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGESET", 1001);
                 m_scriptModule.RegisterConstant("EVENT_DATASTORAGEREMOVE", 1002);
@@ -71,6 +73,7 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
             base.World.EventManager.OnNewPresence += scriptevent_OnNewPresence;
             base.World.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
             base.World.EventManager.OnAvatarEnteringNewParcel += scriptevent_OnAvatarEnteringNewParcel;
+            base.World.EventManager.OnTeleportStart += scriptevent_OnTeleportStart;
         }
 
         public override void RemoveRegion(Scene scene)
@@ -90,6 +93,8 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
             base.World.EventManager.OnNewPresence -= scriptevent_OnNewPresence;
             base.World.EventManager.OnRemovePresence -= scriptevent_OnRemovePresence;
             base.World.EventManager.OnAvatarEnteringNewParcel -= scriptevent_OnAvatarEnteringNewParcel;
+            base.World.EventManager.OnTeleportStart -= scriptevent_OnTeleportStart;
+
         }
         #endregion
 
@@ -118,6 +123,11 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         private void scriptevent_OnNewPresence(ScenePresence presence)
         {
             fireEvent(ScriptEventTypes.EVENT_NEWPRESENCE, presence.UUID.ToString());
+        }
+
+        private void scriptevent_OnTeleportStart(IClientAPI client, OpenSim.Services.Interfaces.GridRegion destination, OpenSim.Services.Interfaces.GridRegion finalDestination, uint teleportFlags, bool gridLogout)
+        {
+            fireEvent(ScriptEventTypes.EVENT_AVATARTELEPORT, client.AgentId.ToString());
         }
 
         //Data Storage Events

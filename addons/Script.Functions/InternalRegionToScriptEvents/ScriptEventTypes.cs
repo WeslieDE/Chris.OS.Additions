@@ -12,6 +12,7 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         EVENT_NEWPRESENCE = 1,
         EVENT_REMOVEPRESENCE = 2,
         EVENT_AVATARENTERPARCEL = 3,
+        EVENT_AVATARTELEPORT = 4,
         EVENT_DATASTORAGESET = 1001,
         EVENT_DATASTORAGEREMOVE = 1002,
         EVENT_DATASTORAGERATELIMIT = 1003,
