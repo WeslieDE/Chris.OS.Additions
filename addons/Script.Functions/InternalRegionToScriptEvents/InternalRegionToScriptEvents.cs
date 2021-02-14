@@ -157,15 +157,21 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         [ScriptInvocation]
         public void osStartScriptEvents(UUID hostID, UUID scriptID)
         {
-            m_listener.Add(scriptID);
-            saveRegionListenerToStorage();
+            lock(m_listener)
+            {
+                m_listener.Add(scriptID);
+                saveRegionListenerToStorage();
+            }
         }
 
         [ScriptInvocation]
         public void osStopScriptEvents(UUID hostID, UUID scriptID)
         {
-            m_listener.Remove(scriptID);
-            saveRegionListenerToStorage();
+            lock (m_listener)
+            {
+                m_listener.Remove(scriptID);
+                saveRegionListenerToStorage();
+            }
         }
 
         [ScriptInvocation]
