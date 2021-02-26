@@ -97,7 +97,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                     using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
                     {
                         if (!_mysqlReader.Read())
+                        {
                             _mysqlReader.Close();
+                            return null;
+                        }
 
                         if (_mysqlReader["StorageData"] != null)
                             returnValue = _mysqlReader["StorageData"].ToString();
