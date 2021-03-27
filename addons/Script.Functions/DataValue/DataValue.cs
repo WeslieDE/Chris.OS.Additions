@@ -161,7 +161,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             throw new Exception("No data Storage aviable.");
         }
         [ScriptInvocation]
-        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, string value)
+        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key)
         {
             SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
             StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
