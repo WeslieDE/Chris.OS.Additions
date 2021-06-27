@@ -8,7 +8,7 @@ using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
 {
@@ -221,8 +221,10 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         {
             cleanRegionListenerStorage();
 
+            List<UUID> uniqueLst = m_listener.Distinct().ToList();
+
             int i = 0;
-            foreach (UUID itemID in m_listener)
+            foreach (UUID itemID in uniqueLst)
                 base.World.StoreExtraSetting("regioneventlisten_" + i++, itemID.ToString());
         }
 
