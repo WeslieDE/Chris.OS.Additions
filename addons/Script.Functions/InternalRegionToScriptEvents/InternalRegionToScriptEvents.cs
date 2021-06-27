@@ -159,8 +159,11 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
         {
             lock(m_listener)
             {
-                m_listener.Add(scriptID);
-                saveRegionListenerToStorage();
+                if(!m_listener.Contains(scriptID))
+                {
+                    m_listener.Add(scriptID);
+                    saveRegionListenerToStorage();
+                }
             }
         }
 
