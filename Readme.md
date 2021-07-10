@@ -1,50 +1,55 @@
 # Chris OS Additions
-#### Zusatzfunktionen für OpenSimulator
+#### Additional functions for OpenSimulator
 
-Dieses Module bietet einige zusatzfunktionen für OpenSimulator.
-Es fasst mehrere einzelnen funktionen zusammen und wird laufend ergänzt.
+This module provides some additional functions for OpenSimulator.
+It combines several separate modules that I have created in the past. 
 
-Der Hauptzweck dient der Vereinfachung von Scripten. Es gibt aber auch einige weitere Funktionen, die dazu da sind, Serverleistung einzusparen oder Funktionalitäten bereit zu stellen, die es in dieser Form noch nicht gibt.
+### Documentations
+Individual documentations can be found here:
 
-----
+### New script functions
 
-##### Fragen zu einzelnen funktionen
+#### *DataValue*
+> DataValue is a KeyValue database that allows to store data permanently. This data can be used in real time in other scripts. Even if they are located on other regions. The access to the data is limited to groups. Only scripts of the same group can access the same data. This ensures that no unauthorized access can occur.
 
-Wenn ihr fragen oder Wünsche zu einzelnen Funktionen habt, kommt mich doch im Discord besuchen. https://discord.com/invite/9jPSWRahgU
+###### Script commands
+`String osGetDataValue(String key)`
+> Retrieves a value from the database and outputs it as a string. If there is no entry an empty string is returned.
 
-----
+`void osSetDataValue(String key, String value)`
+> Stores a value for this key in the database.
 
-##### Dokumentationen
+`void osDeleteDataValue(String key)`
+> Delete the key from the database
 
-Einzelnen Dokumentationen findet ihr hier:
+`bool osCheckDataValue(String key)`
+> Checks if there is an entry for this key in the database.
 
-- Scriptfunktionen ( Readme )
-- Robust Services ( Readme )
-- Region Module ( Readme )
+#### *EasyDialog*
+> EasyDialog allows you to create multi-page dialogs without having to implement the logic in the script. You only need to pass a list with an unlimited number of buttons and the rest gets handled automatically.
 
-----
+###### Script commands
+`Integer osEasyDialog(Key avatar, String message, List buttons)`
+> Returns an integer that can later be compared to the channel in the listener event. With the help of the channel several dialogs can be handled at the same time.
 
-##### Installation
+#### *GetInventoryList*
+> Returns a list with all item names from the object inventory without the need to work with llGetInventoryNumber and llGetInventoryName.
 
-Eine fertige und immer aktuelle DEV Version von OpenSimulator mit diesem Module könnt ihr [hier](https://files.clatza.dev/OpenSim/OpenSimulator.zip "hier") Downloaden.
+###### Script commands
+`List osGetInventoryList()`
+> Returns a list with all item names from the object inventory.
+
+####*InternalRegionToScriptEvents*
+> Forwards some additional events to the script. Teleports, parcel transitions, avatars entering or leaving the region, DataValue events. These events arrive as link_message in the script.
+
+###### Script commands
+`void osStartScriptEvents()`
+> Enables the event system. Without this call, the events are not forwarded to the script. Must be executed again after each script reset.
+
+`void osStopScriptEvents()`
+> Deactivates the event system. After calling, no new events are forwarded to the script.
+
+`void osTriggerCustomEvent(String data)`
+> Sends own data via the event system.
 
 
-Ihr könnt es euch aber auch selber compilen.
-Dies geht mit 3 einfachen Befehlen.
-
-    git clone git://opensimulator.org/git/opensim OpenSimulator
-    git clone https://github.com/Sahrea/Chris.OS.Additions.git ./OpenSimulator/addon-modules/Chris.OS.Additions
-    cd OpenSimulator
-
-Und dann unter Windows
-
-    runprebuild.bat
-    compile.bat
-
-oder unter Linux
-
-    ./runprebuild.sh
-    msbuild /p:Configuration=Release
-
-----
-Ich wünsche euch viel spaß!
