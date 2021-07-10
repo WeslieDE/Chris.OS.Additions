@@ -29,6 +29,7 @@ namespace Chris.OS.Additions.Utils
 
         public virtual void AddRegion(Scene scene)
         {
+            this.World = scene;
         }
 
         public virtual void Close()

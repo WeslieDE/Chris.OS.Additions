@@ -40,6 +40,8 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
 
         public override void RegionLoaded(Scene scene)
         {
+            base.World = scene;
+
             base.World.EventManager.OnChatFromClient += onChat;
             base.World.EventManager.OnMakeRootAgent += newRootAgent;
         }
