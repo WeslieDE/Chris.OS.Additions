@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
 using Newtonsoft.Json;
 using Nini.Config;
 using OpenSim.Framework;
@@ -12,6 +13,8 @@ using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.DiscordChat
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "DiscordChat")]
+
     class DiscordRelay : EmptyModule
     {
         private String m_discordToken = null;
