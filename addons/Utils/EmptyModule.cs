@@ -15,6 +15,8 @@ namespace Chris.OS.Additions.Utils
 
         protected Boolean Enabled = false;
 
+        protected IConfigSource Config = null;
+
         public virtual string Name
         {
             get { return null; }
@@ -35,6 +37,8 @@ namespace Chris.OS.Additions.Utils
 
         public virtual void Initialise(IConfigSource source)
         {
+            if (Config == null)
+                Config = source;
         }
 
         public virtual void RegionLoaded(Scene scene)
