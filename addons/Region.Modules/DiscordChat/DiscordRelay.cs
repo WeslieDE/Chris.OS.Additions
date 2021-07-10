@@ -37,30 +37,27 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
 
         public override void RegionLoaded(Scene scene)
         {
-            if (m_discordToken == null)
-                return;
-
             base.World.EventManager.OnChatFromClient += onChat;
         }
 
         private void onChat(object sender, OSChatMessage chat)
         {
+            if (m_discordToken == null)
+                return;
+
             try
             {
                 if (chat.Channel == 0)
                 {
-                    if (chat.Sender != null)
-                    {
-                        WebHookData data = new WebHookData();
-                        data.content = chat.Message;
-                        data.username = chat.From;
+                    WebHookData data = new WebHookData();
+                    data.content = chat.Message;
+                    data.username = chat.From;
 
-                        WebClient client = new WebClient();
+                    WebClient client = new WebClient();
 
-                        string json = JsonConvert.SerializeObject(data);
+                    string json = JsonConvert.SerializeObject(data);
 
-                        client.UploadString(m_discordToken, json);
-                    }
+                    client.UploadString(m_discordToken, json);
                 }
             }
             catch
