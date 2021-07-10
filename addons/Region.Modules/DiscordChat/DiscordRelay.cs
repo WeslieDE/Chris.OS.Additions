@@ -41,31 +41,42 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
         public override void RegionLoaded(Scene scene)
         {
             base.World.EventManager.OnChatFromClient += onChat;
+            base.World.EventManager.OnMakeRootAgent += newRootAgent;
+        }
+
+        private void newRootAgent(ScenePresence obj)
+        {
+            sendMessage(base.World.Name, obj.Name + " has entered the region.");
         }
 
         private void onChat(object sender, OSChatMessage chat)
+        {
+            if (chat.Channel == 0)
+            {
+                sendMessage(chat.From, chat.Message);
+            }
+        }
+
+        private void sendMessage(String name, String message)
         {
             if (m_discordToken == null)
                 return;
 
             try
             {
-                if (chat.Channel == 0)
-                {
-                    WebHookData data = new WebHookData();
-                    data.content = chat.Message;
-                    data.username = chat.From;
+                WebHookData data = new WebHookData();
+                data.content = message;
+                data.username = name;
 
-                    WebClient client = new WebClient();
+                WebClient client = new WebClient();
 
-                    string json = JsonConvert.SerializeObject(data);
+                string json = JsonConvert.SerializeObject(data);
 
-                    client.UploadString(m_discordToken, json);
-                }
+                client.UploadString(m_discordToken, json);
             }
             catch
             {
-                base.Logger.Error("Failed to send chat to discord.");
+                base.Logger.Error("Failed to send message to discord.");
             }
         }
     }
