@@ -76,9 +76,12 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
 
                 client.UploadString(m_discordToken, json);
             }
-            catch
+            catch(Exception error)
             {
+
                 base.Logger.Error("Failed to send message to discord.");
+                base.Logger.Error(error.Message);
+                base.Logger.Error(error.StackTrace);
             }
         }
     }
