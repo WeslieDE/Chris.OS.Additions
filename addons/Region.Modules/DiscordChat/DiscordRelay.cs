@@ -1,16 +1,12 @@
 ﻿using Chris.OS.Additions.Utils;
-using JNogueira.Discord.Webhook.Client;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Mono.Addins;
-using Newtonsoft.Json;
 using Nini.Config;
 using OpenSim.Framework;
 using OpenSim.Region.Framework.Scenes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Chris.OS.Additions.Region.Modules.DiscordChat
 {
@@ -60,15 +56,12 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
             }
         }
 
-        private async void sendMessage(String name, String message)
+        private void sendMessage(String name, String message)
         {
             if (m_discordWebhookURL == null)
                 return;
 
-            DiscordWebhookClient client = new DiscordWebhookClient(m_discordWebhookURL);
-
-            DiscordMessage discordMessage = new DiscordMessage(message, name);
-            await client.SendToDiscord(discordMessage);
+            
         }
     }
 }

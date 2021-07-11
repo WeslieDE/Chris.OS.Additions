@@ -44,7 +44,7 @@
 	<Reference name="CSJ2K.dll" localCopy="false" />
 	<Reference name="CSJ2K.dll" localCopy="false" />
 	<Reference name="Newtonsoft.Json.dll" localCopy="false" />
-	<Reference name="Polly.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="DSharpPlus.dll" path="..\libraries\" localCopy="true" />
 	
 
 	<Files>
