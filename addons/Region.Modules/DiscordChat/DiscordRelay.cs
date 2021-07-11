@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using JNogueira.Discord.Webhook.Client;
 using Mono.Addins;
 using Newtonsoft.Json;
 using Nini.Config;
@@ -17,7 +18,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
 
     class DiscordRelay : EmptyModule
     {
-        private String m_discordToken = null;
+        private String m_discordWebhookURL = null;
 
         public override String Name
         {
@@ -34,7 +35,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
                 base.Config = source;
 
                 if (base.Config.Configs["Network"] != null)
-                    m_discordToken = base.Config.Configs["Network"].GetString("discord", null);
+                    m_discordWebhookURL = base.Config.Configs["Network"].GetString("discord", null);
             }
         }
 
@@ -59,30 +60,15 @@ namespace Chris.OS.Additions.Region.Modules.DiscordChat
             }
         }
 
-        private void sendMessage(String name, String message)
+        private async void sendMessage(String name, String message)
         {
-            if (m_discordToken == null)
+            if (m_discordWebhookURL == null)
                 return;
 
-            try
-            {
-                WebHookData data = new WebHookData();
-                data.content = message;
-                data.username = name;
+            DiscordWebhookClient client = new DiscordWebhookClient(m_discordWebhookURL);
 
-                WebClient client = new WebClient();
-
-                string json = JsonConvert.SerializeObject(data);
-
-                client.UploadString(m_discordToken, json);
-            }
-            catch(Exception error)
-            {
-
-                base.Logger.Error("Failed to send message to discord.");
-                base.Logger.Error(error.Message);
-                base.Logger.Error(error.StackTrace);
-            }
+            DiscordMessage discordMessage = new DiscordMessage(message, name);
+            await client.SendToDiscord(discordMessage);
         }
     }
 }
