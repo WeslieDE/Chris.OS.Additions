@@ -1,7 +1,9 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using Nini.Config;
+using OpenMetaverse;
 using OpenSim.Framework;
+using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
@@ -34,8 +36,29 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
         public override void RegionLoaded(Scene scene)
         {
             base.World = scene;
-
             base.World.EventManager.OnChatFromClient += onChat;
+            base.World.EventManager.OnMakeRootAgent += onNewRootAgent;
+
+            WebHook webhook = new WebHook(m_discordWebHookURL);
+            webhook.Name = base.World.Name;
+            webhook.Message = "The region started successfully.";
+            webhook.sendAsync();
+        }
+
+
+        public override void Close()
+        {
+            WebHook webhook = new WebHook(m_discordWebHookURL);
+            webhook.Name = base.World.Name;
+            webhook.Message = "The region will now be stopped.";
+            webhook.sendAsync();
+        }
+
+
+        private void onNewRootAgent(ScenePresence obj)
+        {
+            //IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
+            //wComm.DeliverMessageTo(obj.UUID, 0, new OpenMetaverse.Vector3(0, 0, 0), "Discord Relay", UUID.Random(), "On this region is the Chat discory relay active.");
         }
 
         private void onChat(object sender, OSChatMessage chat)
