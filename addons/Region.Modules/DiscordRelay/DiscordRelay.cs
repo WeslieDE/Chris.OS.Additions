@@ -18,6 +18,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
     {
         private String m_discordWebHookURL = null;
         private Boolean m_scriptChat = false;
+        private Dictionary<UUID, String> m_nameCache = new Dictionary<UUID, String>();
 
         #region EmptyModule
         public override string Name
@@ -42,14 +43,15 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             base.World = scene;
             base.World.EventManager.OnChatFromClient += onChat;
             base.World.EventManager.OnChatFromWorld += onChat;
-            base.World.EventManager.OnMakeRootAgent += onNewRootAgent;
+
+            base.World.EventManager.OnNewPresence += scriptevent_OnNewPresence;
+            base.World.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
             webhook.Message = "The region started successfully.";
             webhook.sendAsync();
         }
-
 
         public override void Close()
         {
@@ -62,24 +64,35 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
         #region Events
 
-        private void onNewRootAgent(ScenePresence obj)
+        private void scriptevent_OnRemovePresence(UUID agentId)
         {
-            INPCModule module = World.RequestModuleInterface<INPCModule>();
+            String name = null;
 
-            if (module != null)
-                if (module.IsNPC(obj.UUID, base.World))
-                    return;
+            if (m_nameCache.TryGetValue(agentId, out name))
+            {
+                m_nameCache.Remove(agentId);
 
-            if (obj.IsNPC)
+                WebHook webhook = new WebHook(m_discordWebHookURL);
+                webhook.Name = base.World.Name;
+                webhook.Message = name + " has leave the region.";
+                webhook.sendAsync();
+            }
+        }
+
+        private void scriptevent_OnNewPresence(ScenePresence presence)
+        {
+            if (presence.IsNPC)
                 return;
+
+            if (!presence.IsChildAgent)
+                return;
+
+            m_nameCache.Add(presence.UUID, presence.Name);
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
-            webhook.Message = obj.Name + " has entered the region.";
+            webhook.Message = presence.Name + " has entered the region.";
             webhook.sendAsync();
-
-            //IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
-            //wComm.DeliverMessageTo(obj.UUID, 0, new OpenMetaverse.Vector3(0, 0, 0), "Discord Relay", UUID.Random(), "On this region is the Chat discory relay active.");
         }
 
         private void onChat(object sender, OSChatMessage chat)
