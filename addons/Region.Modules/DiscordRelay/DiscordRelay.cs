@@ -40,6 +40,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
         {
             base.World = scene;
             base.World.EventManager.OnChatFromClient += onChat;
+            base.World.EventManager.OnChatFromWorld += onChat;
             base.World.EventManager.OnMakeRootAgent += onNewRootAgent;
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
@@ -65,6 +66,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (module != null)
                 if (module.IsNPC(obj.UUID, base.World))
                     return;
+
+            if (obj.IsNPC)
+                return;
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
