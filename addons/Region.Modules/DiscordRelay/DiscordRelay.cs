@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.DiscordRelay
@@ -46,6 +47,17 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
             base.World.EventManager.OnNewPresence += scriptevent_OnNewPresence;
             base.World.EventManager.OnRemovePresence += scriptevent_OnRemovePresence;
+
+            try
+            {
+                IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
+                m_scriptModule.RegisterScriptInvocation(this, "osSendToDiscord");
+            }
+            catch (Exception e)
+            {
+                base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
+            }
+
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
@@ -129,6 +141,20 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
                     webhook.sendAsync();
                 }
             }
+        }
+        #endregion
+
+        #region ScriptCommands
+        public void osSendToDiscord(UUID hostID, UUID scriptID, String message)
+        {
+            SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
+
+            WebHook webhook = new WebHook(m_discordWebHookURL);
+            webhook.Name = part.Name + " @ " + base.World.Name;
+            webhook.Message = message;
+            webhook.sendAsync();
+
+            Thread.Sleep(250);
         }
         #endregion
     }
