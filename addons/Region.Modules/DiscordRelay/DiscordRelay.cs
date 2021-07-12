@@ -40,6 +40,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
         private void onChat(object sender, OSChatMessage chat)
         {
+            if (m_discordWebHookURL == null)
+                return;
+
             if(chat.Channel == 0 && chat.Sender != null)
             {
                 WebHook webhook = new WebHook(m_discordWebHookURL);
