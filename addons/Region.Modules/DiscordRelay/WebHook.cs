@@ -24,6 +24,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
         public void send()
         {
+            if (m_data.content.Trim() == String.Empty)
+                return;
+
             try
             {
                 WebClient client = new WebClient();

@@ -59,7 +59,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
         {
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
-            webhook.Message = obj.Name.Split('@')[0].Replace('.', ' ') + " has entered the region.";
+            webhook.Message = obj.Name + " has entered the region.";
             webhook.sendAsync();
 
             //IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
@@ -74,7 +74,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if(chat.Channel == 0 && chat.Sender != null)
             {
                 WebHook webhook = new WebHook(m_discordWebHookURL);
-                webhook.Name = chat.From.Split('@')[0].Replace('.', ' ') + " @ " + base.World.Name;
+                webhook.Name = chat.From + " @ " + base.World.Name;
                 webhook.Message = chat.Message;
                 webhook.sendAsync();
             }
