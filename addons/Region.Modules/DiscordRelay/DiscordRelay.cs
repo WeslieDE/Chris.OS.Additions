@@ -57,6 +57,11 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
         private void onNewRootAgent(ScenePresence obj)
         {
+            WebHook webhook = new WebHook(m_discordWebHookURL);
+            webhook.Name = base.World.Name;
+            webhook.Message = obj.Name.Split('@')[0].Replace('.', ' ') + " has entered the region.";
+            webhook.sendAsync();
+
             //IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
             //wComm.DeliverMessageTo(obj.UUID, 0, new OpenMetaverse.Vector3(0, 0, 0), "Discord Relay", UUID.Random(), "On this region is the Chat discory relay active.");
         }
