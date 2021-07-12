@@ -60,6 +60,12 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
         private void onNewRootAgent(ScenePresence obj)
         {
+            INPCModule module = World.RequestModuleInterface<INPCModule>();
+
+            if (module != null)
+                if (module.IsNPC(obj.UUID, base.World))
+                    return;
+
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
             webhook.Message = obj.Name + " has entered the region.";
@@ -79,10 +85,29 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
                 if (chat.Sender == null && m_scriptChat == false)
                     return;
 
-                WebHook webhook = new WebHook(m_discordWebHookURL);
-                webhook.Name = chat.From + " @ " + base.World.Name;
-                webhook.Message = chat.Message;
-                webhook.sendAsync();
+                String senderName = null;
+
+                if(senderName == null)
+                {
+                    ScenePresence presence = base.World.GetScenePresence(chat.SenderUUID);
+                    if (presence != null)
+                        senderName = presence.Name;
+                }
+
+                if (senderName == null)
+                {
+                    SceneObjectPart part = base.World.GetSceneObjectPart(chat.SenderUUID);
+                    if (part != null)
+                        senderName = part.Name;
+                }
+
+                if (senderName != null)
+                {
+                    WebHook webhook = new WebHook(m_discordWebHookURL);
+                    webhook.Name = senderName + " @ " + base.World.Name;
+                    webhook.Message = chat.Message;
+                    webhook.sendAsync();
+                }
             }
         }
     }
