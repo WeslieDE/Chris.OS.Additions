@@ -17,6 +17,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
     class DiscordRelay : EmptyModule
     {
         private String m_discordWebHookURL = null;
+        private Boolean m_scriptChat = false;
 
         public override string Name
         {
@@ -29,8 +30,10 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
                 Config = source;
 
             if (base.Config.Configs["Discord"] != null)
+            {
                 m_discordWebHookURL = base.Config.Configs["Discord"].GetString("WebHookURL", null);
-
+                m_scriptChat = base.Config.Configs["Discord"].GetBoolean("ScriptChat", m_scriptChat);
+            }
         }
 
         public override void RegionLoaded(Scene scene)
@@ -71,8 +74,11 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (m_discordWebHookURL == null)
                 return;
 
-            if(chat.Channel == 0 && chat.Sender != null)
+            if(chat.Channel == 0)
             {
+                if (chat.Sender == null && m_scriptChat == false)
+                    return;
+
                 WebHook webhook = new WebHook(m_discordWebHookURL);
                 webhook.Name = chat.From + " @ " + base.World.Name;
                 webhook.Message = chat.Message;
