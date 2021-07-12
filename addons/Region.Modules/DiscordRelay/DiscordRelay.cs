@@ -48,6 +48,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
                 WebHook webhook = new WebHook(m_discordWebHookURL);
                 webhook.Name = chat.From.Split('@')[0].Replace('.', ' ') + " @ " + base.World.Name;
                 webhook.Message = chat.Message;
+                webhook.sendAsync();
             }
         }
     }

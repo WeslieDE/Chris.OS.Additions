@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 {
@@ -15,20 +17,26 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             m_data = new WebHookData();
         }
 
+        public void sendAsync()
+        {
+            new Thread(() =>{send();}).Start();
+        }
+
         public void send()
         {
             try
             {
                 WebClient client = new WebClient();
                 client.Headers["Content-Type"] = "application/json";
+
                 client.UploadString(m_webhookURL, JsonConvert.SerializeObject(m_data));
 
-            }catch(Exception error)
+            }
+            catch (Exception error)
             {
                 Console.WriteLine("Error while making request to discord webhook.");
                 Console.WriteLine(error.Message);
                 Console.WriteLine(JsonConvert.SerializeObject(m_data));
-                
             }
         }
 
