@@ -19,6 +19,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
         private String m_discordWebHookURL = null;
         private Boolean m_scriptChat = false;
 
+        #region EmptyModule
         public override string Name
         {
             get { return "DiscordRelay"; }
@@ -57,7 +58,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             webhook.Message = "The region will now be stopped.";
             webhook.sendAsync();
         }
+        #endregion
 
+        #region Events
 
         private void onNewRootAgent(ScenePresence obj)
         {
@@ -84,14 +87,14 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (m_discordWebHookURL == null)
                 return;
 
-            if(chat.Channel == 0)
+            if (chat.Channel == 0)
             {
                 if (chat.Sender == null && m_scriptChat == false)
                     return;
 
                 String senderName = null;
 
-                if(senderName == null)
+                if (senderName == null)
                 {
                     ScenePresence presence = base.World.GetScenePresence(chat.SenderUUID);
                     if (presence != null)
@@ -114,5 +117,6 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
                 }
             }
         }
+        #endregion
     }
 }

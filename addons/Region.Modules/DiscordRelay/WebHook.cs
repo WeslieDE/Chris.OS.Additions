@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,6 +32,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             {
                 WebClient client = new WebClient();
                 client.Headers["Content-Type"] = "application/json";
+                client.Encoding = Encoding.UTF8;
 
                 client.UploadString(m_webhookURL, JsonConvert.SerializeObject(m_data));
 
