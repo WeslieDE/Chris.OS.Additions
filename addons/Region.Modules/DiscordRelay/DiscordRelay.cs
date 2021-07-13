@@ -1,4 +1,6 @@
 ﻿using Chris.OS.Additions.Utils;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -17,9 +19,14 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "DiscordRelay")]
     class DiscordRelay : EmptyModule
     {
+        private String m_token = null;
+        private ulong m_channel = 0;
+
         private String m_discordWebHookURL = null;
         private Boolean m_scriptChat = false;
         private Dictionary<UUID, String> m_nameCache = new Dictionary<UUID, String>();
+
+        private static DiscordClient m_client = null;
 
         #region EmptyModule
         public override string Name
@@ -34,6 +41,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
             if (base.Config.Configs["Discord"] != null)
             {
+                m_token = base.Config.Configs["Discord"].GetString("Token", null);
+                m_channel = ulong.Parse(base.Config.Configs["Discord"].GetString("Channel", "0"));
+
                 m_discordWebHookURL = base.Config.Configs["Discord"].GetString("WebHookURL", null);
                 m_scriptChat = base.Config.Configs["Discord"].GetBoolean("ScriptChat", m_scriptChat);
             }
@@ -63,6 +73,8 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             webhook.Name = base.World.Name;
             webhook.Message = "The region started successfully.";
             webhook.sendAsync();
+
+            RunBotAsync().GetAwaiter().GetResult();
         }
 
         public override void Close()
@@ -155,6 +167,52 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             webhook.sendAsync();
 
             Thread.Sleep(250);
+        }
+        #endregion
+
+        #region DSharpPlus
+        public async Task RunBotAsync()
+        {
+            if (m_token == null)
+                return;
+
+            if (m_channel != 0)
+                return;
+
+            if (m_client != null)
+                return;
+
+            var discordConfig = new DiscordConfiguration
+            {
+                Token = m_token,
+                TokenType = TokenType.Bot,
+
+                AutoReconnect = true
+            };
+
+            // then we want to instantiate our client
+            m_client = new DiscordClient(discordConfig);
+
+            // next, let's hook some events, so we know
+            m_client.MessageCreated += newMessage;
+
+            // finally, let's connect and log in
+            await m_client.ConnectAsync();
+
+            // and this is to prevent premature quitting
+            await Task.Delay(-1);
+        }
+
+        private Task newMessage(DiscordClient sender, MessageCreateEventArgs e)
+        {
+            if (e.Channel.Id != m_channel)
+                return Task.CompletedTask;
+
+            IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
+
+            wComm.DeliverMessage(ChatTypeEnum.Region, 0, e.Author.Username, UUID.Random(), e.Message.Content);
+
+            return Task.CompletedTask;
         }
         #endregion
     }
