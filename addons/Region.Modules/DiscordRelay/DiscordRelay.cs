@@ -86,7 +86,7 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 
                 WebHook webhook = new WebHook(m_discordWebHookURL);
                 webhook.Name = base.World.Name;
-                webhook.Message = "`" + name + "` has leave the region.";
+                webhook.Message = "`" + name + "` has left the region.";
                 webhook.sendAsync();
             }
         }
