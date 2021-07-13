@@ -208,6 +208,9 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (e.Channel.Id != m_channel)
                 return Task.CompletedTask;
 
+            if (e.Author.IsBot)
+                return Task.CompletedTask;
+
             IWorldComm wComm = base.World.RequestModuleInterface<IWorldComm>();
 
             wComm.DeliverMessage(ChatTypeEnum.Region, 0, e.Author.Username, UUID.Random(), e.Message.Content);
