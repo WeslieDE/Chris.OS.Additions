@@ -34,11 +34,11 @@ namespace Chris.OS.Additions.Region.Modules.IncommingChat
                 BasicChatData data = JsonConvert.DeserializeObject<BasicChatData>(requestBody);
 
                 byte[] binText = Util.StringToBytesNoTerm(data.Message, 1023);
-                m_world.SimChat(binText, ChatTypeEnum.Say, data.Channel, data.Position, data.Name, UUID.Random(), data.Agent);
+                m_world.SimChatBroadcast(binText, ChatTypeEnum.Region, data.Channel, data.Position, data.Name, UUID.Random(), data.Agent);
 
                 IWorldComm wComm = m_world.RequestModuleInterface<IWorldComm>();
                 if (wComm != null)
-                    wComm.DeliverMessage(ChatTypeEnum.Say, data.Channel, data.Name, UUID.Random(), Util.UTF8.GetString(binText));
+                    wComm.DeliverMessage(ChatTypeEnum.Region, data.Channel, data.Name, UUID.Random(), Util.UTF8.GetString(binText));
 
                 return Encoding.UTF8.GetBytes("ok");
             }catch(Exception error)
