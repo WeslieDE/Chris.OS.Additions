@@ -5,6 +5,8 @@ using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework;
+using OpenSim.Framework.Servers;
+using OpenSim.Framework.Servers.HttpServer;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
@@ -59,7 +61,6 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             {
                 base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
             }
-
 
             WebHook webhook = new WebHook(m_discordWebHookURL);
             webhook.Name = base.World.Name;
