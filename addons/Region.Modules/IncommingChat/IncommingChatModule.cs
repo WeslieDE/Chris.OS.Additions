@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.IncommingChat
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "IncommingChat")]
     class IncommingChatModule : EmptyModule
     {
         private int m_httpport = 0;
