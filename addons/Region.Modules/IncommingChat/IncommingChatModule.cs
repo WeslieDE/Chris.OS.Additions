@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
 using Nini.Config;
 using OpenSim.Framework.Servers;
 using OpenSim.Framework.Servers.HttpServer;
