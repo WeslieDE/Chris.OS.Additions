@@ -18,7 +18,7 @@ namespace Chris.OS.Additions.Region.Modules.IncommingChat
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private Scene m_world = null;
 
-        public IncommingChatHandler(IConfigSource config, ref Scene world) : base("GET", "/IncommingChat")
+        public IncommingChatHandler(IConfigSource config, ref Scene world) : base("POST", "/IncommingChat")
         {
             m_log.Info("[IncommingChatModule] IncommingChatHandler loaded.");
 
