@@ -3,9 +3,6 @@ const axios = require('axios').default;
 
 const {channelID, token, servers} = require('./config.json');
 const client = new Discord.Client();
-
-var playing = false;
-
 client.login(token);
 
 client.once('ready', () => 
