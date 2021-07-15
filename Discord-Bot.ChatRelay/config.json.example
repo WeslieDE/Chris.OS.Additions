@@ -1,0 +1,9 @@
+{
+    "channelID": "...",
+    "token": "...",
+    "servers":
+    [
+        "http://127.0.0.1:7000/IncommingChat",
+        "http://127.0.0.1:7001/IncommingChat"
+    ]
+}
