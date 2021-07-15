@@ -33,12 +33,9 @@ namespace Chris.OS.Additions.Region.Modules.IncommingChat
 
                 BasicChatData data = JsonConvert.DeserializeObject<BasicChatData>(requestBody);
 
-
-                
-
                 byte[] binText = Util.StringToBytesNoTerm(data.Message, 1023);
-                m_world.SimChat(binText, ChatTypeEnum.Region, data.Channel, data.Position, data.Name, UUID.Random(), data.Agent);
-                m_world.SimChatBroadcast(binText, ChatTypeEnum.Region, data.Channel, data.Position, data.Name, UUID.Random(), data.Agent);
+                m_world.SimChat(binText, ChatTypeEnum.Region, data.Channel, new Vector3(128, 128, 20), data.Name, UUID.Random(), data.Agent);
+                m_world.SimChatBroadcast(binText, ChatTypeEnum.Region, data.Channel, new Vector3(128, 128, 20), data.Name, UUID.Random(), data.Agent);
 
                 IWorldComm wComm = m_world.RequestModuleInterface<IWorldComm>();
                 if (wComm != null)
