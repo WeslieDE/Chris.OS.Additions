@@ -52,4 +52,34 @@ Individual documentations can be found here:
 `void osTriggerCustomEvent(String data)`
 > Sends own data via the event system.
 
+#### *Discord Chat Relay*
+> This function allows to connect the region chat to a Discord channel. Similar to the IRCBridgeModule but for Discord. You can choose if only the text from humans should be transmitted or everything else that comes from scripts.
+For this function you need 2 programs. 
+1) This module which transfers the chat to Discord via Discord WebHook.
+2) A Discord Bot which transfers the text from Discord to OpenSim.
+
+###### Configuration
+
+***OpenSim Configuration: OpenSim.ini* **
+
+> [Discord]
+>	   WebHookURL = https://discord.com/api/webhooks/...
+>	   ScriptChat = false
+
+***Discord Bot Configuration: config.json* **
+
+For the Discord Bot you need:
+ - Discord Bot Token from https://discord.com/developers/applications
+ - The Discord channel ID from which the chat should be transferred.
+ - One or more OpenSimulator server addresses to send the chat to.
+ 
+>{
+>	"channelID": "...",
+>	"token": "...",
+>	"servers":
+>	[
+>		"http://127.0.0.1:7000/IncommingChat",
+>		"http://127.0.0.1:7001/IncommingChat"
+>	]
+>}
 
