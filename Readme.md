@@ -62,10 +62,9 @@ For this function you need 2 programs.
 
 ***OpenSim Configuration: OpenSim.ini* **
 
-> [Discord]
->	   WebHookURL = https://discord.com/api/webhooks/...
->	   
->	   ScriptChat = false
+	[Discord]
+		WebHookURL = https://discord.com/api/webhooks/...
+		ScriptChat = false
 
 ***Discord Bot Configuration: config.json* **
 
@@ -73,14 +72,3 @@ For the Discord Bot you need:
  - Discord Bot Token from https://discord.com/developers/applications
  - The Discord channel ID from which the chat should be transferred.
  - One or more OpenSimulator server addresses to send the chat to.
- 
->{
->	"channelID": "...",
->	"token": "...",
->	"servers":
->	[
->		"http://127.0.0.1:7000/IncommingChat",
->		"http://127.0.0.1:7001/IncommingChat"
->	]
->}
-
