@@ -64,6 +64,7 @@ For this function you need 2 programs.
 
 > [Discord]
 >	   WebHookURL = https://discord.com/api/webhooks/...
+>	   
 >	   ScriptChat = false
 
 ***Discord Bot Configuration: config.json* **
