@@ -49,6 +49,13 @@
 	
 	<Reference name="DSharpPlus.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="Emzi0767.Common.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="BouncyCastle.Crypto.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="MimeKit.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="MailKit.dll" path="..\libraries\" localCopy="true" />
+	
+
+
+
 	<Files>
 		<Match pattern="*.cs" recurse="true" />
 	</Files>
