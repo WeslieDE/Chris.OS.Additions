@@ -177,6 +177,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
                     m_storage.remove(_host.GroupID.ToString(), key);
                     DataStorageEvents.onDeleteDataValue(_host.GroupID.ToString(), key);
+                    return;
                 }
                 catch (Exception _error)
                 {
