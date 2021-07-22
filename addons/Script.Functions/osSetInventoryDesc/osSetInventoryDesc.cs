@@ -44,11 +44,13 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
         {
             SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
 
-            foreach(TaskInventoryItem invItem in part.Inventory.GetInventoryItems())
-            {
-                if (invItem.Name.Equals(itemName))
-                    invItem.Description = desc;
-            }
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(itemName));
+
+            if (item == null)
+                return;
+
+            item.Description = desc;
+            part.Inventory.AddInventoryItemExclusive(item, false);
         }
         #endregion
     }
