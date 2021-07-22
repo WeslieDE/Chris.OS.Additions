@@ -30,6 +30,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
                 m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryDesc");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetInventoryDesc");
             }
             catch (Exception e)
             {
@@ -51,6 +52,19 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
 
             item.Description = desc;
             part.Inventory.AddInventoryItemExclusive(item, false);
+        }
+
+        [ScriptInvocation]
+        public String osGetInventoryDesc(UUID hostID, UUID scriptID, String itemName)
+        {
+            SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
+
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(itemName));
+
+            if (item == null)
+                throw new Exception("Item not found!");
+
+            return item.Description;
         }
         #endregion
     }
