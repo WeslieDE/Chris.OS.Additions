@@ -31,6 +31,7 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
                 m_scriptModule.RegisterScriptInvocation(this, "osGetInventoryList");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetRemoteInventoryList");
             }
             catch (Exception e)
             {
@@ -43,11 +44,11 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
         [ScriptInvocation]
         public object[] osGetInventoryList(UUID hostID, UUID scriptID)
         {
-            return osGetInventoryList(hostID, scriptID, UUID.Zero.ToString());
+            return osGetRemoteInventoryList(hostID, scriptID, UUID.Zero.ToString());
         }
 
         [ScriptInvocation]
-        public object[] osGetInventoryList(UUID hostID, UUID scriptID, String target)
+        public object[] osGetRemoteInventoryList(UUID hostID, UUID scriptID, String target)
         {
             UUID targetHost = hostID;
 

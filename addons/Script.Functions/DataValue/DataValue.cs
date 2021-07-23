@@ -89,6 +89,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 m_scriptModule.RegisterScriptInvocation(this, "osSetDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osDeleteDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osCheckDataValue");
+
+                m_scriptModule.RegisterScriptInvocation(this, "osGetPrivateDataValue");
+                m_scriptModule.RegisterScriptInvocation(this, "osSetPrivateDataValue");
+                m_scriptModule.RegisterScriptInvocation(this, "osDeletePrivateDataValue");
+                m_scriptModule.RegisterScriptInvocation(this, "osCheckPrivateDataValue");
             }
         }
         #endregion
@@ -97,11 +102,16 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         public string osGetDataValue(UUID hostID, UUID scriptID, string key)
         {
-            return osGetDataValue(hostID, scriptID, key, 0);
+            return getDataValue(hostID, scriptID, key, 0);
         }
 
         [ScriptInvocation]
-        public string osGetDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
+        public string osGetPrivateDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            return getDataValue(hostID, scriptID, key, 1);
+        }
+
+        private string getDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             if(m_storage != null)
             {
@@ -142,11 +152,16 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value)
         {
-            osSetDataValue(hostID, scriptID, key, value);
+            setDataValue(hostID, scriptID, key, value, 0);
         }
 
         [ScriptInvocation]
-        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value, int privateStorage)
+        public void osSetPrivateDataValue(UUID hostID, UUID scriptID, string key, string value)
+        {
+            setDataValue(hostID, scriptID, key, value, 1);
+        }
+
+        private void setDataValue(UUID hostID, UUID scriptID, string key, string value, int privateStorage)
         {
             if (m_storage != null)
             {
@@ -187,11 +202,17 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         public void osDeleteDataValue(UUID hostID, UUID scriptID, string key)
         {
-            osDeleteDataValue(hostID, scriptID, key, 0);
+            deleteDataValue(hostID, scriptID, key, 0);
         }
 
         [ScriptInvocation]
-        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
+        public void osDeletePrivateDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            deleteDataValue(hostID, scriptID, key, 1);
+        }
+
+        [ScriptInvocation]
+        private void deleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
 
@@ -227,11 +248,17 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         public int osCheckDataValue(UUID hostID, UUID scriptID, string key)
         {
-            return osCheckDataValue(hostID, scriptID, key);
+            return checkDataValue(hostID, scriptID, key, 0);
         }
 
         [ScriptInvocation]
-        public int osCheckDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
+        public int osCheckPrivateDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            return checkDataValue(hostID, scriptID, key, 1);
+        }
+
+        [ScriptInvocation]
+        public int checkDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             if (m_storage != null)
             {
