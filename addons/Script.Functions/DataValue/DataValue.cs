@@ -94,9 +94,14 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         #endregion
 
         #region Script Funktions
+        [ScriptInvocation]
+        public string osGetDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            return osGetDataValue(hostID, scriptID, key, 0);
+        }
 
         [ScriptInvocation]
-        public string osGetDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
+        public string osGetDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             if(m_storage != null)
             {
@@ -135,7 +140,13 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value, int privateStorage = 0)
+        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value)
+        {
+            osSetDataValue(hostID, scriptID, key, value);
+        }
+
+        [ScriptInvocation]
+        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value, int privateStorage)
         {
             if (m_storage != null)
             {
@@ -174,7 +185,13 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
+        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            osDeleteDataValue(hostID, scriptID, key, 0);
+        }
+
+        [ScriptInvocation]
+        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
 
@@ -208,7 +225,13 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public int osCheckDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
+        public int osCheckDataValue(UUID hostID, UUID scriptID, string key)
+        {
+            return osCheckDataValue(hostID, scriptID, key);
+        }
+
+        [ScriptInvocation]
+        public int osCheckDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
             if (m_storage != null)
             {

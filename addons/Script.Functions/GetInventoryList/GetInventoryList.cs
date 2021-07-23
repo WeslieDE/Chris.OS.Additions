@@ -41,7 +41,13 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 
         #region Script functions
         [ScriptInvocation]
-        public object[] osGetInventoryList(UUID hostID, UUID scriptID, String target = "00000000-0000-0000-0000-000000000000")
+        public object[] osGetInventoryList(UUID hostID, UUID scriptID)
+        {
+            return osGetInventoryList(hostID, scriptID, UUID.Zero.ToString());
+        }
+
+        [ScriptInvocation]
+        public object[] osGetInventoryList(UUID hostID, UUID scriptID, String target)
         {
             UUID targetHost = hostID;
 
