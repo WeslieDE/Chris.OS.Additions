@@ -31,6 +31,8 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
             base.World.EventManager.OnNewPresence += NewPresence;
 
             m_inventoryService = World.RequestModuleInterface<IInventoryService>();
+
+            base.Logger.Info("[NPC-COMMANDS] Waiting for NPCs");
         }
 
         private void NewPresence(ScenePresence presence)
@@ -38,11 +40,9 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
             if (!presence.IsNPC)
                 return;
 
-            if (presence.IsChildAgent)
-                return;
+            base.Logger.Info("[NPC-COMMANDS] Create Inventory for " + presence.UUID + "(" + presence.Name + ")");
 
             m_inventoryService.CreateUserInventory(presence.UUID);
-            base.Logger.Info("[NPC-COMMANDS] Create Inventory for " + presence.UUID + "(" + presence.Name + ")");
         }
         #endregion
     }
