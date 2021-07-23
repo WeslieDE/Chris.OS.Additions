@@ -44,7 +44,7 @@
 	<Reference name="MySql.Data" localCopy="false" />
 	<Reference name="Warp3D.dll" localCopy="false" />
 	<Reference name="CSJ2K.dll" localCopy="false" />
-	<Reference name="CSJ2K.dll" localCopy="false" />
+	<Reference name="Mono.Data.Sqlite.dll" localCopy="false" />
 	<Reference name="Newtonsoft.Json.dll" localCopy="false" />
 	
 	<Reference name="DSharpPlus.dll" path="..\libraries\" localCopy="true" />
