@@ -1,6 +1,7 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using OpenMetaverse;
+using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using OpenSim.Services.Interfaces;
@@ -43,6 +44,15 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
             base.Logger.Info("[NPC-COMMANDS] Create Inventory for " + presence.UUID + "(" + presence.Name + ")");
 
             m_inventoryService.CreateUserInventory(presence.UUID);
+
+            UUID rootFolder = m_inventoryService.GetRootFolder(presence.UUID).ID;
+
+            InventoryFolderBase objFolder = new InventoryFolderBase();
+            objFolder.Type = 6;
+            objFolder.Name = "Objects";
+            objFolder.Owner = presence.UUID;
+            objFolder.ParentID = rootFolder;
+            m_inventoryService.AddFolder(objFolder);
         }
         #endregion
     }
