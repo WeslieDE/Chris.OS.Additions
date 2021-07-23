@@ -41,13 +41,22 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 
         #region Script functions
         [ScriptInvocation]
-        public object[] osGetInventoryList(UUID hostID, UUID scriptID)
+        public object[] osGetInventoryList(UUID hostID, UUID scriptID, String target = "00000000-0000-0000-0000-000000000000")
         {
+            UUID targetHost = hostID;
+
+            if(!target.Equals(UUID.Zero.ToString()))
+                if (!UUID.TryParse(target, out targetHost))
+                    throw new Exception("target is not a valid uuid");
+
             List<object> returnList = new List<object>();
 
-            SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
-            
-            foreach(TaskInventoryItem item in part.Inventory.GetInventoryItems())
+            SceneObjectPart part = base.World.GetSceneObjectPart(targetHost);
+
+            if(part == null)
+                throw new Exception("target not found");
+
+            foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
                 returnList.Add(item.Name);
 
             return returnList.ToArray();
