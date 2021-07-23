@@ -29,9 +29,9 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
         {
             base.World = scene;
 
-            base.World.EventManager.OnNewPresence += NewPresence;
+            //base.World.EventManager.OnNewPresence += NewPresence;
 
-            m_inventoryService = World.RequestModuleInterface<IInventoryService>();
+            //m_inventoryService = World.RequestModuleInterface<IInventoryService>();
 
             base.Logger.Info("[NPC-COMMANDS] Waiting for NPCs");
         }
