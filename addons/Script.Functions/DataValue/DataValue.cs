@@ -96,12 +96,18 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         #region Script Funktions
 
         [ScriptInvocation]
-        public string osGetDataValue(UUID hostID, UUID scriptID, string key)
+        public string osGetDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
         {
             if(m_storage != null)
             {
                 SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-                StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
+
+                String storageNameSpace = _host.GroupID.ToString();
+
+                if (privateStorage == 1)
+                    storageNameSpace = _host.OwnerID.ToString();
+
+                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
 
                 if (_element != null)
                     return _element.get();
@@ -110,12 +116,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
                 try
                 {
-                    String _data = m_storage.get(_host.GroupID.ToString(), key);
+                    String _data = m_storage.get(storageNameSpace, key);
 
                     if (_data == null)
                         return "";
 
-                    m_cache.Add(new StorageElement(_host.GroupID.ToString(), key, _data, m_storage));
+                    m_cache.Add(new StorageElement(storageNameSpace, key, _data, m_storage));
 
                     return _data;
                 }catch(Exception _error)
@@ -129,17 +135,23 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value)
+        public void osSetDataValue(UUID hostID, UUID scriptID, string key, string value, int privateStorage = 0)
         {
             if (m_storage != null)
             {
                 SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-                StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
+
+                String storageNameSpace = _host.GroupID.ToString();
+
+                if (privateStorage == 1)
+                    storageNameSpace = _host.OwnerID.ToString();
+
+                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
 
                 if (_element != null)
                 {
                     _element.save(value);
-                    DataStorageEvents.onSetDataValue(_host.GroupID.ToString(), key, value);
+                    DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
                     return;
                 }
 
@@ -147,9 +159,9 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
                 try
                 {
-                    m_cache.Add(new StorageElement(_host.GroupID.ToString(), key, value, m_storage));
-                    m_storage.save(_host.GroupID.ToString(), key, value);
-                    DataStorageEvents.onSetDataValue(_host.GroupID.ToString(), key, value);
+                    m_cache.Add(new StorageElement(storageNameSpace, key, value, m_storage));
+                    m_storage.save(storageNameSpace, key, value);
+                    DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
                     return;
                 }
                 catch (Exception _error)
@@ -160,11 +172,18 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
             throw new Exception("No data Storage aviable.");
         }
+
         [ScriptInvocation]
-        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key)
+        public void osDeleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
         {
             SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-            StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
+
+            String storageNameSpace = _host.GroupID.ToString();
+
+            if (privateStorage == 1)
+                storageNameSpace = _host.OwnerID.ToString();
+
+            StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
 
             checkRateLimit();
 
@@ -175,8 +194,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     if (_element != null)
                         m_cache.Remove(_element);
 
-                    m_storage.remove(_host.GroupID.ToString(), key);
-                    DataStorageEvents.onDeleteDataValue(_host.GroupID.ToString(), key);
+                    m_storage.remove(storageNameSpace, key);
+                    DataStorageEvents.onDeleteDataValue(storageNameSpace, key);
                     return;
                 }
                 catch (Exception _error)
@@ -189,12 +208,18 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public int osCheckDataValue(UUID hostID, UUID scriptID, string key)
+        public int osCheckDataValue(UUID hostID, UUID scriptID, string key, int privateStorage = 0)
         {
             if (m_storage != null)
             {
                 SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-                StorageElement _element = m_cache.Find(X => X.Group == _host.GroupID.ToString() && X.Index == key);
+
+                String storageNameSpace = _host.GroupID.ToString();
+
+                if (privateStorage == 1)
+                    storageNameSpace = _host.OwnerID.ToString();
+
+                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
 
                 if (_element != null)
                     return 1;
@@ -203,7 +228,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
                 try
                 {
-                    if (m_storage.check(_host.GroupID.ToString(), key))
+                    if (m_storage.check(storageNameSpace, key))
                         return 1;
 
                     return 0;
