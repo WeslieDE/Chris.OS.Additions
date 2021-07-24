@@ -50,6 +50,22 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
             rootFolder.ID = UUID.Random();
             rootFolder.ParentID = UUID.Zero;
             m_inventoryService.AddFolder(rootFolder);
+
+            InventoryFolderBase objFolder = new InventoryFolderBase();
+            objFolder.Type = 6;
+            objFolder.Name = "Objects";
+            objFolder.Owner = presence.UUID;
+            objFolder.ID = UUID.Random();
+            objFolder.ParentID = rootFolder.ID;
+            m_inventoryService.AddFolder(objFolder);
+
+            InventoryFolderBase ncFolder = new InventoryFolderBase();
+            ncFolder.Type = 7;
+            ncFolder.Name = "Notecards";
+            ncFolder.Owner = presence.UUID;
+            ncFolder.ID = UUID.Random();
+            ncFolder.ParentID = rootFolder.ID;
+            m_inventoryService.AddFolder(ncFolder);
         }
         #endregion
     }
