@@ -29,9 +29,9 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
         {
             base.World = scene;
 
-            //base.World.EventManager.OnNewPresence += NewPresence;
+            base.World.EventManager.OnNewPresence += NewPresence;
 
-            //m_inventoryService = World.RequestModuleInterface<IInventoryService>();
+            m_inventoryService = World.RequestModuleInterface<IInventoryService>();
 
             base.Logger.Info("[NPC-COMMANDS] Waiting for NPCs");
         }
@@ -43,16 +43,13 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
 
             base.Logger.Info("[NPC-COMMANDS] Create Inventory for " + presence.UUID + "(" + presence.Name + ")");
 
-            m_inventoryService.CreateUserInventory(presence.UUID);
-
-            UUID rootFolder = m_inventoryService.GetRootFolder(presence.UUID).ID;
-
-            InventoryFolderBase objFolder = new InventoryFolderBase();
-            objFolder.Type = 6;
-            objFolder.Name = "Objects";
-            objFolder.Owner = presence.UUID;
-            objFolder.ParentID = rootFolder;
-            m_inventoryService.AddFolder(objFolder);
+            InventoryFolderBase rootFolder = new InventoryFolderBase();
+            rootFolder.Type = 8;
+            rootFolder.Name = InventoryFolderBase.ROOT_FOLDER_NAME;
+            rootFolder.Owner = presence.UUID;
+            rootFolder.ID = UUID.Random();
+            rootFolder.ParentID = UUID.Zero;
+            m_inventoryService.AddFolder(rootFolder);
         }
         #endregion
     }
