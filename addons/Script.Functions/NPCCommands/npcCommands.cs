@@ -44,22 +44,7 @@ namespace Chris.OS.Additions.Script.Functions.NPCCommands
             base.Logger.Info("[NPC-COMMANDS] Create Inventory for " + presence.UUID + "(" + presence.Name + ")");
 
             m_inventoryService.CreateUserInventory(presence.UUID);
-
-            InventoryFolderBase rootFolder = new InventoryFolderBase();
-            rootFolder.Type = 8;
-            rootFolder.Name = InventoryFolderBase.ROOT_FOLDER_NAME;
-            rootFolder.Owner = presence.UUID;
-            rootFolder.ID = UUID.Random();
-            rootFolder.ParentID = UUID.Zero;
-            m_inventoryService.AddFolder(rootFolder);
-
-            InventoryFolderBase objFolder = new InventoryFolderBase();
-            objFolder.Type = 6;
-            objFolder.Name = "Objects";
-            objFolder.Owner = presence.UUID;
-            objFolder.ID = UUID.Random();
-            objFolder.ParentID = rootFolder.ID;
-            m_inventoryService.AddFolder(objFolder);
+            m_inventoryService.CreateUserInventory(presence.UUID);
         }
         #endregion
     }
