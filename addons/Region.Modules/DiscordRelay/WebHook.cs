@@ -28,6 +28,12 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (m_data.content.Trim() == String.Empty)
                 return;
 
+            if (m_webhookURL == null)
+                return;
+
+            if (m_webhookURL.Trim() == String.Empty)
+                return;
+
             try
             {
                 WebClient client = new WebClient();
