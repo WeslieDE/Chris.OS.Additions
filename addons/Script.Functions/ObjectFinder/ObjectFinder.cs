@@ -3,6 +3,7 @@ using log4net;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
+using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
@@ -16,6 +17,8 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
     public class ObjectFinder : EmptyModule
     {
         private IScriptModuleComms m_scriptModule;
+        private List<CacheData> m_GroupCache = new List<CacheData>();
+        private List<CacheData> m_PartCache = new List<CacheData>();
 
         #region EmptyModule
         public override string Name
@@ -40,17 +43,56 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
                 {
                     base.Logger.WarnFormat("[" + Name + "]: Script method registration failed; {0}", e.Message);
                 }
-            }else
+
+                base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
+                base.World.EventManager.OnSceneObjectPartCopy += onSceneObjectPartCopy;
+                base.World.EventManager.OnSceneObjectPartUpdated += onSceneObjectPartUpdated;
+                base.World.EventManager.OnIncomingSceneObject += onIncomingSceneObject;
+            }
+            else
             {
                 base.Logger.Warn("[" + Name + "]: scene == null");
             }
         }
         #endregion
 
+        #region Events
+
+        private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
+        {
+            m_GroupCache.Clear();
+            m_PartCache.Clear();
+        }
+
+        private void onSceneObjectLoaded(SceneObjectGroup so)
+        {
+            m_GroupCache.Clear();
+            m_PartCache.Clear();
+        }
+
+        private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
+        {
+            m_GroupCache.Clear();
+            m_PartCache.Clear();
+        }
+
+        private void onIncomingSceneObject(SceneObjectGroup so)
+        {
+            m_GroupCache.Clear();
+            m_PartCache.Clear();
+        }
+
+        #endregion
+
         #region Script Funktions
         [ScriptInvocation]
         public object[] osGetSearchableObjectList(UUID hostID, UUID scriptID, String searchString)
         {
+            CacheData cache = m_GroupCache.Find(x => x.searchString.Equals(searchString));
+
+            if (cache != null)
+                return cache.results.ToArray();
+
             List<object> returnList = new List<object>();
 
             foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
@@ -59,12 +101,18 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
                     returnList.Add(thisGroup.UUID);
             }
 
+            m_GroupCache.Add(new CacheData(searchString, returnList));
             return returnList.ToArray();
         }
 
         [ScriptInvocation]
         public object[] osGetSearchableObjectPartList(UUID hostID, UUID scriptID, String searchString)
         {
+            CacheData cache = m_PartCache.Find(x => x.searchString.Equals(searchString));
+
+            if (cache != null)
+                return cache.results.ToArray();
+
             List<object> returnList = new List<object>();
 
             foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
@@ -76,6 +124,7 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
                 }
             }
 
+            m_PartCache.Add(new CacheData(searchString, returnList));
             return returnList.ToArray();
         }
         #endregion
