@@ -34,6 +34,7 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
                     m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
 
                     m_scriptModule.RegisterScriptInvocation(this, "osGetSearchableObjectList");
+                    m_scriptModule.RegisterScriptInvocation(this, "osGetSearchableObjectPartList");
                 }
                 catch (Exception e)
                 {
@@ -56,6 +57,23 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
             {
                 if(thisGroup.Name == searchString)
                     returnList.Add(thisGroup.UUID);
+            }
+
+            return returnList.ToArray();
+        }
+
+        [ScriptInvocation]
+        public object[] osGetSearchableObjectPartList(UUID hostID, UUID scriptID, String searchString)
+        {
+            List<object> returnList = new List<object>();
+
+            foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
+            {
+                foreach(SceneObjectPart thisPart in thisGroup.Parts)
+                {
+                    if (thisPart.Name == searchString)
+                        returnList.Add(thisPart.UUID);
+                }
             }
 
             return returnList.ToArray();
