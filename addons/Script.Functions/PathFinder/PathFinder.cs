@@ -19,6 +19,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private List<NodeInfo> m_nodes = new List<NodeInfo>();
         private Thread m_dataCollectionThread = null;
+        private Boolean m_scanning = false;
 
         #region EmptyModule
         public override string Name
@@ -36,6 +37,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
 
+                m_scriptModule.RegisterScriptInvocation(this, "osStartNodeScan");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeListToTarget");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeList");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeConnections");
@@ -61,6 +63,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         #region events
         private void onIncomingSceneObject(SceneObjectGroup so)
         {
+            if (m_scanning)
+                return;
+
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
@@ -74,6 +79,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
         {
+            if (m_scanning)
+                return;
+
             if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
                 if (m_dataCollectionThread.IsAlive)
@@ -86,6 +94,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
         {
+            if (m_scanning)
+                return;
+
             if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
                 if (m_dataCollectionThread.IsAlive)
@@ -98,6 +109,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onSceneObjectLoaded(SceneObjectGroup so)
         {
+            if (m_scanning)
+                return;
+
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
@@ -115,7 +129,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         {
             base.Logger.Info("PathFinder: collectNodeData();");
 
-            lock(m_nodes)
+            m_scanning = true;
+
+            lock (m_nodes)
             {
                 m_nodes.Clear();
 
@@ -154,11 +170,20 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                     }
                 }
             }
+
+            m_scanning = false;
         }
 
         #endregion
 
-        #region Script functions
+        #region Script function
+
+        [ScriptInvocation]
+        public void osStartNodeScan(UUID hostID, UUID scriptID)
+        {
+            collectNodeData();
+        }
+
         [ScriptInvocation]
         public object[] osGetNodeList(UUID hostID, UUID scriptID)
         {
