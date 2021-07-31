@@ -18,7 +18,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         private const String NODE_TEXTURE = "921f6d16-90c8-4926-963b-4698ff107c29";
 
         private List<NodeInfo> m_nodes = new List<NodeInfo>();
-        private Thread m_dataCollectionThread = null;
         private Boolean m_scanning = false;
 
         #region EmptyModule
@@ -30,8 +29,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         public override void RegionLoaded(Scene scene)
         {
             base.World = scene;
-
-            m_dataCollectionThread = new Thread(o => { collectNodeData(); });
 
             try
             {
@@ -53,10 +50,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
             base.World.EventManager.OnNewPresence += onNewPresence;
 
-            if (m_dataCollectionThread.IsAlive)
-                m_dataCollectionThread.Abort();
-
-            m_dataCollectionThread.Start();
+            collectNodeData();
         }
 
         #endregion
@@ -70,8 +64,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    if (!m_dataCollectionThread.IsAlive)
-                        m_dataCollectionThread.Start();
+                    collectNodeData();
 
                     return;
                 }
@@ -84,8 +77,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
             if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
-                if (!m_dataCollectionThread.IsAlive)
-                    m_dataCollectionThread.Start();
+                collectNodeData();
 
                 return;
             }
@@ -98,8 +90,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
             if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
-                if (!m_dataCollectionThread.IsAlive)
-                    m_dataCollectionThread.Start();
+                collectNodeData();
 
                 return;
             }
@@ -114,8 +105,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             {
                 if (part.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    if (!m_dataCollectionThread.IsAlive)
-                        m_dataCollectionThread.Start();
+                    collectNodeData();
 
                     return;
                 }
@@ -127,8 +117,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             if (m_scanning == true)
                 return;
 
-            if (!m_dataCollectionThread.IsAlive)
-                m_dataCollectionThread.Start();
+            collectNodeData();
         }
 
         #endregion
