@@ -156,14 +156,17 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
                         foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
                         {
-                            NodeInfo ni = m_nodes.Find(x => x.Name.Equals(item.Name));
+                            if(item.Type == 7)
+                            {
+                                NodeInfo ni = m_nodes.Find(x => x.Name.Equals(item.Name));
 
-                            if (!node.Connections.Contains(ni.ID))
-                                node.Connections.Add(ni.ID);
+                                if (!node.Connections.Contains(ni.ID))
+                                    node.Connections.Add(ni.ID);
 
-                            if(ni != null)
-                                if (!ni.Connections.Contains(part.UUID))
-                                    ni.Connections.Add(part.UUID);
+                                if (ni != null)
+                                    if (!ni.Connections.Contains(part.UUID))
+                                        ni.Connections.Add(part.UUID);
+                            }
                         }
                     }
 
