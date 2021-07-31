@@ -51,6 +51,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             base.World.EventManager.OnSceneObjectPartUpdated += onSceneObjectPartUpdated;
             base.World.EventManager.OnIncomingSceneObject += onIncomingSceneObject;
             base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
+            base.World.EventManager.OnNewPresence += onNewPresence;
 
             if (m_dataCollectionThread.IsAlive)
                 m_dataCollectionThread.Abort();
@@ -119,6 +120,15 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                     return;
                 }
             }
+        }
+
+        private void onNewPresence(ScenePresence presence)
+        {
+            if (m_scanning == true)
+                return;
+
+            if (!m_dataCollectionThread.IsAlive)
+                m_dataCollectionThread.Start();
         }
 
         #endregion
