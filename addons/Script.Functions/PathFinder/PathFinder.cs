@@ -161,8 +161,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                             if (!node.Connections.Contains(ni.ID))
                                 node.Connections.Add(ni.ID);
 
-                            if (!ni.Connections.Contains(part.UUID))
-                                ni.Connections.Add(part.UUID);
+                            if(ni != null)
+                                if (!ni.Connections.Contains(part.UUID))
+                                    ni.Connections.Add(part.UUID);
                         }
                     }
 
