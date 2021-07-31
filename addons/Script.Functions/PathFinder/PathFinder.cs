@@ -62,7 +62,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         private void onIncomingSceneObject(SceneObjectGroup so)
         {
             foreach (SceneObjectPart thisPart in so.Parts)
-                if (containTextur(thisPart, NODE_TEXTURE))
+                if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
                     if (m_dataCollectionThread.IsAlive)
                         m_dataCollectionThread.Abort();
@@ -74,7 +74,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
         {
-            if (containTextur(original, NODE_TEXTURE))
+            if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
                 if (m_dataCollectionThread.IsAlive)
                     m_dataCollectionThread.Abort();
@@ -86,7 +86,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
         {
-            if (containTextur(sop, NODE_TEXTURE))
+            if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
                 if (m_dataCollectionThread.IsAlive)
                     m_dataCollectionThread.Abort();
@@ -99,7 +99,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         private void onSceneObjectLoaded(SceneObjectGroup so)
         {
             foreach (SceneObjectPart thisPart in so.Parts)
-                if (containTextur(thisPart, NODE_TEXTURE))
+                if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
                     if (m_dataCollectionThread.IsAlive)
                         m_dataCollectionThread.Abort();
@@ -123,7 +123,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 {
                     foreach(SceneObjectPart thisPart in thisGroup.Parts)
                     {
-                        if(containTextur(thisPart, NODE_TEXTURE))
+                        if(thisPart.Description.ToUpper().Equals("PATH_NODE"))
                         {
                             base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString());
 
@@ -154,29 +154,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                     }
                 }
             }
-        }
-
-        private bool containTextur(SceneObjectPart part, String texturID)
-        {
-            try
-            {
-                TextureEntry textures = part.Shape.Textures;
-                int allSides = part.GetNumberOfSides();
-
-                for (uint i = 0; i < allSides; i++)
-                {
-                    TextureEntryFace face = textures.GetFace(i);
-
-                    if (face.MaterialID.ToString().Equals(texturID))
-                        return true;
-                }
-            }
-            catch (Exception _error)
-            {
-                base.Logger.Error("[" + Name + "] ERROR: " + _error.Message);
-            }
-
-            return false;
         }
 
         #endregion
