@@ -126,50 +126,59 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         private void collectNodeData()
         {
             base.Logger.Info("PathFinder: collectNodeData();");
-
             m_scanning = true;
 
-            lock (m_nodes)
+            try
             {
-                m_nodes.Clear();
-
-                foreach(SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
+                lock (m_nodes)
                 {
-                    foreach(SceneObjectPart thisPart in thisGroup.Parts)
-                    {
-                        if(thisPart.Description.ToUpper().Equals("PATH_NODE"))
-                        {
-                            base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString());
+                    m_nodes.Clear();
 
-                            NodeInfo info = new NodeInfo();
-                            info.ID = thisPart.UUID;
-                            info.Name = thisPart.Name;
-                            m_nodes.Add(info);
+                    foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
+                    {
+                        foreach (SceneObjectPart thisPart in thisGroup.Parts)
+                        {
+                            if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
+                            {
+                                base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString());
+
+                                NodeInfo info = new NodeInfo();
+                                info.ID = thisPart.UUID;
+                                info.Name = thisPart.Name;
+                                m_nodes.Add(info);
+                            }
+                        }
+                    }
+
+                    foreach (NodeInfo node in m_nodes)
+                    {
+                        SceneObjectPart part = base.World.GetSceneObjectPart(node.ID);
+
+                        if (part == null)
+                            continue;
+
+                        foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
+                        {
+                            NodeInfo ni = m_nodes.Find(x => x.Name.Equals(item.Name));
+
+                            if (!node.Connections.Contains(ni.ID))
+                                node.Connections.Add(ni.ID);
+
+                            if (!ni.Connections.Contains(part.UUID))
+                                ni.Connections.Add(part.UUID);
                         }
                     }
                 }
-
-                foreach(NodeInfo node in m_nodes)
-                {
-                    SceneObjectPart part = base.World.GetSceneObjectPart(node.ID);
-
-                    if (part == null)
-                        continue;
-
-                    foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
-                    {
-                        NodeInfo ni = m_nodes.Find(x => x.Name.Equals(item.Name));
-
-                        if(!node.Connections.Contains(ni.ID))
-                            node.Connections.Add(ni.ID);
-
-                        if(!ni.Connections.Contains(part.UUID))
-                            ni.Connections.Add(part.UUID);
-                    }
-                }
             }
-
-            m_scanning = false;
+            catch (Exception error)
+            {
+                base.Logger.Error(error.Message);
+                base.Logger.Error(error.StackTrace);
+            }
+            finally
+            {
+                m_scanning = false;
+            }
         }
 
         #endregion
