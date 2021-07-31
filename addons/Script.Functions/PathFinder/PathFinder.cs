@@ -47,10 +47,10 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
             }
 
-            base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
             base.World.EventManager.OnSceneObjectPartCopy += onSceneObjectPartCopy;
             base.World.EventManager.OnSceneObjectPartUpdated += onSceneObjectPartUpdated;
             base.World.EventManager.OnIncomingSceneObject += onIncomingSceneObject;
+            base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
 
             if (m_dataCollectionThread.IsAlive)
                 m_dataCollectionThread.Abort();
@@ -63,65 +63,64 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         #region events
         private void onIncomingSceneObject(SceneObjectGroup so)
         {
-            if (m_scanning)
+            if (m_scanning == true)
                 return;
 
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    if (m_dataCollectionThread.IsAlive)
-                        m_dataCollectionThread.Abort();
+                    if (!m_dataCollectionThread.IsAlive)
+                        m_dataCollectionThread.Start();
 
-                    m_dataCollectionThread.Start();
                     return;
                 }
         }
 
         private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
         {
-            if (m_scanning)
+            if (m_scanning == true)
                 return;
 
             if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
-                if (m_dataCollectionThread.IsAlive)
-                    m_dataCollectionThread.Abort();
+                if (!m_dataCollectionThread.IsAlive)
+                    m_dataCollectionThread.Start();
 
-                m_dataCollectionThread.Start();
                 return;
             }
         }
 
         private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
         {
-            if (m_scanning)
+            if (m_scanning == true)
                 return;
 
             if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
-                if (m_dataCollectionThread.IsAlive)
-                    m_dataCollectionThread.Abort();
+                if (!m_dataCollectionThread.IsAlive)
+                    m_dataCollectionThread.Start();
 
-                m_dataCollectionThread.Start();
                 return;
             }
         }
 
         private void onSceneObjectLoaded(SceneObjectGroup so)
         {
-            if (m_scanning)
+            if (m_scanning == true)
                 return;
 
-            foreach (SceneObjectPart thisPart in so.Parts)
-                if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
+            foreach (SceneObjectPart part in so.Parts)
+            {
+                if (part.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    if (m_dataCollectionThread.IsAlive)
-                        m_dataCollectionThread.Abort();
+                    if (!m_dataCollectionThread.IsAlive)
+                        m_dataCollectionThread.Start();
 
-                    m_dataCollectionThread.Start();
                     return;
                 }
+            }
         }
+
         #endregion
 
         #region funktions
