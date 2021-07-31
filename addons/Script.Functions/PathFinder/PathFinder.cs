@@ -113,6 +113,8 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         #region funktions
         private void collectNodeData()
         {
+            base.Logger.Info("PathFinder: collectNodeData();");
+
             lock(m_nodes)
             {
                 m_nodes.Clear();
@@ -123,6 +125,8 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                     {
                         if(containTextur(thisPart, NODE_TEXTURE))
                         {
+                            base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString());
+
                             NodeInfo info = new NodeInfo();
                             info.ID = thisPart.UUID;
                             info.Name = thisPart.Name;
