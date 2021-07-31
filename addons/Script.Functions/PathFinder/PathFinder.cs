@@ -58,55 +58,39 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         #region events
         private void onIncomingSceneObject(SceneObjectGroup so)
         {
-            if (m_scanning == true)
-                return;
-
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
                     collectNodeData();
-
                     return;
                 }
         }
 
         private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
         {
-            if (m_scanning == true)
-                return;
-
             if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
                 collectNodeData();
-
                 return;
             }
         }
 
         private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
         {
-            if (m_scanning == true)
-                return;
-
             if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
                 collectNodeData();
-
                 return;
             }
         }
 
         private void onSceneObjectLoaded(SceneObjectGroup so)
         {
-            if (m_scanning == true)
-                return;
-
             foreach (SceneObjectPart part in so.Parts)
             {
                 if (part.Description.ToUpper().Equals("PATH_NODE"))
                 {
                     collectNodeData();
-
                     return;
                 }
             }
@@ -114,9 +98,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onNewPresence(ScenePresence presence)
         {
-            if (m_scanning == true)
-                return;
-
             collectNodeData();
         }
 
@@ -126,12 +107,17 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         private void collectNodeData()
         {
             base.Logger.Info("PathFinder: collectNodeData();");
+
+            if (m_scanning == true)
+                return;
+
             m_scanning = true;
 
-            try
+            lock (m_nodes)
             {
-                lock (m_nodes)
+                try
                 {
+
                     m_nodes.Clear();
 
                     foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
@@ -140,7 +126,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                         {
                             if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                             {
-                                base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString());
+                                base.Logger.Info("PathFinder: Found " + thisPart.UUID.ToString() + " (" + thisPart.Name + ")");
 
                                 NodeInfo info = new NodeInfo();
                                 info.ID = thisPart.UUID;
@@ -149,12 +135,23 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                             }
                         }
                     }
+                }
+                catch (Exception error)
+                {
+                    base.Logger.Error("Fatal Error while collectNodeData() SCAN: " + error.Message);
+                    base.Logger.Error(error.StackTrace);
+                }
 
+                try
+                {
                     foreach (NodeInfo node in m_nodes)
                     {
                         SceneObjectPart part = base.World.GetSceneObjectPart(node.ID);
 
                         if (part == null)
+                            continue;
+
+                        if (part.Inventory == null)
                             continue;
 
                         foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
@@ -168,17 +165,16 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                                 ni.Connections.Add(part.UUID);
                         }
                     }
+
+                }
+                catch (Exception error)
+                {
+                    base.Logger.Error("Fatal Error while collectNodeData() CONNECT: " + error.Message);
+                    base.Logger.Error(error.StackTrace);
                 }
             }
-            catch (Exception error)
-            {
-                base.Logger.Error(error.Message);
-                base.Logger.Error(error.StackTrace);
-            }
-            finally
-            {
-                m_scanning = false;
-            }
+
+            m_scanning = false;
         }
 
         #endregion

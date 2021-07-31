@@ -10,7 +10,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
     class NodeInfo
     {
         public UUID ID = UUID.Zero;
-        public String Name = null;
+        public String Name = "";
         public List<UUID> Connections = new List<UUID>();
 
         public Boolean AlreadyChecked = false;
