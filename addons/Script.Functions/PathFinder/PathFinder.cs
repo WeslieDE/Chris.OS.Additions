@@ -1,16 +1,232 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
+using OpenMetaverse;
+using OpenSim.Framework;
+using OpenSim.Region.Framework.Interfaces;
+using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using static OpenMetaverse.Primitive;
 
 namespace Chris.OS.Additions.Script.Functions.PathFinder
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "PathFinder")]
+
     class PathFinder : EmptyModule
     {
         private const String NODE_TEXTURE = "921f6d16-90c8-4926-963b-4698ff107c29";
 
+        private List<NodeInfo> m_nodes = new List<NodeInfo>();
+        private Thread m_dataCollectionThread = null;
 
+        #region EmptyModule
+        public override string Name
+        {
+            get { return "PathFinder"; }
+        }
+
+        public override void RegionLoaded(Scene scene)
+        {
+            base.World = scene;
+
+            m_dataCollectionThread = new Thread(o => { collectNodeData(); });
+
+            try
+            {
+                IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
+
+                m_scriptModule.RegisterScriptInvocation(this, "osGetNodeListToTarget");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetNodeList");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetNodeConnections");
+            }
+            catch (Exception e)
+            {
+                base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
+            }
+
+            base.World.EventManager.OnSceneObjectLoaded += onSceneObjectLoaded;
+            base.World.EventManager.OnSceneObjectPartCopy += onSceneObjectPartCopy;
+            base.World.EventManager.OnSceneObjectPartUpdated += onSceneObjectPartUpdated;
+            base.World.EventManager.OnIncomingSceneObject += onIncomingSceneObject;
+
+            if (m_dataCollectionThread.IsAlive)
+                m_dataCollectionThread.Abort();
+
+            m_dataCollectionThread.Start();
+        }
+
+        #endregion
+
+        #region events
+        private void onIncomingSceneObject(SceneObjectGroup so)
+        {
+            foreach (SceneObjectPart thisPart in so.Parts)
+                if (containTextur(thisPart, NODE_TEXTURE))
+                {
+                    if (m_dataCollectionThread.IsAlive)
+                        m_dataCollectionThread.Abort();
+
+                    m_dataCollectionThread.Start();
+                    return;
+                }
+        }
+
+        private void onSceneObjectPartCopy(SceneObjectPart copy, SceneObjectPart original, bool userExposed)
+        {
+            if (containTextur(original, NODE_TEXTURE))
+            {
+                if (m_dataCollectionThread.IsAlive)
+                    m_dataCollectionThread.Abort();
+
+                m_dataCollectionThread.Start();
+                return;
+            }
+        }
+
+        private void onSceneObjectPartUpdated(SceneObjectPart sop, bool full)
+        {
+            if (containTextur(sop, NODE_TEXTURE))
+            {
+                if (m_dataCollectionThread.IsAlive)
+                    m_dataCollectionThread.Abort();
+
+                m_dataCollectionThread.Start();
+                return;
+            }
+        }
+
+        private void onSceneObjectLoaded(SceneObjectGroup so)
+        {
+            foreach (SceneObjectPart thisPart in so.Parts)
+                if (containTextur(thisPart, NODE_TEXTURE))
+                {
+                    if (m_dataCollectionThread.IsAlive)
+                        m_dataCollectionThread.Abort();
+
+                    m_dataCollectionThread.Start();
+                    return;
+                }
+        }
+        #endregion
+
+        #region funktions
+        private void collectNodeData()
+        {
+            lock(m_nodes)
+            {
+                m_nodes.Clear();
+
+                foreach(SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
+                {
+                    foreach(SceneObjectPart thisPart in thisGroup.Parts)
+                    {
+                        if(containTextur(thisPart, NODE_TEXTURE))
+                        {
+                            NodeInfo info = new NodeInfo();
+                            info.ID = thisPart.UUID;
+                            info.Name = thisPart.Name;
+                            m_nodes.Add(info);
+                        }
+                    }
+                }
+
+                foreach(NodeInfo node in m_nodes)
+                {
+                    SceneObjectPart part = base.World.GetSceneObjectPart(node.ID);
+
+                    if (part == null)
+                        continue;
+
+                    foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
+                    {
+                        NodeInfo ni = m_nodes.Find(x => x.Name.Equals(item.Name));
+
+                        if(!node.Connections.Contains(ni.ID))
+                            node.Connections.Add(ni.ID);
+
+                        if(!ni.Connections.Contains(part.UUID))
+                            ni.Connections.Add(part.UUID);
+                    }
+                }
+            }
+        }
+
+        private bool containTextur(SceneObjectPart part, String texturID)
+        {
+            try
+            {
+                TextureEntry textures = part.Shape.Textures;
+                int allSides = part.GetNumberOfSides();
+
+                for (uint i = 0; i < allSides; i++)
+                {
+                    TextureEntryFace face = textures.GetFace(i);
+
+                    if (face.MaterialID.ToString().Equals(texturID))
+                        return true;
+                }
+            }
+            catch (Exception _error)
+            {
+                base.Logger.Error("[" + Name + "] ERROR: " + _error.Message);
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Script functions
+        [ScriptInvocation]
+        public object[] osGetNodeList(UUID hostID, UUID scriptID)
+        {
+            List<object> returnData = new List<object>();
+
+            foreach (NodeInfo node in m_nodes)
+                returnData.Add(node.ID);
+
+            return returnData.ToArray();
+        }
+
+        [ScriptInvocation]
+        public object[] osGetNodeConnections(UUID hostID, UUID scriptID, UUID nodeID)
+        {
+            List<object> returnData = new List<object>();
+
+            NodeInfo nodeInfo = m_nodes.Find(x => x.ID.Equals(nodeID));
+
+            if (nodeInfo == null)
+                throw new Exception("Cant find node");
+
+            foreach (UUID id in nodeInfo.Connections)
+                returnData.Add(id);
+
+            return returnData.ToArray();
+        }
+        
+
+        [ScriptInvocation]
+        public object[] osGetNodeListToTarget(UUID hostID, UUID scriptID, UUID start, UUID target)
+        {
+            NodeInfo startNodeInfo = m_nodes.Find(x => x.ID.Equals(start));
+
+            if (startNodeInfo == null)
+                throw new Exception("Cant find start node");
+
+            if (startNodeInfo.Connections.Count == 0)
+                throw new Exception("Start node have no conecctions");
+
+            foreach (UUID thisStartNodeConnection in startNodeInfo.Connections)
+            {
+                NodeInfo thisNodeInfo = m_nodes.Find(x => x.ID.Equals(thisStartNodeConnection));
+
+                if (thisNodeInfo == null)
+                    continue;
+            }
+
+            return new object[0];
+        }
+        #endregion
     }
 }
