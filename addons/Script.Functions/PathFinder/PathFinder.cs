@@ -218,8 +218,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 currentNode = ni;
             }
 
-            //foreach (NodeInfo node in workspace)
-                //outputList.Add(JsonConvert.SerializeObject(node));
+            outputList.Add(endNodeInfo.ID);
 
             outputList.Reverse();
             return outputList.ToArray();
