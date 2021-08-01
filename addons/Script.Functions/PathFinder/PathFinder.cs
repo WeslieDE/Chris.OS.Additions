@@ -297,12 +297,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             workspace.Add(startNodeInfo);
 
             NodeInfo currentNode = startNodeInfo;
+            UUID parentID = currentNode.ID;
 
             try
             {
                 while (currentNode != null)
                 {
-                    currentNode.ParentNode = currentNode.ID;
+                    currentNode.ParentNode = parentID;
+                    parentID = currentNode.ID;
 
                     foreach (UUID thisNodeID in currentNode.Connections)
                     {
