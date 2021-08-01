@@ -296,9 +296,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 if (currentNode == startNodeInfo)
                     break;
 
-                if (currentNode.ParentNode == null)
-                    break;
-
                 outputList.Add(currentNode);
 
                 currentNode = currentNode.ParentNode;
