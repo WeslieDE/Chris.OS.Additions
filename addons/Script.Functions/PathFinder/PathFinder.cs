@@ -181,6 +181,23 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             m_scanning = false;
         }
 
+        private List<NodeInfo> getCopyOfNodeList()
+        {
+            List<NodeInfo> returnData = new List<NodeInfo>();
+
+            foreach(NodeInfo thisNodeInfo in m_nodes)
+            {
+                NodeInfo newNodeInfo = new NodeInfo();
+                newNodeInfo.ID = thisNodeInfo.ID;
+                newNodeInfo.Name = thisNodeInfo.Name;
+                newNodeInfo.Connections = thisNodeInfo.Connections;
+
+                returnData.Add(newNodeInfo);
+            }
+
+            return returnData;
+        }
+
         #endregion
 
         #region Script function
@@ -220,25 +237,76 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         
 
         [ScriptInvocation]
-        public object[] osGetNodeListToTarget(UUID hostID, UUID scriptID, UUID start, UUID target)
+        public object[] osGetNodeListToTarget(UUID hostID, UUID scriptID, UUID start, UUID end)
         {
-            NodeInfo startNodeInfo = m_nodes.Find(x => x.ID.Equals(start));
+            List<NodeInfo> nodes = getCopyOfNodeList();
+            List<NodeInfo> workspace = new List<NodeInfo>();
+            List<object> outputList = new List<object>();
+
+            NodeInfo startNodeInfo = nodes.Find(x => x.ID.Equals(start));
+            NodeInfo endNodeInfo = nodes.Find(x => x.ID.Equals(end));
 
             if (startNodeInfo == null)
                 throw new Exception("Cant find start node");
 
+            if (startNodeInfo == null)
+                throw new Exception("Cant find end node");
+
             if (startNodeInfo.Connections.Count == 0)
                 throw new Exception("Start node have no conecctions");
 
-            foreach (UUID thisStartNodeConnection in startNodeInfo.Connections)
-            {
-                NodeInfo thisNodeInfo = m_nodes.Find(x => x.ID.Equals(thisStartNodeConnection));
+            if (endNodeInfo.Connections.Count == 0)
+                throw new Exception("End node have no conecctions");
 
-                if (thisNodeInfo == null)
-                    continue;
+            workspace.Add(startNodeInfo);
+            NodeInfo currentNode = null;
+
+            while (true)
+            {
+                currentNode = nodes.Find(x => x.AlreadyChecked == false);
+
+                if(currentNode != null)
+                {
+                    currentNode.AlreadyChecked = true;
+                    
+                    if (currentNode == endNodeInfo)
+                        break;
+
+                    foreach(UUID thisNodeInfo in currentNode.Connections)
+                    {
+                        NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
+
+                        if(ni != null)
+                        {
+                            ni.ParentNode = currentNode;
+                            workspace.Add(ni);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            return new object[0];
+            currentNode = endNodeInfo;
+
+            while (true)
+            {
+                if (currentNode == startNodeInfo)
+                    break;
+
+                if (currentNode.ParentNode == null)
+                    break;
+
+                outputList.Add(currentNode);
+
+                currentNode = currentNode.ParentNode;
+            }
+
+            outputList.Reverse();
+
+            return outputList.ToArray();
         }
         #endregion
     }
