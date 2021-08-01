@@ -13,7 +13,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         public String Name = "";
         public List<UUID> Connections = new List<UUID>();
 
-        public Boolean AlreadyChecked = false;
-        public NodeInfo ParentNode = null;
+        public UUID ParentNode = UUID.Zero;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
+using Newtonsoft.Json;
 using OpenMetaverse;
 using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
@@ -292,37 +293,32 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             if (endNodeInfo.Connections.Count == 0)
                 throw new Exception("End node have no conecctions");
 
+            startNodeInfo.ParentNode = startNodeInfo.ID;
             workspace.Add(startNodeInfo);
-            NodeInfo currentNode = null;
+
+            NodeInfo currentNode = startNodeInfo;
 
             try
             {
-                while (true)
+                while (currentNode != null)
                 {
-                    currentNode = workspace.Find(x => x.AlreadyChecked == false);
+                    currentNode.ParentNode = currentNode.ID;
 
-                    if (currentNode != null)
+                    foreach (UUID thisNodeInfo in currentNode.Connections)
                     {
-                        currentNode.AlreadyChecked = true;
+                        NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
 
-                        if (currentNode == endNodeInfo)
-                            break;
-
-                        foreach (UUID thisNodeInfo in currentNode.Connections)
+                        if (ni != null)
                         {
-                            NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
-
-                            if (ni != null)
+                            if(ni.ParentNode == UUID.Zero)
                             {
-                                ni.ParentNode = currentNode;
+                                ni.ParentNode = currentNode.ID;
                                 workspace.Add(ni);
                             }
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
+
+                    currentNode = workspace.Find(x => x.ParentNode == UUID.Zero);
                 }
             }catch(Exception error)
             {
@@ -330,28 +326,10 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 base.Logger.Error(error.StackTrace);
             }
 
+            foreach(NodeInfo node in workspace)
+                outputList.Add(JsonConvert.SerializeObject(node));
 
-            try
-            {
-                currentNode = endNodeInfo;
-
-                while (true)
-                {
-                    if (currentNode == startNodeInfo)
-                        break;
-
-                    outputList.Add(currentNode);
-
-                    currentNode = currentNode.ParentNode;
-                }
-            }
-            catch (Exception error)
-            {
-                base.Logger.Error("Error while get path to target: " + error.Message);
-                base.Logger.Error(error.StackTrace);
-            }
-
-            outputList.Reverse();
+            //outputList.Reverse();
             return outputList.ToArray();
         }
         #endregion
