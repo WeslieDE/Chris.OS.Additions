@@ -304,9 +304,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 {
                     currentNode.ParentNode = currentNode.ID;
 
-                    foreach (UUID thisNodeInfo in currentNode.Connections)
+                    foreach (UUID thisNodeID in currentNode.Connections)
                     {
-                        NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
+                        NodeInfo ni = nodes.Find(x => x.ID == thisNodeID);
 
                         if (ni != null)
                         {
@@ -315,6 +315,10 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                                 ni.ParentNode = currentNode.ID;
                                 workspace.Add(ni);
                             }
+                        }
+                        else
+                        {
+                            base.Logger.Info("osGetNodeListToTarget(): Cant find node for id " + thisNodeID.ToString());
                         }
                     }
 
