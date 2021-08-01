@@ -15,6 +15,5 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         public Boolean AlreadyChecked = false;
         public NodeInfo ParentNode = null;
-        public Boolean ConnectedToTarget = false;
     }
 }

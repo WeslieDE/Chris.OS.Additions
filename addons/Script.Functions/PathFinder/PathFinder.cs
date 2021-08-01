@@ -61,7 +61,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             foreach (SceneObjectPart thisPart in so.Parts)
                 if (thisPart.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    collectNodeData();
+                    try
+                    {
+                        collectNodeData();
+                    }
+                    catch
+                    {
+                        base.Logger.Error("Error while collectNodeData();");
+                    }
                     return;
                 }
         }
@@ -70,7 +77,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         {
             if (original.Description.ToUpper().Equals("PATH_NODE"))
             {
-                collectNodeData();
+                try
+                {
+                    collectNodeData();
+                }
+                catch
+                {
+                    base.Logger.Error("Error while collectNodeData();");
+                }
                 return;
             }
         }
@@ -79,7 +93,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         {
             if (sop.Description.ToUpper().Equals("PATH_NODE"))
             {
-                collectNodeData();
+                try
+                {
+                    collectNodeData();
+                }
+                catch
+                {
+                    base.Logger.Error("Error while collectNodeData();");
+                }
                 return;
             }
         }
@@ -90,7 +111,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             {
                 if (part.Description.ToUpper().Equals("PATH_NODE"))
                 {
-                    collectNodeData();
+                    try
+                    {
+                        collectNodeData();
+                    }
+                    catch
+                    {
+                        base.Logger.Error("Error while collectNodeData();");
+                    }
                     return;
                 }
             }
@@ -98,7 +126,14 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
         private void onNewPresence(ScenePresence presence)
         {
-            collectNodeData();
+            try
+            {
+                collectNodeData();
+            }
+            catch
+            {
+                base.Logger.Error("Error while collectNodeData();");
+            }
         }
 
         #endregion
@@ -117,7 +152,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             {
                 try
                 {
-
                     m_nodes.Clear();
 
                     foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
@@ -261,48 +295,63 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             workspace.Add(startNodeInfo);
             NodeInfo currentNode = null;
 
-            while (true)
+            try
             {
-                currentNode = nodes.Find(x => x.AlreadyChecked == false);
-
-                if(currentNode != null)
+                while (true)
                 {
-                    currentNode.AlreadyChecked = true;
-                    
-                    if (currentNode == endNodeInfo)
-                        break;
+                    currentNode = workspace.Find(x => x.AlreadyChecked == false);
 
-                    foreach(UUID thisNodeInfo in currentNode.Connections)
+                    if (currentNode != null)
                     {
-                        NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
+                        currentNode.AlreadyChecked = true;
 
-                        if(ni != null)
+                        if (currentNode == endNodeInfo)
+                            break;
+
+                        foreach (UUID thisNodeInfo in currentNode.Connections)
                         {
-                            ni.ParentNode = currentNode;
-                            workspace.Add(ni);
+                            NodeInfo ni = nodes.Find(x => x.ID.Equals(thisNodeInfo));
+
+                            if (ni != null)
+                            {
+                                ni.ParentNode = currentNode;
+                                workspace.Add(ni);
+                            }
                         }
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    break;
-                }
+            }catch(Exception error)
+            {
+                base.Logger.Error("Error while get path line: " + error.Message);
+                base.Logger.Error(error.StackTrace);
             }
 
-            currentNode = endNodeInfo;
 
-            while (true)
+            try
             {
-                if (currentNode == startNodeInfo)
-                    break;
+                currentNode = endNodeInfo;
 
-                outputList.Add(currentNode);
+                while (true)
+                {
+                    if (currentNode == startNodeInfo)
+                        break;
 
-                currentNode = currentNode.ParentNode;
+                    outputList.Add(currentNode);
+
+                    currentNode = currentNode.ParentNode;
+                }
+            }
+            catch (Exception error)
+            {
+                base.Logger.Error("Error while get path to target: " + error.Message);
+                base.Logger.Error(error.StackTrace);
             }
 
             outputList.Reverse();
-
             return outputList.ToArray();
         }
         #endregion
