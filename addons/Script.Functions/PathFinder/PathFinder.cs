@@ -5,6 +5,7 @@ using OpenMetaverse;
 using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
+using OpenSim.Region.ScriptEngine.Shared;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -153,16 +154,16 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             NodeInfo endNodeInfo = nodes.Find(x => x.ID.Equals(end));
 
             if (startNodeInfo == null)
-                throw new Exception("Cant find start node");
+                throw new ScriptException("Cant find start node");
 
             if (startNodeInfo == null)
-                throw new Exception("Cant find end node");
+                throw new ScriptException("Cant find end node");
 
             if (startNodeInfo.Connections.Count == 0)
-                throw new Exception("Start node have no conecctions");
+                throw new ScriptException("Start node have no conecctions");
 
             if (endNodeInfo.Connections.Count == 0)
-                throw new Exception("End node have no conecctions");
+                throw new ScriptException("End node have no conecctions");
 
             startNodeInfo.ParentNode = startNodeInfo.ID;
             workspace.Add(startNodeInfo);
@@ -205,10 +206,22 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 base.Logger.Error(error.StackTrace);
             }
 
-            foreach(NodeInfo node in workspace)
-                outputList.Add(JsonConvert.SerializeObject(node));
+            if (endNodeInfo.ParentNode == UUID.Zero)
+                throw new ScriptException("cant find path");
 
-            //outputList.Reverse();
+            currentNode = endNodeInfo;
+            while(currentNode.ID != startNodeInfo.ID)
+            {
+                NodeInfo ni = nodes.Find(x => x.ID == currentNode.ParentNode);
+
+                outputList.Add(currentNode.ParentNode);
+                currentNode = ni;
+            }
+
+            //foreach (NodeInfo node in workspace)
+                //outputList.Add(JsonConvert.SerializeObject(node));
+
+            outputList.Reverse();
             return outputList.ToArray();
         }
         #endregion
