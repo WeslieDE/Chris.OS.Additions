@@ -218,9 +218,8 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 currentNode = ni;
             }
 
-            outputList.Add(endNodeInfo.ID);
-
             outputList.Reverse();
+            outputList.Add(endNodeInfo.ID);
             return outputList.ToArray();
         }
         #endregion
