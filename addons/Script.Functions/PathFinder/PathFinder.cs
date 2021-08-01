@@ -297,14 +297,12 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             workspace.Add(startNodeInfo);
 
             NodeInfo currentNode = startNodeInfo;
-            UUID parentID = currentNode.ID;
 
             try
             {
                 while (currentNode != null)
                 {
-                    currentNode.ParentNode = parentID;
-                    parentID = currentNode.ID;
+                    currentNode.Checked = true;
 
                     foreach (UUID thisNodeID in currentNode.Connections)
                     {
@@ -328,7 +326,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                         }
                     }
 
-                    currentNode = workspace.Find(x => x.ParentNode == UUID.Zero);
+                    currentNode = workspace.Find(x => x.Checked == false);
                 }
             }catch(Exception error)
             {
