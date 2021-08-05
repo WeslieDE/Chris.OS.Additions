@@ -187,14 +187,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                                 ni.ParentNode = currentNode.ID;
                                 workspace.Add(ni);
                             }
-                            else
-                            {
-                                base.Logger.Info("osGetNodeListToTarget(): parentNode allready set with " + ni.ParentNode.ToString());
-                            }
-                        }
-                        else
-                        {
-                            base.Logger.Info("osGetNodeListToTarget(): Cant find node for id " + thisNodeID.ToString());
                         }
                     }
 
