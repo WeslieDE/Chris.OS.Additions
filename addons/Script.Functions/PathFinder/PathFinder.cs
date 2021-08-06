@@ -8,15 +8,14 @@ using OpenSim.Region.Framework.Scenes;
 using OpenSim.Region.ScriptEngine.Shared;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using static OpenMetaverse.Primitive;
 
 namespace Chris.OS.Additions.Script.Functions.PathFinder
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "PathFinder")]
-
     class PathFinder : EmptyModule
     {
+        private Dictionary<String, object[]> m_cache = new Dictionary<String, object[]>();
+
         #region EmptyModule
         public override string Name
         {
@@ -27,6 +26,11 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         {
             base.World = scene;
 
+            base.World.Permissions.OnRezObject += onRezObject;
+            base.World.Permissions.OnDeleteObject += onDeleteObject;
+            base.World.Permissions.OnDuplicateObject += onDuplicateObject;
+            base.World.Permissions.OnEditObject += onEditObject;
+
             try
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
@@ -34,6 +38,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeListToTarget");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeList");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeConnections");
+                m_scriptModule.RegisterScriptInvocation(this, "osClearNodeCache");
             }
             catch (Exception e)
             {
@@ -41,6 +46,44 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             }
         }
 
+        #endregion
+
+        #region Events
+        private bool onEditObject(SceneObjectGroup sog, ScenePresence sp)
+        {
+            lock (m_cache)
+            {
+                m_cache.Clear();
+                return true;
+            }
+        }
+
+        private bool onDuplicateObject(SceneObjectGroup sog, ScenePresence sp)
+        {
+            lock (m_cache)
+            {
+                m_cache.Clear();
+                return true;
+            }
+        }
+
+        private bool onDeleteObject(SceneObjectGroup sog, ScenePresence sp)
+        {
+            lock (m_cache)
+            {
+                m_cache.Clear();
+                return true;
+            }
+        }
+
+        private bool onRezObject(int objectCount, UUID owner, Vector3 objectPosition)
+        {
+            lock(m_cache)
+            {
+                m_cache.Clear();
+                return true;
+            }
+        }
         #endregion
 
         #region funktions
@@ -111,6 +154,17 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
         #endregion
 
         #region Script function
+
+
+        [ScriptInvocation]
+        public void osClearNodeCache(UUID hostID, UUID scriptID)
+        {
+            lock (m_cache)
+            {
+                m_cache.Clear();
+            }
+        }
+
         [ScriptInvocation]
         public object[] osGetNodeList(UUID hostID, UUID scriptID)
         {
@@ -137,11 +191,13 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
             return returnData.ToArray();
         }
-        
 
         [ScriptInvocation]
         public object[] osGetNodeListToTarget(UUID hostID, UUID scriptID, UUID start, UUID end)
         {
+            if (m_cache.TryGetValue(start.ToString() + ":" + end.ToString(), out object[] cache))
+                return cache;
+
             List<NodeInfo> nodes = collectNodeData();
             List<NodeInfo> workspace = new List<NodeInfo>();
             List<object> outputList = new List<object>();
@@ -208,6 +264,9 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
             outputList.Reverse();
             outputList.Add(endNodeInfo.ID);
+
+            m_cache.Add(start.ToString() + ":" + end.ToString(), outputList.ToArray());
+
             return outputList.ToArray();
         }
         #endregion
