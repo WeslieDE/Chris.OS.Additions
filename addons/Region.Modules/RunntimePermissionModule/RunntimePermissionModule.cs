@@ -27,7 +27,8 @@ namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
             base.World = scene;
 
             base.World.Permissions.OnRezObject += onRezObject;
-
+            base.World.Permissions.OnDeleteObject += onDeleteObject;
+            
             try
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
@@ -38,11 +39,12 @@ namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
                 base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
             }
         }
+
         #endregion
 
         #region Script functions
         [ScriptInvocation]
-        public void osRLV(UUID hostID, UUID scriptID, UUID user, String rule, String value)
+        public void osSetExtraPermission(UUID hostID, UUID scriptID, UUID user, String rule, String value)
         {
             if(value.Trim().Equals(String.Empty))
             {
@@ -59,6 +61,15 @@ namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
         private bool onRezObject(int objectCount, UUID owner, Vector3 objectPosition)
         {
             if (getDataValue(owner, "rez") == "n")
+                return false;
+
+            return true;
+        }
+
+
+        private bool onDeleteObject(SceneObjectGroup sog, ScenePresence sp)
+        {
+            if (getDataValue(sp.UUID, "delete") == "n")
                 return false;
 
             return true;
