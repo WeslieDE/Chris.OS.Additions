@@ -72,15 +72,13 @@ namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
 
             if(m_userdata.TryGetValue(user, out ud))
             {
-                String value = null;
-
-                if(ud.Rules.TryGetValue(key, out value))
+                if(ud.Rules.TryGetValue(key, out String value))
                     return value;
 
-                return null;
+                return "";
             }
 
-            return null;
+            return "";
         }
 
         private void setDataValue(UUID user, String key, String value)
