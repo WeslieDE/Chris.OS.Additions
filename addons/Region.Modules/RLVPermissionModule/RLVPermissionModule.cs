@@ -48,7 +48,7 @@ namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
 
         #region Script functions
         [ScriptInvocation]
-        public void rlv(UUID hostID, UUID scriptID, UUID user, String rule, String value)
+        public void osRLV(UUID hostID, UUID scriptID, UUID user, String rule, String value)
         {
             setDataValue(user, rule, value);
         }
