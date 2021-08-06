@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
+namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
 {
     class UserData
     {
