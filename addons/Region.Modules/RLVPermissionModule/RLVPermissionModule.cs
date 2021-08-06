@@ -29,10 +29,13 @@ namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
         {
             base.World = scene;
 
+            base.World.Permissions.OnViewNotecard += onViewNotecard;
+            base.World.Permissions.OnStartScript += onStartScript;
+            base.World.Permissions.OnStopScript += onStopScript;
             base.World.Permissions.OnRezObject += onRezObject;
             base.World.Permissions.OnEditObject += onEditObject;
             base.World.Permissions.OnTeleport += onTeleport;
-
+            
             try
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
@@ -43,6 +46,7 @@ namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
                 base.Logger.WarnFormat("[" + Name + "]: script method registration failed; {0}", e.Message);
             }
         }
+
 
         #endregion
 
@@ -83,6 +87,40 @@ namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
             if (getDataValue(userID, "teleport") == "n")
             {
                 sendMessage(userID, "RLV: You are not allowed to do this.");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private bool onViewNotecard(UUID script, UUID objectID, UUID user)
+        {
+            if (getDataValue(user, "notecard") == "n")
+            {
+                sendMessage(user, "RLV: You are not allowed to do this.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool onStartScript(UUID script, UUID user)
+        {
+            if (getDataValue(user, "script") == "n")
+            {
+                sendMessage(user, "RLV: You are not allowed to do this.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool onStopScript(UUID script, UUID user)
+        {
+            if (getDataValue(user, "script") == "n")
+            {
+                sendMessage(user, "RLV: You are not allowed to do this.");
                 return false;
             }
 
@@ -130,6 +168,9 @@ namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
 
                 if (m_userdata.TryGetValue(user, out ud))
                 {
+                    if (ud.Rules.ContainsKey(key))
+                        ud.Rules.Remove(key);
+
                     ud.Rules.Add(key, value);
                 }
                 else
