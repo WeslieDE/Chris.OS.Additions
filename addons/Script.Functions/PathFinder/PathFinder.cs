@@ -17,11 +17,6 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
     class PathFinder : EmptyModule
     {
-        private const String NODE_TEXTURE = "921f6d16-90c8-4926-963b-4698ff107c29";
-
-        
-        private Boolean m_scanning = false;
-
         #region EmptyModule
         public override string Name
         {
@@ -93,16 +88,17 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                         {
                             NodeInfo ni = nodes.Find(x => x.Name.Equals(item.Name));
 
-                            if (!node.Connections.Contains(ni.ID))
-                                node.Connections.Add(ni.ID);
+                            if(ni != null)
+                            {
+                                if (!node.Connections.Contains(ni.ID))
+                                    node.Connections.Add(ni.ID);
 
-                            if (ni != null)
                                 if (!ni.Connections.Contains(part.UUID))
                                     ni.Connections.Add(part.UUID);
+                            }
                         }
                     }
                 }
-
             }
             catch (Exception error)
             {
@@ -134,7 +130,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             NodeInfo nodeInfo = collectNodeData().Find(x => x.ID.Equals(nodeID));
 
             if (nodeInfo == null)
-                throw new Exception("Cant find node");
+                return returnData.ToArray();
 
             foreach (UUID id in nodeInfo.Connections)
                 returnData.Add(id);

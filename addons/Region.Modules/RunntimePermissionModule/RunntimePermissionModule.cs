@@ -1,12 +1,10 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using OpenMetaverse;
-using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-
 
 namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
 {
