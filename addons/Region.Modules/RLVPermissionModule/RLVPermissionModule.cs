@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework;
@@ -12,6 +13,8 @@ using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.RLVPermissionModule
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RLVPermissionModule")]
+
     class RLVPermissionModule : EmptyModule
     {
         private Dictionary<UUID, UserData> m_userdata = new Dictionary<UUID, UserData>();
