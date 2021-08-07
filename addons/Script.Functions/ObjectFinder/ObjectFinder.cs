@@ -8,6 +8,7 @@ using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Chris.OS.Additions.Script.Functions.ObjectFinder
@@ -88,18 +89,27 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
         [ScriptInvocation]
         public object[] osGetSearchableObjectList(UUID hostID, UUID scriptID, String searchString)
         {
+            SceneObjectPart host = base.World.GetSceneObjectPart(hostID);
             CacheData cache = m_GroupCache.Find(x => x.searchString.Equals(searchString));
 
             if (cache != null)
                 return cache.results.ToArray();
 
+            List<ObjectData> dataList = new List<ObjectData>();
             List<object> returnList = new List<object>();
 
             foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
             {
+                float dis = Vector3.Distance(thisGroup.AbsolutePosition, host.AbsolutePosition);
+
                 if(thisGroup.Name == searchString)
-                    returnList.Add(thisGroup.UUID);
+                    dataList.Add(new ObjectData(thisGroup.Name, thisGroup.UUID, dis));
             }
+
+            dataList.Sort((x, y) => x.Distance.CompareTo(y.Distance));
+
+            foreach (ObjectData obj in dataList)
+                returnList.Add(obj.ID);
 
             m_GroupCache.Add(new CacheData(searchString, returnList));
             return returnList.ToArray();
@@ -108,21 +118,30 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
         [ScriptInvocation]
         public object[] osGetSearchableObjectPartList(UUID hostID, UUID scriptID, String searchString)
         {
+            SceneObjectPart host = base.World.GetSceneObjectPart(hostID);
             CacheData cache = m_PartCache.Find(x => x.searchString.Equals(searchString));
 
             if (cache != null)
                 return cache.results.ToArray();
 
+            List<ObjectData> dataList = new List<ObjectData>();
             List<object> returnList = new List<object>();
 
             foreach (SceneObjectGroup thisGroup in base.World.GetSceneObjectGroups())
             {
                 foreach(SceneObjectPart thisPart in thisGroup.Parts)
                 {
+                    float dis = Vector3.Distance(thisPart.AbsolutePosition, host.AbsolutePosition);
+
                     if (thisPart.Name == searchString)
-                        returnList.Add(thisPart.UUID);
+                        dataList.Add(new ObjectData(thisPart.Name, thisPart.UUID, dis));
                 }
             }
+
+            dataList.Sort((x, y) => x.Distance.CompareTo(y.Distance));
+
+            foreach (ObjectData obj in dataList)
+                returnList.Add(obj.ID);
 
             m_PartCache.Add(new CacheData(searchString, returnList));
             return returnList.ToArray();

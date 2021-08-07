@@ -18,5 +18,11 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
             searchString = search;
             results = datas;
         }
+
+        public CacheData(String search, List<object> datas, float dis)
+        {
+            searchString = search;
+            results = datas;
+        }
     }
 }
