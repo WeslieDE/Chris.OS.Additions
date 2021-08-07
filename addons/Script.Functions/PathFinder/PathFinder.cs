@@ -228,16 +228,16 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             NodeInfo endNodeInfo = nodes.Find(x => x.ID.Equals(end));
 
             if (startNodeInfo == null)
-                throw new ScriptException("Cant find start node");
+                return new object[0];
 
             if (startNodeInfo == null)
-                throw new ScriptException("Cant find end node");
+                return new object[0];
 
             if (startNodeInfo.Connections.Count == 0)
-                throw new ScriptException("Start node have no conecctions");
+                return new object[0];
 
             if (endNodeInfo.Connections.Count == 0)
-                throw new ScriptException("End node have no conecctions");
+                return new object[0];
 
             startNodeInfo.ParentNode = startNodeInfo.ID;
             workspace.Add(startNodeInfo);
@@ -273,7 +273,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
             }
 
             if (endNodeInfo.ParentNode == UUID.Zero)
-                throw new ScriptException("cant find path");
+                return new object[0];
 
             currentNode = endNodeInfo;
             while(currentNode.ID != startNodeInfo.ID)
