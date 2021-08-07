@@ -37,6 +37,7 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
 
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeListToTarget");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeList");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetNextNode");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetNodeConnections");
                 m_scriptModule.RegisterScriptInvocation(this, "osClearNodeCache");
             }
@@ -190,6 +191,27 @@ namespace Chris.OS.Additions.Script.Functions.PathFinder
                 returnData.Add(id);
 
             return returnData.ToArray();
+        }
+
+        [ScriptInvocation]
+        public String osGetNextNode(UUID hostID, UUID scriptID, Vector3 position)
+        {
+            UUID currentResult = UUID.Zero;
+            float currentDistance = float.MaxValue;
+
+            foreach(NodeInfo node in collectNodeData())
+            {
+                SceneObjectPart part = base.World.GetSceneObjectPart(node.ID);
+                float distance = Vector3.Distance(position, part.AbsolutePosition);
+
+                if (distance < currentDistance)
+                {
+                    currentResult = node.ID;
+                    currentDistance = distance;
+                }
+            }
+
+            return currentResult.ToString();
         }
 
         [ScriptInvocation]
