@@ -26,7 +26,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         private List<StorageElement> m_cache = new List<StorageElement>();
 
         private Timer m_timer = null;
-        private int m_rateLimit = 0;
 
         public override string Name
         {
@@ -127,8 +126,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 if (_element != null)
                     return _element.get();
 
-                checkRateLimit();
-
                 try
                 {
                     String _data = m_storage.get(storageNameSpace, key);
@@ -181,8 +178,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     return;
                 }
 
-                checkRateLimit();
-
                 try
                 {
                     m_cache.Add(new StorageElement(storageNameSpace, key, value, m_storage));
@@ -222,8 +217,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 storageNameSpace = _host.OwnerID.ToString();
 
             StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-            checkRateLimit();
 
             if (m_storage != null)
             {
@@ -274,8 +267,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 if (_element != null)
                     return 1;
 
-                checkRateLimit();
-
                 try
                 {
                     if (m_storage.check(storageNameSpace, key))
@@ -295,27 +286,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
         private void cleanUp(object sender, ElapsedEventArgs e)
         {
-            if(m_rateLimit >= 0)
-                m_rateLimit = m_rateLimit - 100;
-
             List<StorageElement> _allStorageElements = m_cache.FindAll(X => X.LastUse + 10 <= (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
 
             foreach(StorageElement _element in _allStorageElements)
                 m_cache.Remove(_element);
         }
-
-        private void checkRateLimit()
-        {
-            m_rateLimit++;
-
-            if (m_rateLimit >= 1000)
-            {
-                DataStorageEvents.onRateLimit();
-                throw new Exception("Data storage rate limit reached!");
-            }
-                
-        }
-
         #endregion
     }
 }
