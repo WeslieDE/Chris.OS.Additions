@@ -142,8 +142,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     return "";
                 }
             }
-
-            throw new Exception("No data Storage aviable.");
+            else
+            {
+                base.Logger.Error("No data Storage aviable.");
+                return "";
+            }
         }
 
         [ScriptInvocation]
@@ -190,8 +193,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     base.Logger.Error("[" + Name + "] osSetDataValue: " + _error.Message);
                 }
             }
-
-            throw new Exception("No data Storage aviable.");
+            else
+            {
+                base.Logger.Error("No data Storage aviable.");
+            }
         }
 
         [ScriptInvocation]
@@ -234,8 +239,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     base.Logger.Error("[" + Name + "] osDeleteDataValue: " + _error.Message);
                 }
             }
-
-            throw new Exception("No data Storage aviable.");
+            else
+            {
+                base.Logger.Error("No data Storage aviable.");
+            }
         }
 
         [ScriptInvocation]
@@ -280,8 +287,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     return 0;
                 }
             }
-
-            throw new Exception("No data Storage aviable.");
+            else
+            {
+                base.Logger.Error("No data Storage aviable.");
+                return 0;
+            }
         }
 
         private void cleanUp(object sender, ElapsedEventArgs e)
