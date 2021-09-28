@@ -147,7 +147,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             {
                 using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
                 {
-                    _mysqlCommand.CommandText = "CREATE TABLE IF NOT EXISTS `StorageData` (`StorageID` VARCHAR(36) NOT NULL, `StorageKey` VARCHAR(512) NOT NULL, `StorageData` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`StorageID`, `StorageKey`)) COLLATE = 'utf8_general_ci'; ";
+                    _mysqlCommand.CommandText = "CREATE TABLE IF NOT EXISTS `StorageData` (`StorageID` VARCHAR(36) NOT NULL, `StorageKey` VARCHAR(512) NOT NULL, `StorageData` LONGTEXT NOT NULL DEFAULT '', PRIMARY KEY(`StorageID`, `StorageKey`)) COLLATE = 'utf8_general_ci'; ";
                     _mysqlCommand.ExecuteNonQuery();
                 }
             }
