@@ -114,20 +114,20 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if(m_storage != null)
             {
-                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-
-                String storageNameSpace = _host.GroupID.ToString();
-
-                if (privateStorage == 1)
-                    storageNameSpace = _host.OwnerID.ToString();
-
-                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                if (_element != null)
-                    return _element.get();
-
                 try
                 {
+                    SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
+
+                    String storageNameSpace = _host.GroupID.ToString();
+
+                    if (privateStorage == 1)
+                        storageNameSpace = _host.OwnerID.ToString();
+
+                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
+
+                    if (_element != null)
+                        return _element.get();
+
                     String _data = m_storage.get(storageNameSpace, key);
 
                     if (_data == null)
@@ -165,24 +165,24 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if (m_storage != null)
             {
-                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-
-                String storageNameSpace = _host.GroupID.ToString();
-
-                if (privateStorage == 1)
-                    storageNameSpace = _host.OwnerID.ToString();
-
-                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                if (_element != null)
-                {
-                    _element.save(value);
-                    DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
-                    return;
-                }
-
                 try
                 {
+                    SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
+
+                    String storageNameSpace = _host.GroupID.ToString();
+
+                    if (privateStorage == 1)
+                        storageNameSpace = _host.OwnerID.ToString();
+
+                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
+
+                    if (_element != null)
+                    {
+                        _element.save(value);
+                        DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
+                        return;
+                    }
+
                     m_cache.Add(new StorageElement(storageNameSpace, key, value, m_storage));
                     m_storage.save(storageNameSpace, key, value);
                     DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
@@ -214,19 +214,19 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         [ScriptInvocation]
         private void deleteDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
-            SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-
-            String storageNameSpace = _host.GroupID.ToString();
-
-            if (privateStorage == 1)
-                storageNameSpace = _host.OwnerID.ToString();
-
-            StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
             if (m_storage != null)
             {
                 try
                 {
+                    SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
+
+                    String storageNameSpace = _host.GroupID.ToString();
+
+                    if (privateStorage == 1)
+                        storageNameSpace = _host.OwnerID.ToString();
+
+                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
+
                     if (_element != null)
                         m_cache.Remove(_element);
 
@@ -262,20 +262,20 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         {
             if (m_storage != null)
             {
-                SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
-
-                String storageNameSpace = _host.GroupID.ToString();
-
-                if (privateStorage == 1)
-                    storageNameSpace = _host.OwnerID.ToString();
-
-                StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                if (_element != null)
-                    return 1;
-
                 try
                 {
+                    SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
+
+                    String storageNameSpace = _host.GroupID.ToString();
+
+                    if (privateStorage == 1)
+                        storageNameSpace = _host.OwnerID.ToString();
+
+                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
+
+                    if (_element != null)
+                        return 1;
+
                     if (m_storage.check(storageNameSpace, key))
                         return 1;
 
