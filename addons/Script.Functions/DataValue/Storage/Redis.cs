@@ -70,6 +70,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 m_log.Error("[REDIS] client is null");
 
             m_client.Add<String>(storageID + "." + key, data);
+            m_client.Save();
         }
     }
 }
