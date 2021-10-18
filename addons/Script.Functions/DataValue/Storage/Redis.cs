@@ -45,15 +45,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            byte[] data = m_client.Get(storageID + "." + key);
+            RedisDataElement data = m_client.Get<RedisDataElement>(storageID + "." + key);
 
             if (data == null)
                 return "";
 
-            if (data.Length == 0)
-                return "";
-
-            return Encoding.UTF8.GetString(data);
+            return data.Data;
         }
 
         public void remove(string storageID, string key)
@@ -71,16 +68,30 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
+            RedisDataElement rsdata = new RedisDataElement(storageID + "." + key, data);
+
             if (check(storageID, key))
             {
-                m_client.Set<String>(storageID + "." + key, data);
+                m_client.Set<RedisDataElement>(storageID + "." + key, rsdata);
             }
             else
             {
-                m_client.Add<String>(storageID + "." + key, data);
+                m_client.Add<RedisDataElement>(storageID + "." + key, rsdata);
             }
 
             m_client.Save();
+        }
+    }
+
+    public class RedisDataElement
+    {
+        public String Path = null;
+        public String Data = null;
+
+        public RedisDataElement(String path, String data)
+        {
+            Path = path;
+            Data = data;
         }
     }
 }
