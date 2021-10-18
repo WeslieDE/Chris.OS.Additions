@@ -2,6 +2,7 @@
 using Nini.Config;
 using OpenSim.Region.Framework.Scenes;
 using ServiceStack.Redis;
+using ServiceStack.Redis.Generic;
 using System;
 using System.Reflection;
 using System.Text;
@@ -45,7 +46,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            RedisDataElement data = m_client.Get<RedisDataElement>(storageID + "." + key);
+            IRedisTypedClient<RedisDataElement> objClient = m_client.As<RedisDataElement>();
+            RedisDataElement data = objClient.GetValue(storageID + "." + key);
 
             if (data == null)
                 return "";
@@ -69,17 +71,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 m_log.Error("[REDIS] client is null");
 
             RedisDataElement rsdata = new RedisDataElement(storageID + "." + key, data);
-
-            if (check(storageID, key))
-            {
-                m_client.Set<RedisDataElement>(storageID + "." + key, rsdata);
-            }
-            else
-            {
-                m_client.Add<RedisDataElement>(storageID + "." + key, rsdata);
-            }
-
-            m_client.Save();
+            IRedisTypedClient<RedisDataElement> objClient = m_client.As<RedisDataElement>();
+            objClient.SetValue(storageID + "." + key, rsdata);
         }
     }
 
