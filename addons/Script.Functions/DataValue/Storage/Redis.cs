@@ -63,7 +63,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
             m_client.Remove(storageID + "." + key);
 
-            m_client.SaveAsync();
+            m_client.Save();
         }
 
         public void save(string storageID, string key, string data)
@@ -73,14 +73,14 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
             if (check(storageID, key))
             {
-                m_client.Set(storageID + "." + key, data);
+                m_client.Set<String>(storageID + "." + key, data);
             }
             else
             {
                 m_client.Add<String>(storageID + "." + key, data);
             }
 
-            m_client.SaveAsync();
+            m_client.Save();
         }
     }
 }
