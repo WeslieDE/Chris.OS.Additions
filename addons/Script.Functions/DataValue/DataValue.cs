@@ -23,10 +23,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         private String m_storageTyp = null;
         private iStorage m_storage = null;
 
-        private List<StorageElement> m_cache = new List<StorageElement>();
-
-        private Timer m_timer = null;
-
         public override string Name
         {
             get { return "ScriptDataStorage"; }
@@ -51,11 +47,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 base.Logger.ErrorFormat("[" + Name + "]: initialization error: {0}", e.Message);
                 return;
             }
-
-            m_timer = new Timer();
-            m_timer.Interval = 1000;
-            m_timer.Elapsed += cleanUp;
-            m_timer.Start();
         }
 
         public override void RegionLoaded(Scene scene)
@@ -126,17 +117,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     if (privateStorage == 1)
                         storageNameSpace = _host.OwnerID.ToString();
 
-                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                    if (_element != null)
-                        return _element.get();
-
                     String _data = m_storage.get(storageNameSpace, key);
 
                     if (_data == null)
                         return "";
-
-                    m_cache.Add(new StorageElement(storageNameSpace, key, _data, m_storage));
 
                     return _data;
                 }catch(Exception _error)
@@ -177,16 +161,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     if (privateStorage == 1)
                         storageNameSpace = _host.OwnerID.ToString();
 
-                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                    if (_element != null)
-                    {
-                        _element.save(value);
-                        DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
-                        return;
-                    }
-
-                    m_cache.Add(new StorageElement(storageNameSpace, key, value, m_storage));
                     m_storage.save(storageNameSpace, key, value);
                     DataStorageEvents.onSetDataValue(storageNameSpace, key, value);
                     return;
@@ -227,11 +201,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
                     if (privateStorage == 1)
                         storageNameSpace = _host.OwnerID.ToString();
-
-                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                    if (_element != null)
-                        m_cache.Remove(_element);
 
                     m_storage.remove(storageNameSpace, key);
                     DataStorageEvents.onDeleteDataValue(storageNameSpace, key);
@@ -274,11 +243,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     if (privateStorage == 1)
                         storageNameSpace = _host.OwnerID.ToString();
 
-                    StorageElement _element = m_cache.Find(X => X.Group == storageNameSpace && X.Index == key);
-
-                    if (_element != null)
-                        return 1;
-
                     if (m_storage.check(storageNameSpace, key))
                         return 1;
 
@@ -295,14 +259,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 base.Logger.Error("No data Storage aviable.");
                 return 0;
             }
-        }
-
-        private void cleanUp(object sender, ElapsedEventArgs e)
-        {
-            List<StorageElement> _allStorageElements = m_cache.FindAll(X => X.LastUse + 10 <= (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
-
-            foreach(StorageElement _element in _allStorageElements)
-                m_cache.Remove(_element);
         }
         #endregion
     }

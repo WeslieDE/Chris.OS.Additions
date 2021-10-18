@@ -26,11 +26,21 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             try
             {
                 m_client = new RedisClient(host, port);
+
+                IRedisSubscription events = m_client.CreateSubscription();
+                events.OnMessage += message;
             }
             catch (Exception _error)
             {
                 m_log.Error("[REDIS] " + _error.Message);
             }
+        }
+
+        private void message(string arg1, string arg2)
+        {
+            DataStorageEvents.onSetDataValue(arg1, arg1, arg2);
+            Console.WriteLine("[DEBUG] " + arg1 + ";" + arg2);
+
         }
 
         public bool check(string storageID, string key)
@@ -46,13 +56,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            IRedisTypedClient<RedisDataElement> objClient = m_client.As<RedisDataElement>();
-            RedisDataElement data = objClient.GetValue(storageID + "." + key);
+            String data = m_client.GetValue(storageID + "." + key);
 
             if (data == null)
                 return "";
 
-            return data.Data;
+            return data;
         }
 
         public void remove(string storageID, string key)
@@ -60,9 +69,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            m_client.Remove(storageID + "." + key);
-
-            m_client.Save();
+            m_client.Remove(storageID + "." + key); 
         }
 
         public void save(string storageID, string key, string data)
@@ -70,21 +77,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            RedisDataElement rsdata = new RedisDataElement(storageID + "." + key, data);
-            IRedisTypedClient<RedisDataElement> objClient = m_client.As<RedisDataElement>();
-            objClient.SetValue(storageID + "." + key, rsdata);
-        }
-    }
-
-    public class RedisDataElement
-    {
-        public String Path = null;
-        public String Data = null;
-
-        public RedisDataElement(String path, String data)
-        {
-            Path = path;
-            Data = data;
+            m_client.SetValue(storageID + "." + key, data);
         }
     }
 }
