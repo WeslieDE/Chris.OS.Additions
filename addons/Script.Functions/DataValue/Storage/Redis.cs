@@ -62,6 +62,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 m_log.Error("[REDIS] client is null");
 
             m_client.Remove(storageID + "." + key);
+
+            m_client.SaveAsync();
         }
 
         public void save(string storageID, string key, string data)
@@ -77,6 +79,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             {
                 m_client.Add<String>(storageID + "." + key, data);
             }
+
+            m_client.SaveAsync();
         }
     }
 }
