@@ -77,7 +77,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
             m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
             if (m_scriptModule != null)
-            {
+            {              
                 m_scriptModule.RegisterScriptInvocation(this, "osGetDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osSetDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osDeleteDataValue");
