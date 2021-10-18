@@ -56,7 +56,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            String data = m_client.GetValue(storageID + "." + key);
+            String data = m_client.Get<String>(storageID + "." + key);
 
             if (data == null)
                 return "";
