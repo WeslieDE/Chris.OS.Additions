@@ -53,9 +53,14 @@
 	<Reference name="BouncyCastle.Crypto.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="MimeKit.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="MailKit.dll" path="..\libraries\" localCopy="true" />
-	
 
-
+	<Reference name="ServiceStack.Common.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="ServiceStack.Interfaces.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="ServiceStack.Redis.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="ServiceStack.Text.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="System.Buffers.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="System.Memory.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="System.Runtime.CompilerServices.Unsafe.dll" path="..\libraries\" localCopy="true" />
 
 	<Files>
 		<Match pattern="*.cs" recurse="true" />
