@@ -48,7 +48,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            return m_client.Exists(storageID + "." + key) != 0;
+            lock (m_client)
+            {
+                return m_client.Exists(storageID + "." + key) != 0;
+            }
         }
 
         public string get(string storageID, string key)
@@ -56,12 +59,15 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            String data = m_client.Get<String>(storageID + "." + key);
+            lock (m_client)
+            {
+                String data = m_client.Get<String>(storageID + "." + key);
 
-            if (data == null)
-                return "";
+                if (data == null)
+                    return "";
 
-            return data;
+                return data;
+            }
         }
 
         public void remove(string storageID, string key)
@@ -69,7 +75,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            m_client.Remove(storageID + "." + key); 
+            lock (m_client)
+            {
+                m_client.Remove(storageID + "." + key);
+            } 
         }
 
         public void save(string storageID, string key, string data)
@@ -77,7 +86,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             if (m_client == null)
                 m_log.Error("[REDIS] client is null");
 
-            m_client.SetValue(storageID + "." + key, data);
+            lock (m_client)
+            {
+                m_client.SetValue(storageID + "." + key, data);
+            }
         }
     }
 }
