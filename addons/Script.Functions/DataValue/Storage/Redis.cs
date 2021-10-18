@@ -34,12 +34,21 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         public bool check(string storageID, string key)
         {
+            if (m_client == null)
+                m_log.Error("[REDIS] client is null");
+
             return m_client.Exists(storageID + "." + key) != 0;
         }
 
         public string get(string storageID, string key)
         {
+            if (m_client == null)
+                m_log.Error("[REDIS] client is null");
+
             byte[] data = m_client.Get(storageID + "." + key);
+
+            if (data == null)
+                return "";
 
             if (data.Length == 0)
                 return "";
@@ -49,11 +58,17 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         public void remove(string storageID, string key)
         {
+            if (m_client == null)
+                m_log.Error("[REDIS] client is null");
+
             m_client.Remove(storageID + "." + key);
         }
 
         public void save(string storageID, string key, string data)
         {
+            if (m_client == null)
+                m_log.Error("[REDIS] client is null");
+
             m_client.Add<String>(storageID + "." + key, data);
         }
     }
