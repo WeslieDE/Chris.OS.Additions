@@ -73,6 +73,9 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             if (m_storageTyp == "MYSQL")
                 m_storage = new MySQL(base.World, m_config);
 
+            if (m_storageTyp == "REDIS")
+                m_storage = new Redis(base.World, m_config);
+
             if (m_storageTyp == "MEMORY")
                 m_storage = new Memory();
 
