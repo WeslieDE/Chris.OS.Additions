@@ -39,7 +39,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
         public string get(string storageID, string key)
         {
-            return Encoding.UTF8.GetString(m_client.Get(storageID + "." + key));
+            byte[] data = m_client.Get(storageID + "." + key);
+
+            if (data.Length == 0)
+                return "";
+
+            return Encoding.UTF8.GetString(data);
         }
 
         public void remove(string storageID, string key)
