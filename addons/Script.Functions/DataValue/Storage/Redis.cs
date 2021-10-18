@@ -26,21 +26,11 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             try
             {
                 m_client = new RedisClient(host, port);
-
-                IRedisSubscription events = m_client.CreateSubscription();
-                events.OnMessage += message;
             }
             catch (Exception _error)
             {
                 m_log.Error("[REDIS] " + _error.Message);
             }
-        }
-
-        private void message(string arg1, string arg2)
-        {
-            DataStorageEvents.onSetDataValue(arg1, arg1, arg2);
-            Console.WriteLine("[DEBUG] " + arg1 + ";" + arg2);
-
         }
 
         public bool check(string storageID, string key)
