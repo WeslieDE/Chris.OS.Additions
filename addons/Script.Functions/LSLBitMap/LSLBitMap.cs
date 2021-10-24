@@ -170,17 +170,27 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 asset.Temporary = false;
                 asset.Type = (int)AssetType.Texture;
                 asset.Data = imageArray;
-                base.World.AssetService.Store(asset);
+                String assetID = base.World.AssetService.Store(asset);
+
+                if (assetID == String.Empty)
+                    return 0;
 
                 TaskInventoryItem item = new TaskInventoryItem();
                 item.Name = name;
-                item.AssetID = asset.FullID;
+                item.AssetID = UUID.Parse(assetID);
+                item.OwnerID = part.OwnerID;
+                item.CreatorID = part.OwnerID;
+                item.LastOwnerID = part.OwnerID;
+
                 item.Type = 0;
                 item.PermsMask = 581639;
                 item.NextPermissions = 581639;
                 item.CurrentPermissions = 581639;
+                item.EveryonePermissions = 581639;
 
                 part.Inventory.AddInventoryItemExclusive(item, false);
+                part.SendFullUpdateToAllClients();
+
                 return 1;
             }
 
