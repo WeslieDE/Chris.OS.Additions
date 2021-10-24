@@ -52,6 +52,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
 
             item.Description = desc;
             part.Inventory.AddInventoryItemExclusive(item, false);
+            part.SendFullUpdateToAllClients();
         }
 
         [ScriptInvocation]
