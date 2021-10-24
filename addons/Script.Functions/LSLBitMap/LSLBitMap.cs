@@ -80,7 +80,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
             TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(inventoryName));
 
             if (item == null)
-                throw new Exception("Item not found!");
+                return 0;
 
             if (base.World.AssetService.AssetsExist(new String[] { item.AssetID.ToString() })[0])
             {
