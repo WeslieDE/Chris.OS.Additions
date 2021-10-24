@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
-using LSL_Vector = OpenSim.Region.ScriptEngine.Shared.LSL_Types.Vector3;
 
 namespace Chris.OS.Additions.Script.Functions.LSLBitMap
 {
@@ -78,7 +77,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
             TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(inventoryName));
 
             if (item == null)
-                return 0;
+                return UUID.Zero;
 
             if (base.World.AssetService.AssetsExist(new String[] { item.AssetID.ToString() })[0])
             {
@@ -104,7 +103,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 }
             }
 
-            return 0;
+            return UUID.Zero;
         }
 
         [ScriptInvocation]
