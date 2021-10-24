@@ -224,12 +224,6 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
         {
             if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
             {
-                if (bitmap.Width > posX && posX > 0)
-                    return new Vector3();
-
-                if (bitmap.Height > posY && posY > 0)
-                    return new Vector3();
-
                 Color pixelColor = bitmap.GetPixel(posX, posY);
 
                 return new Vector3(pixelColor.R, pixelColor.G, pixelColor.B);
@@ -243,21 +237,22 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
         {
             lock(m_bitmaps)
             {
-                if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+                try
                 {
-                    if (bitmap.Width > posX && posX > 0)
-                        return 0;
+                    if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+                    {
+                        Color pixelColor = Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
+                        bitmap.SetPixel(posX, posY, pixelColor);
 
-                    if (bitmap.Height > posY && posY > 0)
-                        return 0;
+                        m_bitmaps.Remove(bitmapID);
+                        m_bitmaps.Add(bitmapID, bitmap);
 
-                    m_bitmaps.Remove(bitmapID);
-
-                    Color pixelColor = Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
-                    bitmap.SetPixel(posX, posY, pixelColor);
-                    m_bitmaps.Add(bitmapID, bitmap);
-
-                    return 1;
+                        return 1;
+                    }
+                }
+                catch
+                {
+                    //Nothing
                 }
             }
 
