@@ -7,6 +7,8 @@ using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Net;
 using LSL_Vector = OpenSim.Region.ScriptEngine.Shared.LSL_Types.Vector3;
 
 namespace Chris.OS.Additions.Script.Functions.LSLBitMap
@@ -32,6 +34,8 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
                 m_scriptModule.RegisterScriptInvocation(this, "osCreateBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osLoadBitmap");
+                m_scriptModule.RegisterScriptInvocation(this, "osLoadBitmapFromURL");
+
                 m_scriptModule.RegisterScriptInvocation(this, "osUnloadBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osSaveBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osResizeBitmap");
@@ -107,6 +111,33 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
             }
 
             return 0;
+        }
+
+        [ScriptInvocation]
+        public int osLoadBitmapFromURL(UUID hostID, UUID scriptID, String url)
+        {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    byte[] image = client.DownloadData(url);
+                    Image tempImage = Image.FromStream(new MemoryStream(image));
+
+                    lock (m_bitmaps)
+                    {
+                        int newImageID = m_bitmaps.Count + 1;
+
+                        Bitmap bitmap = new Bitmap(tempImage.Width, tempImage.Height);
+                        m_bitmaps.Add(newImageID, bitmap);
+
+                        return newImageID;
+                    }
+                }
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         [ScriptInvocation]
