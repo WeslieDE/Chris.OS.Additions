@@ -173,7 +173,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
         }
 
         [ScriptInvocation]
-        public LSL_Vector osGetBitmapPixel(UUID hostID, UUID scriptID, int bitmapID, int posX, int posY)
+        public Vector3 osGetBitmapPixel(UUID hostID, UUID scriptID, int bitmapID, int posX, int posY)
         {
             if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
             {
@@ -185,14 +185,14 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
 
                 Color pixelColor = bitmap.GetPixel(posX, posY);
 
-                return new LSL_Vector(pixelColor.R, pixelColor.G, pixelColor.B);
+                return new Vector3(pixelColor.R, pixelColor.G, pixelColor.B);
             }
 
             return new Vector3();
         }
 
         [ScriptInvocation]
-        public int osSetBitmapPixel(UUID hostID, UUID scriptID, int bitmapID, int posX, int posY, LSL_Vector color)
+        public int osSetBitmapPixel(UUID hostID, UUID scriptID, int bitmapID, int posX, int posY, Vector3 color)
         {
             if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
             {
@@ -202,7 +202,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 if (bitmap.Height > posY)
                     return 0;
 
-                Color pixelColor = Color.FromArgb((int)color.x, (int)color.y, (int)color.z);
+                Color pixelColor = Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
                 bitmap.SetPixel(posX, posY, pixelColor);
 
                 return 1;
