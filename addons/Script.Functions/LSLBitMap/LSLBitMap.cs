@@ -32,6 +32,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
                 m_scriptModule.RegisterScriptInvocation(this, "osCreateBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osLoadBitmap");
+                m_scriptModule.RegisterScriptInvocation(this, "osUnloadBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osSaveBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osResizeBitmap");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetBitmapPixel");
@@ -109,6 +110,18 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
         }
 
         [ScriptInvocation]
+        public int osUnloadBitmap(UUID hostID, UUID scriptID, int bitmapID)
+        {
+            if (m_bitmaps.ContainsKey(bitmapID))
+            {
+                m_bitmaps.Remove(bitmapID);
+                return 1;
+            }
+
+            return 0;
+        }
+
+        [ScriptInvocation]
         public int osSaveBitmap(UUID hostID, UUID scriptID, int bitmapID, String name)
         {
             SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
@@ -122,6 +135,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 asset.FullID = UUID.Random();
 
                 asset.Name = "Image from LSLBitmap Module.";
+                asset.Description = "https://github.com/Sahrea/Chris.OS.Additions";
                 asset.Temporary = false;
                 asset.Type = (int)AssetType.Texture;
                 asset.Data = imageArray;
