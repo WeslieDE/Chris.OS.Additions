@@ -162,11 +162,14 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
             if (sizeY > 8192)
                 sizeY = 8192;
 
-            if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+            lock(m_bitmaps)
             {
-                m_bitmaps.Remove(bitmapID);
-                m_bitmaps.Add(bitmapID, new Bitmap(bitmap, sizeX, sizeY));
-                return 1;
+                if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+                {
+                    m_bitmaps.Remove(bitmapID);
+                    m_bitmaps.Add(bitmapID, new Bitmap(bitmap, sizeX, sizeY));
+                    return 1;
+                }
             }
 
             return 0;
@@ -194,18 +197,24 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
         [ScriptInvocation]
         public int osSetBitmapPixel(UUID hostID, UUID scriptID, int bitmapID, int posX, int posY, Vector3 color)
         {
-            if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+            lock(m_bitmaps)
             {
-                if (bitmap.Width > posX)
-                    return 0;
+                if (m_bitmaps.TryGetValue(bitmapID, out Bitmap bitmap))
+                {
+                    m_bitmaps.Remove(bitmapID);
 
-                if (bitmap.Height > posY)
-                    return 0;
+                    if (bitmap.Width > posX)
+                        return 0;
 
-                Color pixelColor = Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
-                bitmap.SetPixel(posX, posY, pixelColor);
+                    if (bitmap.Height > posY)
+                        return 0;
 
-                return 1;
+                    Color pixelColor = Color.FromArgb((int)color.X, (int)color.Y, (int)color.Z);
+                    bitmap.SetPixel(posX, posY, pixelColor);
+                    m_bitmaps.Add(bitmapID, bitmap);
+
+                    return 1;
+                }
             }
 
             return 0;
