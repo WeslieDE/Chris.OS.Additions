@@ -145,6 +145,8 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
                 item.Name = name;
                 item.AssetID = asset.FullID;
                 item.Type = 0;
+                item.PermsMask = 581639;
+                item.NextPermissions = 581639;
 
                 part.Inventory.AddInventoryItemExclusive(item, false);
                 return 1;
