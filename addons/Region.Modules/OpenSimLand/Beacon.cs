@@ -29,6 +29,8 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
             m_timer = new Timer();
             m_timer.Interval = (10 * 60 * 1000); //10 Minuten
             m_timer.Elapsed += send_ping;
+            m_timer.AutoReset = true;
+            m_timer.Start();
 
             send_ping(null, null);
 
