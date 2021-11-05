@@ -181,6 +181,22 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
                                         _objectData.ObjectItemUUID = _cog.FromItemID.ToString();
                                         _objectData.ObjectOwner.OwnerUUID = _cog.OwnerID.ToString();
 
+                                        _objectData.Textures = getAllTextures(_cog);
+
+                                        foreach (SceneObjectPart part in _cog.Parts)
+                                        {
+                                            foreach (TaskInventoryItem item in part.Inventory.GetInventoryItems())
+                                            {
+                                                inventoryDataSet data = new inventoryDataSet();
+                                                data.AssetID = item.AssetID.ToString();
+                                                data.ItemID = item.ItemID.ToString();
+                                                data.Name = item.Name;
+                                                data.Description = item.Description;
+                                                data.InventoryType = item.InvType;
+                                                _objectData.Inventory.Add(data);
+                                            }
+                                        }
+
                                         if (_objectData.ObjectOwner.OwnerUUID != _objectData.ObjectGroupUUID)
                                         {
                                             if (m_userManager != null)
@@ -331,6 +347,39 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
                 return true;
 
             return false;
+        }
+
+        private List<String> getAllTextures(SceneObjectGroup sog)
+        {
+            if (sog == null)
+                return new List<String>();
+
+            List<String> texturList = new List<String>();
+
+            PrimitiveBaseShape shape = sog.RootPart.Shape;
+            if (shape != null && shape.ProfileShape == ProfileShape.Square)
+            {
+                Primitive.TextureEntry textures = shape.Textures;
+                if (textures != null)
+                {
+                    if (textures.FaceTextures != null)
+                    {
+                        foreach (Primitive.TextureEntryFace tentry in textures.FaceTextures)
+                        {
+                            if (tentry != null)
+                            {
+                                if (tentry.TextureID != UUID.Zero && tentry.TextureID != UUID.Zero && tentry.TextureID != UUID.Zero)
+                                {
+                                    if (!texturList.Contains(tentry.TextureID.ToString()))
+                                        texturList.Add(tentry.TextureID.ToString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return texturList;
         }
 
         private string GuessImage(SceneObjectGroup sog)

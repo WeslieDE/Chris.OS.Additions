@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Chris.OS.Additions.Region.Modules.DataPublisher.Data
 {
@@ -43,5 +44,11 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher.Data
 
         [JsonProperty(PropertyName = "Parent")]
         public String ParentUUID = "00000000-0000-0000-0000-000000000000";
+
+        [JsonProperty(PropertyName = "Inventory")]
+        public List<inventoryDataSet> Inventory = new List<inventoryDataSet>();
+
+        [JsonProperty(PropertyName = "Textures")]
+        public List<String> Textures = new List<String>();
     }
 }
