@@ -6,6 +6,7 @@ using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using OpenSim.Services.Interfaces;
 using System;
+using System.IO;
 using System.Net;
 using System.Timers;
 
@@ -56,17 +57,22 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
         private void send_ping(object sender, ElapsedEventArgs e)
         {
             base.Logger.Error("[OpenSimLand] Sending Ping to webservice.");
+            String jsonData = null;
 
             try
             {
                 if(!World.RegionInfo.EstateSettings.PublicAccess)
                     return;
 
-                UserAccount account = World.UserAccountService.GetUserAccount(World.RegionInfo.ScopeID, World.RegionInfo.EstateSettings.EstateOwner);
-
                 PingData ping = new PingData();
+
                 ping.RegionName = base.World.RegionInfo.RegionName;
                 ping.UUID = base.World.RegionInfo.RegionID.ToString();
+
+                UserAccount account = World.UserAccountService.GetUserAccount(World.RegionInfo.ScopeID, World.RegionInfo.EstateSettings.EstateOwner);
+
+                if (account == null)
+                    return;
 
                 ping.RegionOwnerID = World.RegionInfo.EstateSettings.EstateOwner.ToString();
                 ping.RegionOwnerName = account.FirstName + " " + account.LastName;
@@ -85,12 +91,13 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 ServicePointManager.CertificatePolicy = new NoCheckCertificatePolicy();
 
-                String jsonData = JsonConvert.SerializeObject(ping);
+                jsonData = JsonConvert.SerializeObject(ping);
                 String result = client.UploadString(m_serviceURL, jsonData);
             }
             catch(Exception error)
             {
-                base.Logger.Error("[OpenSimLand] Error while sending ping!" + error.Message);
+                base.Logger.Error("[OpenSimLand] Error while sending ping! " + error.Message);
+                File.WriteAllText("OpenSimLand.debug", jsonData);
             }
         }
     }
