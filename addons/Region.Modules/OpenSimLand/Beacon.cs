@@ -56,7 +56,6 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 
         private void send_ping(object sender, ElapsedEventArgs e)
         {
-            base.Logger.Error("[OpenSimLand] Sending Ping to webservice.");
             String jsonData = null;
 
             try
