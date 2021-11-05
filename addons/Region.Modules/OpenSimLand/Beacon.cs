@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
 using Newtonsoft.Json;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
@@ -8,6 +9,8 @@ using System.Timers;
 
 namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OpenSimLand")]
+
     class Beacon : EmptyModule
     {
         private Timer m_timer = null;
