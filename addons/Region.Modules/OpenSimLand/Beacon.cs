@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
         private string m_hostname = null;
         private int m_port = 0;
 
-        private string m_serviceURL = "https://opensim.land/?api=register";
+        private string m_serviceURL = "https://api.opensim.land/?api=register";
 
         #region EmptyModule
         public override string Name
