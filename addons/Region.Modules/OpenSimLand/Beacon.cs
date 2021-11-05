@@ -34,7 +34,7 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
             base.World = scene;
 
             m_timer = new Timer();
-            m_timer.Interval = (1 * 60 * 1000); //1 Minute
+            m_timer.Interval = (5 * 60 * 1000); //1 Minute
             m_timer.Elapsed += send_ping;
             m_timer.AutoReset = true;
             m_timer.Start();
