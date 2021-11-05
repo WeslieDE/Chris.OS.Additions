@@ -84,9 +84,9 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 
                 base.Logger.Error("[OpenSimLand] DEBUG:" + result);
             }
-            catch
+            catch(Exception error)
             {
-                base.Logger.Error("[OpenSimLand] Error while sending ping!");
+                base.Logger.Error("[OpenSimLand] Error while sending ping!" + error.Message);
             }
         }
     }
