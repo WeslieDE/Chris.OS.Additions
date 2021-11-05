@@ -1,6 +1,7 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
 using Newtonsoft.Json;
+using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using OpenSim.Services.Interfaces;
@@ -33,19 +34,24 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
             base.World = scene;
 
             m_timer = new Timer();
-            m_timer.Interval = (10 * 60 * 1000); //10 Minuten
+            m_timer.Interval = (1 * 60 * 1000); //1 Minute
             m_timer.Elapsed += send_ping;
             m_timer.AutoReset = true;
             m_timer.Start();
 
-            base.Logger.Error("[OpenSimLand] Beacon start.");
+            base.World.EventManager.OnRegionLoginsStatusChange += onLoginChange;
 
-            send_ping(null, null);
+            base.Logger.Error("[OpenSimLand] Beacon start.");
 
             m_hostname = base.Config.Configs["Network"].GetString("ExternalHostNameForLSL", null);
             m_port = base.Config.Configs["Network"].GetInt("http_listener_port", 0);
         }
+
         #endregion
+        private void onLoginChange(IScene scene)
+        {
+            send_ping(null, null);
+        }
 
         private void send_ping(object sender, ElapsedEventArgs e)
         {
@@ -81,8 +87,6 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 
                 String jsonData = JsonConvert.SerializeObject(ping);
                 String result = client.UploadString(m_serviceURL, jsonData);
-
-                base.Logger.Error("[OpenSimLand] DEBUG:" + result);
             }
             catch(Exception error)
             {
