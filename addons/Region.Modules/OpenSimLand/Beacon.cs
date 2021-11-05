@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using OpenSim.Services.Interfaces;
+using System;
 using System.Net;
 using System.Timers;
 
@@ -16,6 +17,8 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
         private Timer m_timer = null;
         private string m_hostname = null;
         private int m_port = 0;
+
+        private bool m_enable = true;
 
         private string m_serviceURL = "https://api.opensim.land/?api=register";
 
@@ -35,6 +38,8 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
             m_timer.AutoReset = true;
             m_timer.Start();
 
+            base.Logger.Error("[OpenSimLand] Beacon start.");
+
             send_ping(null, null);
 
             m_hostname = base.Config.Configs["Network"].GetString("ExternalHostNameForLSL", null);
@@ -44,6 +49,8 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 
         private void send_ping(object sender, ElapsedEventArgs e)
         {
+            base.Logger.Error("[OpenSimLand] Sending Ping to webservice.");
+
             try
             {
                 if(!World.RegionInfo.EstateSettings.PublicAccess)
@@ -72,8 +79,10 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 ServicePointManager.CertificatePolicy = new NoCheckCertificatePolicy();
 
-                string jsonData = JsonConvert.SerializeObject(ping);
-                client.UploadString(m_serviceURL, jsonData);
+                String jsonData = JsonConvert.SerializeObject(ping);
+                String result = client.UploadString(m_serviceURL, jsonData);
+
+                base.Logger.Error("[OpenSimLand] DEBUG:" + result);
             }
             catch
             {
