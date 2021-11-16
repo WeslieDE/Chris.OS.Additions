@@ -38,8 +38,6 @@ namespace Chris.OS.Additions.Region.Modules.DataPublisher
 
         protected override byte[] ProcessRequest(string path, Stream requestData, IOSHttpRequest httpRequest, IOSHttpResponse httpResponse)
         {
-            m_log.Info("[RegionsDataModule] Get request.");
-
             Dictionary<string, object> request = new Dictionary<string, object>();
             foreach (string name in httpRequest.QueryString)
                 request[name] = httpRequest.QueryString[name];
