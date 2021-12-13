@@ -54,9 +54,6 @@
 	<Reference name="MimeKit.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="MailKit.dll" path="..\libraries\" localCopy="true" />
 
-	<Reference name="NLua.dll" path="..\libraries\" localCopy="true" />
-	<Reference name="KeraLua.dll" path="..\libraries\" localCopy="true" />
-
 	<Reference name="ServiceStack.Common.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="ServiceStack.Interfaces.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="ServiceStack.Redis.dll" path="..\libraries\" localCopy="true" />
@@ -67,7 +64,5 @@
 
 	<Files>
 		<Match pattern="*.cs" recurse="true" />
-		<Match path="libraries\" pattern="liblua54.so" recurse="false" localCopy="true"/>
-		<Match path="libraries\" pattern="lua54.dll" recurse="false" localCopy="true"/>
 	</Files>
 </Project>
