@@ -54,6 +54,11 @@
 	<Reference name="MimeKit.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="MailKit.dll" path="..\libraries\" localCopy="true" />
 
+	<Reference name="liblua54.so" path="..\libraries\" localCopy="true" />
+	<Reference name="lua54.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="NLua.dll" path="..\libraries\" localCopy="true" />
+	<Reference name="KeraLua.dll" path="..\libraries\" localCopy="true" />
+
 	<Reference name="ServiceStack.Common.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="ServiceStack.Interfaces.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="ServiceStack.Redis.dll" path="..\libraries\" localCopy="true" />
