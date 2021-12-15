@@ -8,18 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
+namespace Chris.OS.Additions.Script.Functions.osSetInventory
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osSetInventoryDesc")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osSetInventory")]
 
-    class SetInventoryDesc : EmptyModule
+    class setInventoryScriptFunctions : EmptyModule
     {
         #region EmptyModule
         public override string Name
         {
-            get { return "osSetInventoryDesc"; }
+            get { return "osSetInventory"; }
         }
 
         public override void RegionLoaded(Scene scene)
@@ -29,6 +30,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
             try
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
+                m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryName");
                 m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryDesc");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetInventoryDesc");
             }
@@ -41,29 +43,41 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventoryDesc
 
         #region Script functions
         [ScriptInvocation]
-        public void osSetInventoryDesc(UUID hostID, UUID scriptID, String itemName, String desc)
+        public void osSetInventoryName(UUID hostID, UUID scriptID, String name, String newName)
         {
             SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
-
-            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(itemName));
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(name));
 
             if (item == null)
                 return;
 
-            item.Description = desc;
+            item.Name = newName;
             part.Inventory.AddInventoryItemExclusive(item, false);
             part.SendFullUpdateToAllClients();
         }
 
         [ScriptInvocation]
-        public String osGetInventoryDesc(UUID hostID, UUID scriptID, String itemName)
+        public void osSetInventoryDesc(UUID hostID, UUID scriptID, String name, String newDesc)
         {
             SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
-
-            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(itemName));
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(name));
 
             if (item == null)
-                throw new Exception("Item not found!");
+                return;
+
+            item.Description = newDesc;
+            part.Inventory.AddInventoryItemExclusive(item, false);
+            part.SendFullUpdateToAllClients();
+        }
+
+        [ScriptInvocation]
+        public String osGetInventoryDesc(UUID hostID, UUID scriptID, String name)
+        {
+            SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(name));
+
+            if (item == null)
+                return String.Empty;
 
             return item.Description;
         }
