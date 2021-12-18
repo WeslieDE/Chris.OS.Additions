@@ -1,20 +1,13 @@
 ﻿using Chris.OS.Additions.Utils;
-using DSharpPlus;
-using DSharpPlus.EventArgs;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework;
-using OpenSim.Framework.Servers;
-using OpenSim.Framework.Servers.HttpServer;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 {

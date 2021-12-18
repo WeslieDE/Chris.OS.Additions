@@ -6,8 +6,6 @@ using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
-using System.Collections.Generic;
-using System.Timers;
 
 namespace Chris.OS.Additions.Script.Functions.DataValue
 {

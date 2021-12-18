@@ -1,15 +1,11 @@
 ﻿using Chris.OS.Additions.Utils;
-using log4net;
 using Mono.Addins;
-using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Timers;
 
 namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 {
