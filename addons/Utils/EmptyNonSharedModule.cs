@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Chris.OS.Additions.Utils
 {
-    public class EmptyModule : INonSharedRegionModule
+    public class EmptyNonSharedModule : INonSharedRegionModule
     {
         protected readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
