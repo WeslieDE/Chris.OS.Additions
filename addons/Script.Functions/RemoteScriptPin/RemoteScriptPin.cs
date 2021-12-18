@@ -13,7 +13,7 @@ namespace Chris.OS.Additions.Script.Functions.RemoteScriptPin
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OwnerSay")]
 
-    class RemoteScriptPin : EmptyModule
+    class RemoteScriptPin : EmptyNonSharedModule
     {
         #region EmptyModule
         public override string Name

@@ -15,7 +15,7 @@ namespace Chris.OS.Additions.Script.Functions.ObjectFinder
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ObjectFinder")]
 
-    public class ObjectFinder : EmptyModule
+    public class ObjectFinder : EmptyNonSharedModule
     {
         private IScriptModuleComms m_scriptModule;
         private List<CacheData> m_GroupCache = new List<CacheData>();

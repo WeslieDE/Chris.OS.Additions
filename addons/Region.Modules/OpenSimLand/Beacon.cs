@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Region.Modules.OpenSimLand
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OpenSimLand")]
 
-    class Beacon : EmptyModule
+    class Beacon : EmptyNonSharedModule
     {
         private Timer m_timer = null;
         private string m_hostname = null;

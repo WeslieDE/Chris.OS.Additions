@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Script.Functions.InternalRegionToScriptEvents
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "InternalRegionToScriptEvents")]
 
-    public class InternalRegionToScriptEvents : EmptyModule
+    public class InternalRegionToScriptEvents : EmptyNonSharedModule
     {
         private List<UUID> m_listener = new List<UUID>();
         private IScriptModule ScriptEngine = null;

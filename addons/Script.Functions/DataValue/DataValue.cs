@@ -13,7 +13,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "ScriptDataStorage")]
 
-    public class ScriptDataStorage : EmptyModule
+    public class ScriptDataStorage : EmptyNonSharedModule
     {
         #region EmptyModule
 

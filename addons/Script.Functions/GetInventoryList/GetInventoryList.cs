@@ -15,7 +15,7 @@ namespace Chris.OS.Additions.Script.Functions.GetInventoryList
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "GetInventoryList")]
 
-    public class GetInventoryList : EmptyModule
+    public class GetInventoryList : EmptyNonSharedModule
     {
         #region EmptyModule
         public override string Name

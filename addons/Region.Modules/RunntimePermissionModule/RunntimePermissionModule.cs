@@ -10,7 +10,7 @@ namespace Chris.OS.Additions.Region.Modules.RunntimePermissionModule
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RunntimePermissionModule")]
 
-    class RunntimePermissionModule : EmptyModule
+    class RunntimePermissionModule : EmptyNonSharedModule
     {
         private Dictionary<UUID, UserData> m_userdata = new Dictionary<UUID, UserData>();
 

@@ -15,7 +15,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventory
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osSetInventory")]
 
-    class setInventoryScriptFunctions : EmptyModule
+    class setInventoryScriptFunctions : EmptyNonSharedModule
     {
         #region EmptyModule
         public override string Name

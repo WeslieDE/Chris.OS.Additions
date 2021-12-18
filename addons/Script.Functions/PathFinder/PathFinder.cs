@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace Chris.OS.Additions.Script.Functions.PathFinder
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "PathFinder")]
-    class PathFinder : EmptyModule
+    class PathFinder : EmptyNonSharedModule
     {
         private Dictionary<String, object[]> m_cache = new Dictionary<String, object[]>();
 

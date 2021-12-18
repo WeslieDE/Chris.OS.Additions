@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Script.Functions.EasyDialog
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "EasyMenu")]
 
-    public class EasyDialog : EmptyModule
+    public class EasyDialog : EmptyNonSharedModule
     {
         private IDialogModule m_dialogModule = null;
         private IScriptModule m_scriptEngine;

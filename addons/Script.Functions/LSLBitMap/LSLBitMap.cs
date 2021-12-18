@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Script.Functions.LSLBitMap
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "LSLBitMap")]
 
-    class LSLBitMap : EmptyModule
+    class LSLBitMap : EmptyNonSharedModule
     {
         private Dictionary<UUID, Bitmap> m_bitmaps = new Dictionary<UUID, Bitmap>();
 

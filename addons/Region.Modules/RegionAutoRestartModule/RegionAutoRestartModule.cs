@@ -12,7 +12,7 @@ using Chris.OS.Additions.Utils;
 namespace Chris.OS.Additions.Region.Modules.RegionAutoRestartModule
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RegionAutoRestartModule")]
-    class RegionAutoRestartModule : EmptyModule
+    class RegionAutoRestartModule : EmptyNonSharedModule
     {
         private System.Timers.Timer m_timer;
         private int m_restartCounter = 0;

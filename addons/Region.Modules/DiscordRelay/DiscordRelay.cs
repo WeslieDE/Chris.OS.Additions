@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace Chris.OS.Additions.Region.Modules.DiscordRelay
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "DiscordRelay")]
-    class DiscordRelay : EmptyModule
+    class DiscordRelay : EmptyNonSharedModule
     {
         private String m_discordWebHookURL = null;
         private Boolean m_scriptChat = false;
