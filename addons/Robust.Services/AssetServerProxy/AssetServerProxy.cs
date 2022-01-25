@@ -1,15 +1,13 @@
-﻿using log4net;
+﻿using Chris.OS.Additions.Utils;
+using log4net;
 using Nini.Config;
 using OpenSim.Framework;
-using OpenSim.Region.CoreModules.ServiceConnectorsOut.Asset;
 using OpenSim.Services.Base;
 using OpenSim.Services.Connectors;
 using OpenSim.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 {
@@ -19,6 +17,10 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
         private String m_assetServiceURL = null;
         private String m_backupServiceURL = null;
+
+        private int m_errorCount = 0;
+        private int m_lastError = 0;
+        public Boolean EnableErrorCounter = false;
 
         public String AssetServiceName
         {
@@ -31,6 +33,20 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
         private List<AssetServerProxy> m_extraAssetServers = new List<AssetServerProxy>();
         private AssetServerProxy m_backupService = null;
 
+        private bool checkForError()
+        {
+            if (EnableErrorCounter == false)
+                return false;
+
+            if ((m_lastError + 900) <= Tools.getUnixTime())
+                m_errorCount = 0;
+
+            if (m_errorCount >= 5)
+                return true;
+
+            return false;
+        }
+
         public AssetServerProxy(IConfigSource config, string configName) : base(config)
         {
             IConfig assetConfig = config.Configs["AssetService"];
@@ -39,6 +55,7 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
             m_assetServiceURL = assetConfig.GetString("AssetServerURI", String.Empty);
             m_backupServiceURL = assetConfig.GetString("BackupAssetServerURI", String.Empty);
+
 
             String[] extraServers = assetConfig.GetString("ExtraAssetServer", String.Empty).Split(new string[] { "|" }, StringSplitOptions.None);
 
@@ -70,6 +87,7 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
                         fakeConfig.Configs["AssetService"].Set("AssetServerURI", thisURI.Trim());
 
                         AssetServerProxy newService = new AssetServerProxy(fakeConfig);
+                        newService.EnableErrorCounter = true;
                         m_extraAssetServers.Add(newService);
                     }
                 }
@@ -117,6 +135,7 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
                         fakeConfig.Configs["AssetService"].Set("AssetServerURI", thisURI.Trim());
 
                         AssetServerProxy newService = new AssetServerProxy(fakeConfig);
+                        newService.EnableErrorCounter = true;
                         m_extraAssetServers.Add(newService);
                     }
                 }
@@ -127,34 +146,48 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
         public bool[] AssetsExist(string[] ids)
         {
-            Boolean foundAllAssets = true;
-            Boolean[] result = m_assetService.AssetsExist(ids);
-            
-            foreach (bool thisBool in result)
-                if (thisBool == false)
-                    foundAllAssets = false;
+            if (checkForError())
+                return new bool[0];
 
-            if (foundAllAssets == true)
-                return result;
-
-            List<Boolean[]> results = new List<Boolean[]>();
-            foreach (AssetServerProxy service in m_extraAssetServers)
-                if(service != null)
-                    results.Add(service.AssetsExist(ids));
-
-            for (int i = 0; i < ids.Length; i++)
+            try
             {
-                if(result[i] != true)
+                Boolean foundAllAssets = true;
+                Boolean[] result = m_assetService.AssetsExist(ids);
+
+                foreach (bool thisBool in result)
+                    if (thisBool == false)
+                        foundAllAssets = false;
+
+                if (foundAllAssets == true)
+                    return result;
+
+                List<Boolean[]> results = new List<Boolean[]>();
+                foreach (AssetServerProxy service in m_extraAssetServers)
+                    if (service != null)
+                        results.Add(service.AssetsExist(ids));
+
+                for (int i = 0; i < ids.Length; i++)
                 {
-                    foreach(Boolean[] resultset in results)
+                    if (result[i] != true)
                     {
-                        if (resultset[i] == true)
-                            result[i] = true;
+                        foreach (Boolean[] resultset in results)
+                        {
+                            if (resultset[i] == true)
+                                result[i] = true;
+                        }
                     }
                 }
+
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
             }
 
-            return result;
+            return null;
         }
 
         public bool Delete(string id)
@@ -164,100 +197,170 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
         public AssetBase Get(string id)
         {
-            AssetBase result = m_assetService.Get(id);
+            if (checkForError())
+                return null;
 
-            if (result == null || result.Data.Length == 0)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result == null)
-                    {
-                        result = service.Get(id);
+            try
+            {
+                AssetBase result = m_assetService.Get(id);
 
-                        if (result != null && result.Data.Length != 0)
+                if (result == null || result.Data.Length == 0)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result == null)
                         {
-                            m_log.Info("[AssetServerProxy]: Get asset data for '" + id + "' from external asset storage at " + service.AssetServiceName);
-                            Store(result);
+                            result = service.Get(id);
 
-                            if (m_backupService != null)
-                                m_backupService.Store(result);
+                            if (result != null && result.Data.Length != 0)
+                            {
+                                m_log.Info("[AssetServerProxy]: Get asset data for '" + id + "' from external asset storage at " + service.AssetServiceName);
+                                Store(result);
+
+                                if (m_backupService != null)
+                                    m_backupService.Store(result);
+                            }
                         }
-                    }
 
-            return result;
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return null;
         }
 
         public bool Get(string id, object sender, AssetRetrieved handler)
         {
-            Boolean result = m_assetService.Get(id, sender, handler);
+            if (checkForError())
+                return false;
 
-            if (result == false)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result == false)
-                    {
-                        result = service.Get(id, sender, handler);
+            try
+            {
+                Boolean result = m_assetService.Get(id, sender, handler);
 
-                        if (result == true)
-                            m_log.Info("[AssetServerProxy]: Add asset '" + id + "' to cache from external asset storage at " + service.AssetServiceName);
-                    }
+                if (result == false)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result == false)
+                        {
+                            result = service.Get(id, sender, handler);
 
-            return result;
+                            if (result == true)
+                                m_log.Info("[AssetServerProxy]: Add asset '" + id + "' to cache from external asset storage at " + service.AssetServiceName);
+                        }
+
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return false;
         }
 
         public AssetBase GetCached(string id)
         {
-            AssetBase result = m_assetService.GetCached(id);
+            if (checkForError())
+                return null;
 
-            if (result == null || result.Data.Length != 0)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result == null)
-                    {
-                        result = service.GetCached(id);
+            try
+            {
+                AssetBase result = m_assetService.GetCached(id);
 
-                        if (result != null && result.Data.Length != 0)
+                if (result == null || result.Data.Length != 0)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result == null)
                         {
-                            m_log.Info("[AssetServerProxy]: Get asset base for '" + id + "' from external asset storage at " + service.AssetServiceName);
-                            Store(result);
+                            result = service.GetCached(id);
 
-                            if (m_backupService != null)
-                                m_backupService.Store(result);
+                            if (result != null && result.Data.Length != 0)
+                            {
+                                m_log.Info("[AssetServerProxy]: Get asset base for '" + id + "' from external asset storage at " + service.AssetServiceName);
+                                Store(result);
+
+                                if (m_backupService != null)
+                                    m_backupService.Store(result);
+                            }
                         }
-                    }
-                        
-            return result;
+
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return null;
         }
 
         public byte[] GetData(string id)
         {
-            byte[] result = m_assetService.GetData(id);
+            if (checkForError())
+                return null;
 
-            if (result.Length == 0)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result.Length == 0)
-                    {
-                        result = service.GetData(id);
+            try
+            {
+                byte[] result = m_assetService.GetData(id);
 
-                        if (result.Length != 0)
-                            m_log.Info("[AssetServerProxy]: Get asset data for '" + id + "' from external asset storage at " + service.AssetServiceName);
-                    }
+                if (result.Length == 0)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result.Length == 0)
+                        {
+                            result = service.GetData(id);
 
-            return result;
+                            if (result.Length != 0)
+                                m_log.Info("[AssetServerProxy]: Get asset data for '" + id + "' from external asset storage at " + service.AssetServiceName);
+                        }
+
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return null;
         }
 
         public AssetMetadata GetMetadata(string id)
         {
-            AssetMetadata result = m_assetService.GetMetadata(id);
+            if (checkForError())
+                return null;
 
-            if (result == null)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result == null)
-                    {
-                        result = service.GetMetadata(id);
+            try
+            {
+                AssetMetadata result = m_assetService.GetMetadata(id);
 
-                        if (result != null)
-                            m_log.Info("[AssetServerProxy]: Get asset metadata for '"+ id + "' from external asset storage at " + service.AssetServiceName);
-                    }
+                if (result == null)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result == null)
+                        {
+                            result = service.GetMetadata(id);
+
+                            if (result != null)
+                                m_log.Info("[AssetServerProxy]: Get asset metadata for '" + id + "' from external asset storage at " + service.AssetServiceName);
+                        }
 
 
-            return result;
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return null;
         }
 
         public string Store(AssetBase asset)
@@ -277,25 +380,39 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
         public AssetBase Get(string id, string ForeignAssetService, bool StoreOnLocalGrid)
         {
-            AssetBase result = m_assetService.Get(id, ForeignAssetService, StoreOnLocalGrid);
+            if (checkForError())
+                return null;
 
-            if (result == null)
-                foreach (AssetServerProxy service in m_extraAssetServers)
-                    if (result == null)
-                    {
-                        result = service.Get(id, ForeignAssetService, StoreOnLocalGrid);
+            try
+            {
+                AssetBase result = m_assetService.Get(id, ForeignAssetService, StoreOnLocalGrid);
 
-                        if (result != null)
+                if (result == null)
+                    foreach (AssetServerProxy service in m_extraAssetServers)
+                        if (result == null)
                         {
-                            m_log.Info("[AssetServerProxy]: Get asset base for '" + id + "' from external asset storage at " + service.AssetServiceName);
-                            Store(result);
+                            result = service.Get(id, ForeignAssetService, StoreOnLocalGrid);
 
-                            if (m_backupService != null)
-                                m_backupService.Store(result);
+                            if (result != null)
+                            {
+                                m_log.Info("[AssetServerProxy]: Get asset base for '" + id + "' from external asset storage at " + service.AssetServiceName);
+                                Store(result);
+
+                                if (m_backupService != null)
+                                    m_backupService.Store(result);
+                            }
                         }
-                    }
 
-            return result;
+                return result;
+            }
+            catch
+            {
+                m_errorCount++;
+                m_lastError = Tools.getUnixTime();
+                m_log.Error("[AssetServerProxy]: Add remote asset server to temporary blacklist: " + m_assetServiceURL);
+            }
+
+            return null;
         }
 
         public void Get(string id, string ForeignAssetService, bool StoreOnLocalGrid, SimpleAssetRetrieved callBack)
