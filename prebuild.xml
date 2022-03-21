@@ -51,8 +51,6 @@
 	<Reference name="DSharpPlus.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="Emzi0767.Common.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="BouncyCastle.Crypto.dll" path="..\libraries\" localCopy="true" />
-	<Reference name="MimeKit.dll" path="..\libraries\" localCopy="true" />
-	<Reference name="MailKit.dll" path="..\libraries\" localCopy="true" />
 
 	<Reference name="ServiceStack.Common.dll" path="..\libraries\" localCopy="true" />
 	<Reference name="ServiceStack.Interfaces.dll" path="..\libraries\" localCopy="true" />
