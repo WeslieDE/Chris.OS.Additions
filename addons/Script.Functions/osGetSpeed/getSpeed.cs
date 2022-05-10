@@ -19,8 +19,10 @@ namespace Chris.OS.Additions.Script.Functions.osGetSpeed
             get { return "getSpeedScriptCommand"; }
         }
 
-        public override void Initialise(IConfigSource source)
+        public override void RegionLoaded(Scene scene)
         {
+            base.World = scene;
+
             try
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
