@@ -1,4 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
+using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
@@ -7,8 +8,11 @@ using System;
 
 namespace Chris.OS.Additions.Script.Functions.osGetSpeed
 {
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OpenSimLand")]
+
     internal class getSpeed : EmptyNonSharedModule
     {
+
         #region EmptyModule
         public override string Name
         {
