@@ -44,6 +44,19 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
             m_storage.Add(new MemoryStorageObjekt(storageID, key, data));
         }
+
+        public List<String> allIDs(string storageID)
+        {
+            List<String> allStorageID = new List<String>();
+
+            foreach(MemoryStorageObjekt storage in m_storage)
+            {
+                if(storage.StorageKey.Equals(storageID))
+                    allStorageID.Add(storage.StorageID);
+            }
+
+            return allStorageID;
+        }
     }
 
     class MemoryStorageObjekt

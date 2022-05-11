@@ -6,6 +6,8 @@ using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Chris.OS.Additions.Script.Functions.DataValue
 {
@@ -53,9 +55,6 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
             base.World = scene;
 
-            if (m_storageTyp == "REGIONEXTRAS")
-                m_storage = new RegionExtras(base.World, m_config);
-
             if (m_storageTyp == "FILESYSTEM")
                 m_storage = new FileSystem(base.World, m_config);
 
@@ -80,11 +79,13 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 m_scriptModule.RegisterScriptInvocation(this, "osSetDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osDeleteDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osCheckDataValue");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetAllDataValueKeys");
 
                 m_scriptModule.RegisterScriptInvocation(this, "osGetPrivateDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osSetPrivateDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osDeletePrivateDataValue");
                 m_scriptModule.RegisterScriptInvocation(this, "osCheckPrivateDataValue");
+                m_scriptModule.RegisterScriptInvocation(this, "osGetAllPrivateDataValueKeys");
             }
         }
         #endregion
@@ -104,7 +105,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
 
         private string getDataValue(UUID hostID, UUID scriptID, string key, int privateStorage)
         {
-            if(m_storage != null)
+            if (m_storage != null)
             {
                 try
                 {
@@ -257,6 +258,49 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 base.Logger.Error("No data Storage aviable.");
                 return 0;
             }
+        }
+
+        [ScriptInvocation]
+        public object[] osGetAllDataValueKeys(UUID hostID, UUID scriptID, string key)
+        {
+            return getAllDataValueKeys(hostID, scriptID, key, 0);
+        }
+
+        [ScriptInvocation]
+        public object[] osGetAllPrivateDataValueKeys(UUID hostID, UUID scriptID, string key)
+        {
+            return getAllDataValueKeys(hostID, scriptID, key, 1);
+        }
+
+        [ScriptInvocation]
+        public object[] getAllDataValueKeys(UUID hostID, UUID scriptID, string key, int privateStorage)
+        {
+            List<String> allStorageID = new List<String>();
+
+            if (m_storage != null)
+            {
+                try
+                {
+                    SceneObjectPart _host = base.World.GetSceneObjectPart(hostID);
+                    String storageNameSpace = _host.GroupID.ToString();
+
+                    if (privateStorage == 1)
+                        storageNameSpace = _host.OwnerID.ToString();
+
+                    allStorageID = m_storage.allIDs(storageNameSpace);
+                    return allStorageID.ToArray();
+                }
+                catch (Exception _error)
+                {
+                    base.Logger.Error("[" + Name + "] osCheckDataValue: " + _error.Message);
+                }
+            }
+            else
+            {
+                base.Logger.Error("No data Storage aviable.");
+            }
+
+            return new object[0];
         }
         #endregion
     }

@@ -2,6 +2,7 @@
 using Nini.Config;
 using OpenSim.Region.Framework.Scenes;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -52,6 +53,12 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
             if (file.Exists)
                 file.Delete();
+        }
+
+        public List<String> allIDs(string storageID)
+        {
+            m_log.Error("[DataValue] WARNING: GetAllIDs is not supported by fs storage!");
+            throw new Exception("GetAllIDs is not supported by fs storage!");
         }
 
         public void save(String storageID, string key, string data)

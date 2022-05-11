@@ -4,6 +4,7 @@ using OpenSim.Region.Framework.Scenes;
 using ServiceStack.Redis;
 using ServiceStack.Redis.Generic;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -80,6 +81,29 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             {
                 m_client.SetValue(storageID + "." + key, data);
             }
+        }
+
+        public List<String> allIDs(string storageID)
+        {
+            List<String> allStorageID = new List<String>();
+
+            if (m_client == null)
+                m_log.Error("[REDIS] client is null");
+
+            lock (m_client)
+            {
+                List<String> allKeys = m_client.GetAllKeys();
+
+                foreach(String key in allKeys)
+                {
+                    if(key.StartsWith(storageID))
+                    {
+                        allStorageID.Add(key);
+                    }
+                }
+            }
+
+            return allStorageID;
         }
     }
 }

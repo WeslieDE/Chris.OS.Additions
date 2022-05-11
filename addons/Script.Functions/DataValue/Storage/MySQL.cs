@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using Nini.Config;
 using OpenSim.Region.Framework.Scenes;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Timers;
@@ -139,6 +140,28 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                     _mysqlCommand.ExecuteNonQuery();
                 }
             }
+        }
+
+        public List<String> allIDs(string storageID)
+        {
+            List<String> allStorageID = new List<String>();
+
+            using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
+            {
+                _mysqlCommand.CommandText = "Select StorageID FROM StorageData WHERE StorageID = ?mysqlStorage";
+                _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
+
+                using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
+                {
+                    while(_mysqlReader.Read())
+                    {
+                        if (_mysqlReader["StorageID"] != null)
+                            allStorageID.Add(_mysqlReader["StorageID"].ToString());
+                    }
+                }
+            }
+
+            return allStorageID;
         }
 
         private void createEmptyTable()
