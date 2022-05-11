@@ -261,19 +261,19 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public object[] osGetAllDataValueKeys(UUID hostID, UUID scriptID, string key)
+        public object[] osGetAllDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith)
         {
-            return getAllDataValueKeys(hostID, scriptID, key, 0);
+            return getAllDataValueKeys(hostID, scriptID, key, startWith, 0);
         }
 
         [ScriptInvocation]
-        public object[] osGetAllPrivateDataValueKeys(UUID hostID, UUID scriptID, string key)
+        public object[] osGetAllPrivateDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith)
         {
-            return getAllDataValueKeys(hostID, scriptID, key, 1);
+            return getAllDataValueKeys(hostID, scriptID, key, startWith, 1);
         }
 
         [ScriptInvocation]
-        public object[] getAllDataValueKeys(UUID hostID, UUID scriptID, string key, int privateStorage)
+        public object[] getAllDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith, int privateStorage)
         {
             List<String> allStorageID = new List<String>();
 
@@ -287,7 +287,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                     if (privateStorage == 1)
                         storageNameSpace = _host.OwnerID.ToString();
 
-                    allStorageID = m_storage.allIDs(storageNameSpace);
+                    allStorageID = m_storage.allIDs(storageNameSpace).FindAll(x => x.StartsWith(startWith));
+
                     return allStorageID.ToArray();
                 }
                 catch (Exception _error)
