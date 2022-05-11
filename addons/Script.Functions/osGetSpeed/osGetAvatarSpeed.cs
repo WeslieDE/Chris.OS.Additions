@@ -1,6 +1,5 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
-using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
@@ -8,14 +7,14 @@ using System;
 
 namespace Chris.OS.Additions.Script.Functions.osGetSpeed
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osGetSpeed")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osGetAvatarSpeed")]
 
-    public class getSpeed : EmptyNonSharedModule
+    public class osGetAvatarSpeed : EmptyNonSharedModule
     {
         #region EmptyModule
         public override string Name
         {
-            get { return "osGetSpeed"; }
+            get { return "osGetAvatarSpeed"; }
         }
 
         public override void RegionLoaded(Scene scene)
@@ -26,6 +25,8 @@ namespace Chris.OS.Additions.Script.Functions.osGetSpeed
             {
                 IScriptModuleComms m_scriptModule = base.World.RequestModuleInterface<IScriptModuleComms>();
                 m_scriptModule.RegisterScriptInvocation(this, "osGetSpeed");
+                base.Logger.Info("[" + Name + "]: Initialized");
+
             }
             catch (Exception e)
             {
