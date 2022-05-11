@@ -10,7 +10,7 @@ namespace Chris.OS.Additions.Script.Functions.osGetSpeed
 {
     [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "osGetSpeed")]
 
-    internal class getSpeed : EmptyNonSharedModule
+    public class getSpeed : EmptyNonSharedModule
     {
         #region EmptyModule
         public override string Name
