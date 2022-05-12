@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Chris.OS.Additions.Script.Functions.RemoteScriptPin
 {
-    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "OwnerSay")]
+    [Extension(Path = "/OpenSim/RegionModules", NodeName = "RegionModule", Id = "RemoteScriptPin")]
 
     class RemoteScriptPin : EmptyNonSharedModule
     {
