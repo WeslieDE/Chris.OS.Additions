@@ -67,6 +67,9 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
             if (m_storageTyp == "MEMORY")
                 m_storage = new Memory();
 
+            if (m_storageTyp == "HTTP")
+                m_storage = new HTTP(base.World, m_config);
+
             if (m_storage == null)
                 m_storage = new Memory();
 

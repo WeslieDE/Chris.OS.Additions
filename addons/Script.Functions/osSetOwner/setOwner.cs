@@ -61,7 +61,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetOwner
 
             part.OwnerID = newOwner;
         }
-
+         
         [ScriptInvocation]
         public void osSetGroup(UUID hostID, UUID scriptID, UUID prim, UUID newGroup)
         {
