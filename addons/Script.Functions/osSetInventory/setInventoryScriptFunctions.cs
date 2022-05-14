@@ -33,6 +33,7 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventory
                 m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryName");
                 m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryDesc");
                 m_scriptModule.RegisterScriptInvocation(this, "osGetInventoryDesc");
+                m_scriptModule.RegisterScriptInvocation(this, "osSetInventoryType");
             }
             catch (Exception e)
             {
@@ -80,6 +81,21 @@ namespace Chris.OS.Additions.Script.Functions.osSetInventory
                 return String.Empty;
 
             return item.Description;
+        }
+
+
+        [ScriptInvocation]
+        public void osSetInventoryType(UUID hostID, UUID scriptID, String name, int newType)
+        {
+            SceneObjectPart part = base.World.GetSceneObjectPart(hostID);
+            TaskInventoryItem item = part.Inventory.GetInventoryItems().Find(x => x.Name.Equals(name));
+
+            if (item == null)
+                return;
+
+            item.Type = newType;
+            part.Inventory.AddInventoryItemExclusive(item, false);
+            part.SendFullUpdateToAllClients();
         }
         #endregion
     }
