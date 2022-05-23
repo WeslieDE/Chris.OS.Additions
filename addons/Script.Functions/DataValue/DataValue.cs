@@ -296,7 +296,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
                 }
                 catch (Exception _error)
                 {
-                    base.Logger.Error("[" + Name + "] osCheckDataValue: " + _error.Message);
+                    base.Logger.Error("[" + Name + "] osGetAllDataValueKeys: " + _error.Message);
                 }
             }
             else
