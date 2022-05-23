@@ -98,7 +98,8 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 {
                     if(key.StartsWith(storageID))
                     {
-                        allStorageID.Add(key);
+                        string newListKey = key.Remove(key.IndexOf(storageID + "."), (storageID + ".").Length);
+                        allStorageID.Add(newListKey);
                     }
                 }
             }
