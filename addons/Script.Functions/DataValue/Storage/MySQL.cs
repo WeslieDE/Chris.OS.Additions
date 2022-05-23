@@ -156,7 +156,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                     while(_mysqlReader.Read())
                     {
                         if (_mysqlReader["StorageID"] != null)
-                            allStorageID.Add(_mysqlReader["StorageID"].ToString());
+                        {
+                            string newListKey = _mysqlReader["StorageID"].ToString().Remove(_mysqlReader["StorageID"].ToString().IndexOf(storageID + "."), (storageID + ".").Length);
+                            allStorageID.Add(newListKey);
+                        }
                     }
                 }
             }
