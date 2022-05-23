@@ -52,7 +52,10 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
             foreach(MemoryStorageObjekt storage in m_storage)
             {
                 if(storage.StorageKey.Equals(storageID))
-                    allStorageID.Add(storage.StorageID);
+                {
+                    string newListKey = storage.StorageKey.Remove(storage.StorageKey.IndexOf(storageID + "."), (storageID + ".").Length);
+                    allStorageID.Add(newListKey);
+                }
             }
 
             return allStorageID;
