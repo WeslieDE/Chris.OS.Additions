@@ -264,19 +264,19 @@ namespace Chris.OS.Additions.Script.Functions.DataValue
         }
 
         [ScriptInvocation]
-        public object[] osGetAllDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith)
+        public object[] osGetAllDataValueKeys(UUID hostID, UUID scriptID, string startWith)
         {
-            return getAllDataValueKeys(hostID, scriptID, key, startWith, 0);
+            return getAllDataValueKeys(hostID, scriptID, startWith, 0);
         }
 
         [ScriptInvocation]
-        public object[] osGetAllPrivateDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith)
+        public object[] osGetAllPrivateDataValueKeys(UUID hostID, UUID scriptID, string startWith)
         {
-            return getAllDataValueKeys(hostID, scriptID, key, startWith, 1);
+            return getAllDataValueKeys(hostID, scriptID, startWith, 1);
         }
 
         [ScriptInvocation]
-        public object[] getAllDataValueKeys(UUID hostID, UUID scriptID, string key, string startWith, int privateStorage)
+        public object[] getAllDataValueKeys(UUID hostID, UUID scriptID, string startWith, int privateStorage)
         {
             List<String> allStorageID = new List<String>();
 
