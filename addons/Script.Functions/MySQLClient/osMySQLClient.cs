@@ -1,5 +1,6 @@
 ﻿using Chris.OS.Additions.Utils;
 using Mono.Addins;
+using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
@@ -14,6 +15,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
     public class osMySQLClient : EmptyNonSharedModule
     {
         private List<MySqlConnectionHandler> m_mySQLHandlers = new List<MySqlConnectionHandler>();
+        private String m_defaultConecctionString = null;
         private Timer m_timer = null;
 
         #region EmptyModule
@@ -32,6 +34,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             if (scriptModuleComms != null)
             {
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCreateConecction");
+                scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCreateDefaultConecction");
 
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLOpenConecction");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCloseConecction");
@@ -49,6 +52,14 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             m_timer.AutoReset = true;
             m_timer.Elapsed += cleanup;
             m_timer.Start();
+        }
+
+        public override void Initialise(IConfigSource source)
+        {
+            if (source.Configs["ScriptDataStorage"] != null)
+            {
+                m_defaultConecctionString = source.Configs["ScriptDataStorage"].GetString("DataValueConnectionString", String.Empty).Trim();
+            }
         }
 
         public override void Close()
@@ -78,10 +89,29 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         [ScriptInvocation]
         public UUID osMySQLCreateConecction(UUID hostID, UUID scriptID, String connectionString)
         {
-            UUID newHandlerID = UUID.Random();
-            MySqlConnectionHandler newMySQLHandler = new MySqlConnectionHandler(connectionString, newHandlerID);
-            m_mySQLHandlers.Add(newMySQLHandler);
-            return newHandlerID;
+            if (connectionString != null && connectionString.Trim() != String.Empty)
+            {
+                UUID newHandlerID = UUID.Random();
+                MySqlConnectionHandler newMySQLHandler = new MySqlConnectionHandler(connectionString, newHandlerID);
+                m_mySQLHandlers.Add(newMySQLHandler);
+                return newHandlerID;
+            }
+
+            return UUID.Zero;
+        }
+
+        [ScriptInvocation]
+        public UUID osMySQLCreateDefaultConecction(UUID hostID, UUID scriptID)
+        {
+            if(m_defaultConecctionString != null && m_defaultConecctionString != String.Empty)
+            {
+                UUID newHandlerID = UUID.Random();
+                MySqlConnectionHandler newMySQLHandler = new MySqlConnectionHandler(m_defaultConecctionString, newHandlerID);
+                m_mySQLHandlers.Add(newMySQLHandler);
+                return newHandlerID;
+            }
+
+            return UUID.Zero;
         }
 
         [ScriptInvocation]
