@@ -127,7 +127,6 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         {
             try
             {
-                mysqlping();
                 if (m_currentMySQLCommand != null)
                 {
                     lock (m_mySQLClient)
@@ -138,6 +137,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
                             m_currentDataReader = null;
                         }
 
+                        mysqlping();
                         m_currentDataReader = m_currentMySQLCommand.ExecuteReader();
                         m_currentMySQLCommand = null;
                     }
@@ -183,10 +183,15 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         {
             try
             {
-                mysqlping();
-
                 lock (m_mySQLClient)
                 {
+                    if (m_currentDataReader != null)
+                    {
+                        m_currentDataReader.Close();
+                        m_currentDataReader = null;
+                    }
+
+                    mysqlping();
                     m_currentMySQLCommand.ExecuteReader();
                 }
             }
