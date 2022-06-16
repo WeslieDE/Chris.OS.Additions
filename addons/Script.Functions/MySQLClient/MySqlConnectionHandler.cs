@@ -82,6 +82,12 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         public void CreateCommand(String command)
         {
+            if(m_currentMySQLCommand != null)
+            {
+                m_currentMySQLCommand.Cancel();
+                m_currentMySQLCommand = null;
+            }
+
             m_currentMySQLCommand = m_mySQLClient.CreateCommand();
             m_currentMySQLCommand.CommandText = command;
         }
@@ -95,10 +101,19 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         public void CommandExecute()
         {
             mysqlping();
-
-            lock (m_mySQLClient)
+            if(m_currentMySQLCommand != null)
             {
-                m_currentDataReader = m_currentMySQLCommand.ExecuteReader();
+                lock (m_mySQLClient)
+                {
+                    if (m_currentDataReader != null)
+                    {
+                        m_currentDataReader.Close();
+                        m_currentDataReader = null;
+                    }
+
+                    m_currentDataReader = m_currentMySQLCommand.ExecuteReader();
+                    m_currentMySQLCommand = null;
+                }
             }
         }
 
@@ -118,6 +133,9 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
                 return result.ToArray();
             }
+
+            m_currentDataReader.Close();
+            m_currentDataReader = null;
 
             return new String[0];
         }
