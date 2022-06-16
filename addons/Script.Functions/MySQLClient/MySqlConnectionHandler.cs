@@ -192,7 +192,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
                     }
 
                     mysqlping();
-                    m_currentMySQLCommand.ExecuteReader();
+                    m_currentMySQLCommand.ExecuteNonQuery();
                 }
             }
             catch (Exception error)
