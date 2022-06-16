@@ -115,33 +115,39 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         }
 
         [ScriptInvocation]
-        public void osMySQLOpenConecction(UUID hostID, UUID scriptID, UUID conecctionID)
+        public UUID osMySQLOpenConecction(UUID hostID, UUID scriptID, UUID conecctionID)
         {
             MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if(conecctionHandler != null)
             {
                 conecctionHandler.OpenConecction();
             }
+
+            return conecctionID;
         }
 
         [ScriptInvocation]
-        public void osMySQLCloseConecction(UUID hostID, UUID scriptID, UUID conecctionID)
+        public UUID osMySQLCloseConecction(UUID hostID, UUID scriptID, UUID conecctionID)
         {
             MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 conecctionHandler.CloseConecction();
             }
+
+            return conecctionID;
         }
 
         [ScriptInvocation]
-        public void osMySQLCreateCommand(UUID hostID, UUID scriptID, String command, UUID conecctionID)
+        public UUID osMySQLCreateCommand(UUID hostID, UUID scriptID, String command, UUID conecctionID)
         {
             MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 conecctionHandler.CreateCommand(command);
             }
+
+            return conecctionID;
         }
 
         [ScriptInvocation]
