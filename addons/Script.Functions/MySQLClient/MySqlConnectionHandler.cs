@@ -1,14 +1,19 @@
 ﻿using Chris.OS.Additions.Utils;
+using log4net;
 using MySql.Data.MySqlClient;
 using OpenMetaverse;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 
 namespace Chris.OS.Additions.Script.Functions.MySQLClient
 {
     public class MySqlConnectionHandler
     {
+        private readonly ILog m_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+
         private MySqlCommand m_currentMySQLCommand = null;
         private IDataReader m_currentDataReader = null;
 
@@ -71,82 +76,123 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         public void CloseConecction()
         {
-            if(m_currentDataReader != null)
-                m_currentDataReader.Close();
+            try
+            {
+                if (m_currentDataReader != null)
+                    m_currentDataReader.Close();
 
-            m_currentDataReader = null;
-            m_currentMySQLCommand = null;
+                m_currentDataReader = null;
+                m_currentMySQLCommand = null;
 
-            m_mySQLClient.Close();
+                m_mySQLClient.Close();
+            }catch(Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][CloseConecction()] " + error.Message);
+            }
         }
 
         public void CreateCommand(String command)
         {
-            if(m_currentMySQLCommand != null)
+            try
             {
-                m_currentMySQLCommand.Cancel();
-                m_currentMySQLCommand = null;
-            }
+                if (m_currentMySQLCommand != null)
+                {
+                    m_currentMySQLCommand.Cancel();
+                    m_currentMySQLCommand = null;
+                }
 
-            m_currentMySQLCommand = m_mySQLClient.CreateCommand();
-            m_currentMySQLCommand.CommandText = command;
+                m_currentMySQLCommand = m_mySQLClient.CreateCommand();
+                m_currentMySQLCommand.CommandText = command;
+            }
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][CreateCommand()] " + error.Message);
+            }
         }
 
         public void CommandAddParameters(String name, String value)
         {
-            if (m_currentMySQLCommand != null)
-                m_currentMySQLCommand.Parameters.AddWithValue(name, value);
+            try
+            {
+                if (m_currentMySQLCommand != null)
+                    m_currentMySQLCommand.Parameters.AddWithValue(name, value);
+            }
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][CommandAddParameters()] " + error.Message);
+            }
         }
 
         public void CommandExecute()
         {
-            mysqlping();
-            if(m_currentMySQLCommand != null)
+            try
             {
-                lock (m_mySQLClient)
+                mysqlping();
+                if (m_currentMySQLCommand != null)
                 {
-                    if (m_currentDataReader != null)
+                    lock (m_mySQLClient)
                     {
-                        m_currentDataReader.Close();
-                        m_currentDataReader = null;
-                    }
+                        if (m_currentDataReader != null)
+                        {
+                            m_currentDataReader.Close();
+                            m_currentDataReader = null;
+                        }
 
-                    m_currentDataReader = m_currentMySQLCommand.ExecuteReader();
-                    m_currentMySQLCommand = null;
+                        m_currentDataReader = m_currentMySQLCommand.ExecuteReader();
+                        m_currentMySQLCommand = null;
+                    }
                 }
+            }
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][CommandExecute()] " + error.Message);
             }
         }
 
         public String[] getNextRow()
         {
-            if (m_currentDataReader == null)
-                return new String[0];
-
-            if(m_currentDataReader.Read())
+            try
             {
-                List<String> result = new List<String>();
-                for (int i = 0; i < m_currentDataReader.FieldCount; i++)
+                if (m_currentDataReader == null)
+                    return new String[0];
+
+                if (m_currentDataReader.Read())
                 {
-                    result.Add(m_currentDataReader.GetName(i));
-                    result.Add(m_currentDataReader.GetString(i));
+                    List<String> result = new List<String>();
+                    for (int i = 0; i < m_currentDataReader.FieldCount; i++)
+                    {
+                        result.Add(m_currentDataReader.GetName(i));
+                        result.Add(m_currentDataReader.GetString(i));
+                    }
+
+                    return result.ToArray();
                 }
 
-                return result.ToArray();
+                m_currentDataReader.Close();
+                m_currentDataReader = null;
             }
-
-            m_currentDataReader.Close();
-            m_currentDataReader = null;
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][getNextRow()] " + error.Message);
+            }
 
             return new String[0];
         }
 
         public void CommandExecuteNonQuery()
         {
-            mysqlping();
-
-            lock (m_mySQLClient)
+            try
             {
-                m_currentMySQLCommand.ExecuteReader();
+                mysqlping();
+
+                lock (m_mySQLClient)
+                {
+                    m_currentMySQLCommand.ExecuteReader();
+                }
+            }
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][CommandExecuteNonQuery()] " + error.Message);
             }
         }
         #endregion
@@ -154,12 +200,19 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         #region Helpers
         private void mysqlping()
         {
-            m_lastUse = Tools.getUnixTime();
-
-            lock (m_mySQLClient)
+            try
             {
-                if (!m_mySQLClient.Ping())
-                    m_mySQLClient.Open();
+                m_lastUse = Tools.getUnixTime();
+
+                lock (m_mySQLClient)
+                {
+                    if (!m_mySQLClient.Ping())
+                        m_mySQLClient.Open();
+                }
+            }
+            catch (Exception error)
+            {
+                m_logger.Error("[MySqlConnectionHandler][mysqlping()] " + error.Message);
             }
         }
         #endregion
