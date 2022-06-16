@@ -71,7 +71,12 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         public void CloseConecction()
         {
-            m_currentDataReader.Close();
+            if(m_currentDataReader != null)
+                m_currentDataReader.Close();
+
+            if (m_currentMySQLCommand != null)
+                m_currentMySQLCommand.Cancel();
+
             m_currentDataReader = null;
             m_currentMySQLCommand = null;
 
@@ -80,7 +85,9 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         public void CreateCommand(String command)
         {
-            m_currentMySQLCommand.Cancel();
+            if(m_currentMySQLCommand != null)
+                m_currentMySQLCommand.Cancel();
+
             m_currentMySQLCommand = m_mySQLClient.CreateCommand();
             m_currentMySQLCommand.CommandText = command;
         }
