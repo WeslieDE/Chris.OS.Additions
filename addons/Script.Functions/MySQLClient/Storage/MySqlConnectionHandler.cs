@@ -2,6 +2,7 @@
 using log4net;
 using MySql.Data.MySqlClient;
 using OpenMetaverse;
+using OpenSim.Region.ScriptEngine.Shared;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,13 +10,15 @@ using System.Reflection;
 
 namespace Chris.OS.Additions.Script.Functions.MySQLClient
 {
-    public class MySqlConnectionHandler
+    public class MySqlConnectionHandler : iMySQLStorage
     {
         private readonly ILog m_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
         private MySqlCommand m_currentMySQLCommand = null;
         private IDataReader m_currentDataReader = null;
+
+        private MySqlConnection m_mySQLClient = null;
 
         public MySqlConnectionHandler(String connectionString, UUID handlerID)
         {
@@ -37,21 +40,30 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             }
         }
 
+        private Boolean m_connected = false;
+        public Boolean Connected
+        {
+            get
+            {
+                return m_connected;
+            }
+        }
+
+        private String m_errorMessage = "";
+        public String Error
+        {
+            get
+            {
+                return m_errorMessage;
+            }
+        }
+
         private String m_connectionString = null;
         public String ConnectionString
         {
             get
             {
                 return m_connectionString;
-            }
-        }
-
-        private MySqlConnection m_mySQLClient = null;
-        public MySqlConnection Conecction
-        {
-            get
-            {
-                return m_mySQLClient;
             }
         }
 
@@ -72,6 +84,8 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
             m_mySQLClient = new MySqlConnection(m_connectionString);
             m_mySQLClient.Open();
+
+            m_connected = true;
         }
 
         public void CloseConecction()
@@ -85,10 +99,18 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
                 m_currentMySQLCommand = null;
 
                 m_mySQLClient.Close();
-            }catch(Exception error)
-            {
-                m_logger.Error("[MySqlConnectionHandler][CloseConecction()] " + error.Message);
+
+                m_connected = false;
             }
+            catch(Exception error)
+            {
+                throw new ScriptException(error.Message);
+            }
+        }
+
+        public void PingConecction()
+        {
+            mysqlping();
         }
 
         public void CreateCommand(String command)
@@ -106,7 +128,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             }
             catch (Exception error)
             {
-                m_logger.Error("[MySqlConnectionHandler][CreateCommand()] " + error.Message);
+                throw new ScriptException(error.Message);
             }
         }
 
@@ -119,11 +141,11 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             }
             catch (Exception error)
             {
-                m_logger.Error("[MySqlConnectionHandler][CommandAddParameters()] " + error.Message);
+                throw new ScriptException(error.Message);
             }
         }
 
-        public void CommandExecute()
+        public int CommandExecute()
         {
             try
             {
@@ -145,8 +167,11 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             }
             catch (Exception error)
             {
-                m_logger.Error("[MySqlConnectionHandler][CommandExecute()] " + error.Message);
+                m_errorMessage = error.Message;
+                return 0;
             }
+
+            return 1;
         }
 
         public String[] getNextRow()
@@ -179,7 +204,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             return new String[0];
         }
 
-        public void CommandExecuteNonQuery()
+        public int CommandExecuteNonQuery()
         {
             try
             {
@@ -197,8 +222,12 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             }
             catch (Exception error)
             {
+                m_errorMessage = error.Message;
                 m_logger.Error("[MySqlConnectionHandler][CommandExecuteNonQuery()] " + error.Message);
+                return 0;
             }
+
+            return 1;
         }
         #endregion
 

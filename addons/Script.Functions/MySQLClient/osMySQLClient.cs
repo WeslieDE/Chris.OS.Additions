@@ -14,7 +14,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
     public class osMySQLClient : EmptyNonSharedModule
     {
-        private List<MySqlConnectionHandler> m_mySQLHandlers = new List<MySqlConnectionHandler>();
+        private List<iMySQLStorage> m_mySQLHandlers = new List<iMySQLStorage>();
         private String m_defaultConecctionString = null;
         private Timer m_timer = null;
 
@@ -35,20 +35,23 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             {
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCreateConecction");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCreateDefaultConecction");
+                scriptModuleComms.RegisterScriptInvocation(this, "osSQLiteCreateConecction");
 
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLOpenConecction");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCloseConecction");
-                
+                scriptModuleComms.RegisterScriptInvocation(this, "osMySQLPingConecction");
+
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCreateCommand");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCommandAddParameters");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLGetNextRow");
 
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCommandExecute");
                 scriptModuleComms.RegisterScriptInvocation(this, "osMySQLCommandExecuteNonQuery");
+                scriptModuleComms.RegisterScriptInvocation(this, "osMySQLGetError");
             }
 
             m_timer = new Timer();
-            m_timer.Interval = 60000;
+            m_timer.Interval = 10000;
             m_timer.AutoReset = true;
             m_timer.Elapsed += cleanup;
             m_timer.Start();
@@ -56,9 +59,9 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         public override void Initialise(IConfigSource source)
         {
-            if (source.Configs["ScriptDataStorage"] != null)
+            if (source.Configs["MySQL"] != null)
             {
-                m_defaultConecctionString = source.Configs["ScriptDataStorage"].GetString("DataValueConnectionString", String.Empty).Trim();
+                m_defaultConecctionString = source.Configs["MySQL"].GetString("SQLConnectionString", String.Empty).Trim();
             }
         }
 
@@ -67,7 +70,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
             m_timer.Stop();
             m_timer.Dispose();
 
-            foreach (MySqlConnectionHandler handler in m_mySQLHandlers)
+            foreach (MySqlConnectionHandler handler in m_mySQLHandlers.FindAll(x => x.Connected == true))
             {
                 handler.CloseConecction();
             }
@@ -75,9 +78,9 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
 
         private void cleanup(object sender, ElapsedEventArgs e)
         {
-            foreach(MySqlConnectionHandler handler in m_mySQLHandlers)
+            foreach(MySqlConnectionHandler handler in m_mySQLHandlers.FindAll(x => x.Connected == true))
             {
-                if ((handler.LastUse + 300) < Tools.getUnixTime())
+                if ((handler.LastUse + 60) < Tools.getUnixTime())
                 {
                     handler.CloseConecction();
                 }
@@ -117,8 +120,8 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         [ScriptInvocation]
         public UUID osMySQLOpenConecction(UUID hostID, UUID scriptID, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
-            if(conecctionHandler != null)
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            if (conecctionHandler != null)
             {
                 conecctionHandler.OpenConecction();
             }
@@ -127,9 +130,31 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         }
 
         [ScriptInvocation]
+        public void osMySQLPingConecction(UUID hostID, UUID scriptID, UUID conecctionID)
+        {
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            if (conecctionHandler != null)
+            {
+                conecctionHandler.PingConecction();
+            }
+        }
+
+        [ScriptInvocation]
+        public String osMySQLGetError(UUID hostID, UUID scriptID, UUID conecctionID)
+        {
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            if (conecctionHandler != null)
+            {
+                return conecctionHandler.Error;
+            }
+
+            return "CONECCTION_NOT_FOUND";
+        }
+
+        [ScriptInvocation]
         public UUID osMySQLCloseConecction(UUID hostID, UUID scriptID, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 conecctionHandler.CloseConecction();
@@ -141,7 +166,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         [ScriptInvocation]
         public UUID osMySQLCreateCommand(UUID hostID, UUID scriptID, String command, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 conecctionHandler.CreateCommand(command);
@@ -153,7 +178,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         [ScriptInvocation]
         public void osMySQLCommandAddParameters(UUID hostID, UUID scriptID, String name, String value, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 conecctionHandler.CommandAddParameters(name, value);
@@ -163,7 +188,7 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         [ScriptInvocation]
         public object[] osMySQLGetNextRow(UUID hostID, UUID scriptID, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
                 return conecctionHandler.getNextRow();
@@ -173,23 +198,27 @@ namespace Chris.OS.Additions.Script.Functions.MySQLClient
         }
 
         [ScriptInvocation]
-        public void osMySQLCommandExecute(UUID hostID, UUID scriptID, UUID conecctionID)
+        public int osMySQLCommandExecute(UUID hostID, UUID scriptID, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
-                conecctionHandler.CommandExecute();
+                return conecctionHandler.CommandExecute();
             }
+
+            return 0;
         }
 
         [ScriptInvocation]
-        public void osMySQLCommandExecuteNonQuery(UUID hostID, UUID scriptID, UUID conecctionID)
+        public int osMySQLCommandExecuteNonQuery(UUID hostID, UUID scriptID, UUID conecctionID)
         {
-            MySqlConnectionHandler conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
+            iMySQLStorage conecctionHandler = m_mySQLHandlers.Find(x => conecctionID == x.HandlerID);
             if (conecctionHandler != null)
             {
-                conecctionHandler.CommandExecuteNonQuery();
+                return conecctionHandler.CommandExecuteNonQuery();
             }
+
+            return 0;
         }
         #endregion
     }
