@@ -35,7 +35,7 @@ namespace Chris.OS.Additions.Region.Modules.IncommingChat
 
                 byte[] binText = Util.StringToBytesNoTerm(data.Message, 1023);
                 m_world.SimChat(binText, ChatTypeEnum.Region, data.Channel, new Vector3(128, 128, 20), data.Name, UUID.Random(), data.Agent);
-                m_world.SimChatBroadcast(binText, ChatTypeEnum.Region, data.Channel, new Vector3(128, 128, 20), data.Name, UUID.Random(), data.Agent);
+                m_world.SimChatBroadcast(data.Message, ChatTypeEnum.Region, data.Channel, new Vector3(128, 128, 20), data.Name, UUID.Random(), data.Agent);
 
                 IWorldComm wComm = m_world.RequestModuleInterface<IWorldComm>();
                 if (wComm != null)
