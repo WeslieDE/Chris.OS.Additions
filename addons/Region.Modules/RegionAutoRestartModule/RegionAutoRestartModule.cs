@@ -8,6 +8,7 @@ using OpenSim.Framework;
 using System.Threading;
 using System.Diagnostics;
 using Chris.OS.Additions.Utils;
+using System.Net;
 
 namespace Chris.OS.Additions.Region.Modules.RegionAutoRestartModule
 {
@@ -19,6 +20,7 @@ namespace Chris.OS.Additions.Region.Modules.RegionAutoRestartModule
         private IConfigSource m_config;
 
         private int m_restartTime = 30;
+        private String m_webhookURL = null;
 
         #region EmptyModule
 
@@ -54,6 +56,8 @@ namespace Chris.OS.Additions.Region.Modules.RegionAutoRestartModule
             {
                 m_restartTime = m_config.Configs["AutoRestart"].GetInt("Time", 30);
                 base.Enabled = m_config.Configs["AutoRestart"].GetBoolean("Enabled", base.Enabled);
+
+                m_webhookURL = m_config.Configs["AutoRestart"].GetString("WebhookURL", m_webhookURL);
             }
         }
         #endregion
@@ -86,6 +90,19 @@ namespace Chris.OS.Additions.Region.Modules.RegionAutoRestartModule
 
                     base.World.Backup(true);
 
+                    if(m_webhookURL != null)
+                    {
+                        try
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadString(m_webhookURL);
+                        }
+                        catch(Exception error)
+                        {
+                            base.Logger.Warn("[AutoRestart] Exception while do webhoook call: " + error.Message);
+
+                        }
+                    }
 
                     Thread.Sleep(2000);
                     Process.GetCurrentProcess().Kill();
