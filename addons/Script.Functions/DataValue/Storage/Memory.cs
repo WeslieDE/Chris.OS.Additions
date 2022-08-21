@@ -54,7 +54,9 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                 if(storage.StorageKey.Equals(storageID))
                 {
                     string newListKey = storage.StorageKey;
-                    allStorageID.Add(newListKey);
+                    
+                    if(newListKey != null)
+                        allStorageID.Add(newListKey);
                 }
             }
 
