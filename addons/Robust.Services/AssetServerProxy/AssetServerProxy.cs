@@ -414,5 +414,15 @@ namespace Chris.OS.Additions.Robust.Services.AssetServerProxy
 
             return null;
         }
+        
+        public void Get(string id, string ForeignAssetService, bool StoreOnLocalGrid, SimpleAssetRetrieved callBack)
+        {
+            AssetBase a = Get(id, ForeignAssetService, StoreOnLocalGrid);
+
+            if(a != null)
+            {
+                Util.FireAndForget(o => callBack(a), null, "LocalAssetServiceConnector.GotFromServiceCallback");
+            }
+        }
     }
 }
