@@ -157,7 +157,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
                     {
                         if (_mysqlReader["StorageKey"] != null)
                         {
-                            string newListKey = _mysqlReader["StorageKey"];
+                            string newListKey = _mysqlReader["StorageKey"].ToString();
                             allStorageID.Add(newListKey);
                         }
                     }
