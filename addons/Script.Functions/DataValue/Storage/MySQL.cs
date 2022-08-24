@@ -148,7 +148,7 @@ namespace Chris.OS.Additions.Script.Functions.DataValue.Storage
 
             using (MySqlCommand _mysqlCommand = m_mySQLClient.CreateCommand())
             {
-                _mysqlCommand.CommandText = "Select StorageID FROM StorageData WHERE StorageID = ?mysqlStorage";
+                _mysqlCommand.CommandText = "Select StorageKey FROM StorageData WHERE StorageID = ?mysqlStorage";
                 _mysqlCommand.Parameters.AddWithValue("?mysqlStorage", storageID);
 
                 using (IDataReader _mysqlReader = _mysqlCommand.ExecuteReader())
