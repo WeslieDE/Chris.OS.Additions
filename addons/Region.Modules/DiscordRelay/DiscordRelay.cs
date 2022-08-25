@@ -108,34 +108,12 @@ namespace Chris.OS.Additions.Region.Modules.DiscordRelay
             if (m_discordWebHookURL == null)
                 return;
 
-            if (chat.Channel == 0)
+            if (chat.Channel == 0 && chat.Sender != null)
             {
-                if (chat.Sender == null && m_scriptChat == false)
-                    return;
-
-                String senderName = null;
-
-                if (senderName == null)
-                {
-                    ScenePresence presence = base.World.GetScenePresence(chat.SenderUUID);
-                    if (presence != null)
-                        senderName = presence.Name;
-                }
-
-                if (senderName == null)
-                {
-                    SceneObjectPart part = base.World.GetSceneObjectPart(chat.SenderUUID);
-                    if (part != null)
-                        senderName = part.Name;
-                }
-
-                if (senderName != null)
-                {
                     WebHook webhook = new WebHook(m_discordWebHookURL);
-                    webhook.Name = senderName + " @ " + base.World.Name;
+                    webhook.Name = chat.From + " @ " + base.World.Name;
                     webhook.Message = chat.Message;
                     webhook.sendAsync();
-                }
             }
         }
         #endregion
